@@ -1,4 +1,5 @@
 const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     entry: {
@@ -15,5 +16,30 @@ module.exports = {
         extensions: ['*', '.js', '.vue', '.json']
     },
     mode: "development",
-
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: [
+                            '@babel/plugin-proposal-object-rest-spread',
+                            '@babel/plugin-syntax-dynamic-import',
+                            '@babel/plugin-proposal-class-properties'
+                        ]
+                    }
+                }
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            }
+        ]
+    },
+    plugins: [
+        new VueLoaderPlugin()
+    ]
 };

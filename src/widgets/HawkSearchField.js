@@ -1,17 +1,14 @@
 import Vue from 'vue';
-import { HawkSearchVues } from "../hawk-search-vues";
+import HawkSearchVue from "../HawkSearchVue";
 import store from '../store';
 
-HawkSearchVues.HawkSearchField = Vue.extend({
+HawkSearchVue.HawkSearchField = Vue.extend({
 	data: function () {
 		return {
 			keyword: null
 		}
 	},
 	store,
-	created: function () {
-		console.log("HAWK Search field created")
-	},
 	methods: {
 		search: function () {
 			console.log('search');

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import HawkSearchVue from '../HawkSearchVue';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		apiUrl: 'http://dev.hawksearch.net/sites/sitefinityconnectortesting/',
 		results: [],
 		facets: []
 	},
@@ -16,15 +16,8 @@ export default new Vuex.Store({
 	},
 	actions: {
 		fetchResults({ commit, state }, searchParams) {
-			Vue.http.get(state.apiUrl, {
-				params: {
-					keyword: searchParams.keyword,
-					output: 'json'
-				}
-			}).then(response => {
-				if (response.status == '200' && response.data) {
-					commit('updateResults', response.data.Results);
-				}
+			HawkSearchVue.fetchResults(searchParams, (results) => {
+				commit('updateResults', results);
 			});
 		}
 	}
