@@ -2,7 +2,7 @@
   "name": "vue-hawksearch",
   "version": "1.0.0",
   "description": "Vue.js SDK for HAWK Search",
-  "main": "index.js",
+  "module": "dist/vue-hawksearch.js",
   "scripts": {
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production"
@@ -19,7 +19,10 @@
   },
   "homepage": "https://github.com/GabrielGeorgiev/vue-hawksearch#readme",
   "dependencies": {
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.1",
     "vue-resource": "^1.5.1",
@@ -36,6 +39,7 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/register": "^7.5.5",
     "babel-loader": "^8.0.6",
+    "core-js": "^2.6.11",
     "css-loader": "^3.2.0",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"

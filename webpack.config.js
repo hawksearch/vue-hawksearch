@@ -28,7 +28,10 @@ module.exports = {
                         plugins: [
                             '@babel/plugin-proposal-object-rest-spread',
                             '@babel/plugin-syntax-dynamic-import',
-                            '@babel/plugin-proposal-class-properties'
+                            '@babel/plugin-proposal-class-properties',
+                            'babel-plugin-transform-export-extensions',
+                            '@babel/plugin-proposal-export-default-from',
+                            'babel-plugin-transform-es2015-modules-commonjs'
                         ]
                     }
                 }
