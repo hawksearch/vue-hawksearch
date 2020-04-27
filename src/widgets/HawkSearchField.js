@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import HawkSearchVue from "../HawkSearchVue";
-import store from '../store';
+import store from 'src/store';
+import SearchBox from 'src/components/search-box/SearchBox';
 
 HawkSearchVue.HawkSearchField = Vue.extend({
 	data: function () {
 		return {
-			keyword: null
+
 		}
 	},
 	store,
+	components: {
+		SearchBox
+    },
 	methods: {
-		search: function () {
-			console.log('search');
-			this.$store.dispatch('fetchResults', { keyword: this.keyword });
-		}
+
 	}
 });

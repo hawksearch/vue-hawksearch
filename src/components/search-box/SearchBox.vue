@@ -1,0 +1,38 @@
+<template lang="html">
+    <div className="hawk__searchBox">
+        <div className="hawk__searchBox__searchInput">
+            <input type="text" v-model="keyword" @keydown="onInput" />
+        </div>
+    </div>
+</template>
+
+<script lang="js">
+
+    export default {
+        name: 'search-box',
+        props: [],
+        mounted() {
+
+        },
+        data() {
+            return {
+                keyword: null
+            }
+        },
+        methods: {
+            onInput: function (e) {
+                if (e.key == 'Enter') {
+                    this.$root.$store.dispatch('fetchResults', { keyword: this.keyword });
+                }
+            }
+        },
+        computed: {
+
+        }
+    }
+
+</script>
+
+<style scoped lang="scss">
+
+</style>

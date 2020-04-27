@@ -1,5 +1,6 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     entry: {
@@ -11,7 +12,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.min.js'
+            'vue$': 'vue/dist/vue.min.js',
+            src: path.resolve(__dirname, 'src')
         },
         extensions: ['*', '.js', '.vue', '.json']
     },
@@ -39,10 +41,21 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    { loader: 'css-loader' },
+                    { loader: 'sass-loader' }
+                ]
             }
         ]
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        new MiniCssExtractPlugin({
+            filename: 'vue-hawksearch.css',
+        })
     ]
 };

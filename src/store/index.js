@@ -6,18 +6,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		results: [],
-		facets: []
+		searchOutput: null
 	},
 	mutations: {
-		updateResults(state, results) {
-			state.results = results;
+		updateResults(state, searchOutput) {
+			state.searchOutput = searchOutput;
 		}
 	},
 	actions: {
 		fetchResults({ commit, state }, searchParams) {
-			HawkSearchVue.fetchResults(searchParams, (results) => {
-				commit('updateResults', results);
+			HawkSearchVue.fetchResults(searchParams, (searchOutput) => {
+				commit('updateResults', searchOutput);
 			});
 		}
 	}
