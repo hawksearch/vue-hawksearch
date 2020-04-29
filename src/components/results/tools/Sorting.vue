@@ -25,8 +25,8 @@
             }
         },
         methods: {
-            onChange: function () {
-                console.log("Change sorting");
+            onChange: function (e) {
+                this.$root.$store.dispatch('applySort', e.target.value);
             }
         },
         computed: {

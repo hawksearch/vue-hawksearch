@@ -4,7 +4,7 @@
             <div class="hawk-facet-rail__facet">
                 <div class="hawk-facet-rail__facet-heading" @click="toggleCollapse">
                     <h4>{{ facetData.Name }}</h4>
-                    <div v-if="facetData.Tooltip" class="custom-tooltip">
+                    <!--<div v-if="facetData.Tooltip" class="custom-tooltip">
                         <questionmark-svg class="hawk-questionmark" />
                         <div class="right">
                             <div>
@@ -12,7 +12,7 @@
                             </div>
                             <i />
                         </div>
-                    </div>
+                    </div>-->
                     <template v-if="isCollapsed">
                         <plus-svg />
                         <span class="visually-hidden">Expand facet category</span>

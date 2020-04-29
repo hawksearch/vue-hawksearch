@@ -41,7 +41,7 @@ class HawkSearchVue {
         var urlParams = getUrlParams();
 
         if (urlParams.keyword) {
-            VueStore.dispatch('fetchResults', { keyword: urlParams.keyword });
+            VueStore.dispatch('fetchResults', { Keyword: urlParams.keyword });
         }
     }
 
@@ -55,11 +55,13 @@ class HawkSearchVue {
             callback = function () { };
         }
 
-        Vue.http.post(this.config.apiUrl, {
-            Keyword: searchParams.keyword,
-            FacetSelections: searchParams,
-            ClientGuid: this.config.clientGuid
-        }).then(response => {
+        if (!searchParams) {
+            searchParams = {};
+        }
+
+        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid });
+
+        Vue.http.post(this.config.apiUrl, params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
@@ -78,15 +80,15 @@ class HawkSearchVue {
 
         var extendedSearchParams = Object.assign({}, searchOutput);
 
-        var extendParam = function (param) {
-            if (param && param.Field && pendingSearch.hasOwnProperty(param.Field)) {
+        var extendParam = function (param, paramPool) {
+            if (param && param.Field && paramPool.hasOwnProperty(param.Field)) {
                 if (param.Values.length) {
                     param.Values.map(value => {
-                        value.Selected = Boolean(pendingSearch[param.Field].find(param => {
+                        value.Selected = Boolean(paramPool[param.Field].find(param => {
                             return param == value.Value
                         }));
 
-                        value.Negated = Boolean(pendingSearch[param.Field].find(param => {
+                        value.Negated = Boolean(paramPool[param.Field].find(param => {
                             return param == ('-' + value.Value)
                         }));
 
@@ -103,38 +105,38 @@ class HawkSearchVue {
         }
 
         extendedSearchParams.Facets.map(facet => {
-            return extendParam(facet);
+            return extendParam(facet, pendingSearch.FacetSelections);
         });
 
         callback(extendedSearchParams);
     }
 
-    static applyFacets(facet, pendingSearch, callback) {
+    static applyFacets(facet, pendingSearchFacets, callback) {
         if (!callback) {
             callback = function () { };
         }
 
-        if (!facet || !pendingSearch) {
+        if (!facet || !pendingSearchFacets) {
             callback({})
             return false;
         }
 
         var field = facet.Field;
-        var searchParams = Object.assign({}, pendingSearch);
+        var searchParamFacets = Object.assign({}, pendingSearchFacets);
 
         // Create or clear the facet values
-        searchParams[field] = [];
+        searchParamFacets[field] = [];
 
         facet.Values.forEach(value => {
             if (value.Negated) {
-                searchParams[field].push('-' + value.Value);
+                searchParamFacets[field].push('-' + value.Value);
             }
             else if (value.Selected) {
-                searchParams[field].push(value.Value);
+                searchParamFacets[field].push(value.Value);
             }
         });
 
-        callback(searchParams);
+        callback(searchParamFacets);
     }
 }
 

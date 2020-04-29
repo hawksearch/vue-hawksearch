@@ -4,12 +4,8 @@
             <left-chevron-svg icon-class="hawk-pagination__left" />
             <span class="visually-hidden">Previous page</span>
         </button>
-        <input type="number"
-               :value="getInputValue()"
-               @click="onChange"
-               @keydown="onKeyDown"
-               :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" />
-        <span class="hawk-pagination__total-text"> of {{ totalPages }}</span>
+        <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" />
+        <span class="hawk-pagination__total-text"><span class="break"></span> of {{ totalPages }}</span>
         <button class="hawk-pagination__item" @click="goToNextPage">
             <right-chevron-svg icon-class="hawk-pagination__right" />
             <span class="visually-hidden">Next page</span>
@@ -39,19 +35,22 @@
         },
         methods: {
             goToPreviousPage: function () {
-                console.log('Previous page');
+                if (this.page > 1) {
+                    this.goToPage(parseInt(this.page, 10) - 1);
+                }
             },
             goToNextPage: function () {
-                console.log('Next page');
+                if (this.page < this.totalPages) {
+                    this.goToPage(parseInt(this.page, 10) + 1);
+                }
             },
-            getInputValue: function () {
-                return 1;
+            onChange: function (e) {
+                this.goToPage(e.target.value);
             },
-            onChange: function () {
-                console.log('Change');
-            },
-            onKeyDown: function () {
-                console.log('Key down');
+            goToPage: function (page) {
+                if (page >= 1 && page <= this.totalPages) {
+                    this.$root.$store.dispatch('applyPageNumber', page);
+                }
             }
         },
         computed: {
@@ -74,4 +73,8 @@
 </script>
 
 <style scoped lang="scss">
+    .break {
+        width: 6px;
+        display: inline-block;
+    }
 </style>

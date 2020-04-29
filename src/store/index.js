@@ -7,7 +7,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         searchOutput: null,
-        pendingSearch: {},
+        pendingSearch: {
+            Keyword: "",
+            FacetSelections: {}
+        },
         extendedSearchParams: {}
     },
     mutations: {
@@ -35,9 +38,18 @@ export default new Vuex.Store({
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {
-            HawkSearchVue.applyFacets(facetData, state.pendingSearch, (searchParams) => {
-                dispatch('fetchResults', searchParams);
+            HawkSearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+                dispatch('fetchResults', { FacetSelections: facetSelections });
             });
+        },
+        applyPageNumber({ dispatch, commit, state }, value) {
+            dispatch('fetchResults', { PageNo: value });
+        },
+        applyPageSize({ dispatch, commit, state }, value) {
+            dispatch('fetchResults', { MaxPerPage: value });
+        },
+        applySort({ dispatch, commit, state }, value) {
+            dispatch('fetchResults', { SortBy: value });
         }
     }
 });
