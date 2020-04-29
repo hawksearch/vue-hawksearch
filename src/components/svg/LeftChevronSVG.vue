@@ -7,7 +7,7 @@
 <script lang="js">
 
     export default {
-        name: 'right-chevron-svg',
+        name: 'left-chevron-svg',
         props: ['iconClass'],
         mounted() {
 
@@ -30,6 +30,4 @@
 
 <style scoped lang="scss">
 
-    .right-chevron-svg {
-    }
 </style>

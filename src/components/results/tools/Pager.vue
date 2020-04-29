@@ -9,7 +9,7 @@
                @click="onChange"
                @keydown="onKeyDown"
                :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" />
-        <span class="hawk-pagination__total-text">&nbsp; of {{ totalPages }}</span>
+        <span class="hawk-pagination__total-text"> of {{ totalPages }}</span>
         <button class="hawk-pagination__item" @click="goToNextPage">
             <right-chevron-svg icon-class="hawk-pagination__right" />
             <span class="visually-hidden">Next page</span>
@@ -19,15 +19,15 @@
 
 <script lang="js">
     import { mapState } from 'vuex';
-    import LeftChevronSVG from 'src/components/svg/LeftChevronSVG'
-    import RightChevronSVG from 'src/components/svg/RightChevronSVG'
+    import LeftChevronSvg from 'src/components/svg/LeftChevronSVG'
+    import RightChevronSvg from 'src/components/svg/RightChevronSVG'
 
     export default {
         name: 'pager',
         props: [],
         components: {
-            LeftChevronSVG,
-            RightChevronSVG
+            LeftChevronSvg,
+            RightChevronSvg
         },
         mounted() {
 

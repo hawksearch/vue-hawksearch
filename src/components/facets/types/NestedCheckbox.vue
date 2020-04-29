@@ -1,37 +1,43 @@
 <template lang="html">
-
-  <section class="nested-checkbox">
-    <h1>nested-checkbox Component</h1>
-  </section>
-
+    <div class="hawk-facet-rail__facet-values">
+        <div class="hawk-facet-rail__facet-values-checkbox">
+            <ul class="hawk-facet-rail__facet-list">
+                <nested-item v-for="item in items" :key="item.Value" :item-data="item" ></nested-item>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script lang="js">
+    import NestedItem from './NestedItem';
 
-  export default  {
-    name: 'nested-checkbox',
-    props: [],
-    mounted () {
+    export default {
+        name: 'nested-checkbox',
+        props: ['facetData'],
+        components: {
+            NestedItem
+        },
+        mounted() {
 
-    },
-    data () {
-      return {
+        },
+        data() {
+            return {
 
-      }
-    },
-    methods: {
+            }
+        },
+        methods: {
 
-    },
-    computed: {
-
+        },
+        computed: {
+            items: function () {
+                return this.facetData.Values;
+            }
+        }
     }
-}
 
 
 </script>
 
 <style scoped lang="scss">
-  .nested-checkbox {
 
-  }
 </style>
