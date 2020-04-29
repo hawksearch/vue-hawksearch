@@ -22,7 +22,7 @@
         methods: {
             onInput: function (e) {
                 if (e.key == 'Enter') {
-                    this.$root.$store.dispatch('fetchResults', { keyword: this.keyword });
+                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword });
                 }
             }
         },

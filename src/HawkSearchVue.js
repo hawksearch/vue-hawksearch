@@ -39,10 +39,13 @@ class HawkSearchVue {
         }
 
         var urlParams = getUrlParams();
+        var initialSearchParams = {};
 
         if (urlParams.keyword) {
-            VueStore.dispatch('fetchResults', { Keyword: urlParams.keyword });
+            initialSearchParams = { Keyword: urlParams.keyword };
         }
+
+        VueStore.dispatch('fetchResults', initialSearchParams);
     }
 
     static fetchResults(searchParams, callback) {
