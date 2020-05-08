@@ -1,11 +1,12 @@
 import Vue from 'vue';
-import HawkSearchVue from "../HawkSearchVue";
 import store from '../store';
-import FacetList from 'src/components/facets/FacetList';
+import FacetList from '../components/facets/FacetList.vue';
 
-HawkSearchVue.HawkSearchFacets = Vue.extend({
+const HawkSearchFacets = Vue.extend({
 	store,
     components: {
         FacetList
     }
 });
+
+export default HawkSearchFacets;

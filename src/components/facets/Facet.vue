@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div>
         <template v-if="componentName">
             <div class="hawk-facet-rail__facet">
@@ -39,9 +39,9 @@
 </template>
 
 <script lang="js">
-    import QuestionmarkSvg from 'src/components/svg/QuestionmarkSvg';
-    import PlusSvg from 'src/components/svg/PlusSvg';
-    import MinusSvg from 'src/components/svg/MinusSvg';
+    import QuestionmarkSvg from '../svg/QuestionmarkSvg';
+    import PlusSvg from '../svg/PlusSvg';
+    import MinusSvg from '../svg/MinusSvg';
 
     // facet types
     import Checkbox from './types/Checkbox';

@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-tool-row">
         <div class="hawk-tool-row__item">
             <sorting />

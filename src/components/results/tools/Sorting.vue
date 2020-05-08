@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-sorting">
         <span class="hawk-sorting__label">Sort By</span>
 

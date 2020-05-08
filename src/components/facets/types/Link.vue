@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 
   <section class="link">
     <h1>link Component</h1>

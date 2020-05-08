@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-items-per-page">
         <select value="pagination.MaxPerPage" @change="onChange">
             <option v-for="paginationItem in pagination.Items" :key="paginationItem.PageSize" :value="paginationItem.PageSize">

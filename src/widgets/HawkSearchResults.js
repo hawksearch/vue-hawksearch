@@ -1,10 +1,9 @@
 import Vue from 'vue';
-import HawkSearchVue from 'src/HawkSearchVue';
-import Results from 'src/components/results/Results';
-import store from 'src/store';
+import Results from '../components/results/Results.vue';
+import store from '../store';
 import { mapState } from 'vuex';
 
-HawkSearchVue.HawkSearchResults = Vue.extend({
+const HawkSearchResults = Vue.extend({
 	data: function () {
 		return {};
 	},
@@ -18,3 +17,5 @@ HawkSearchVue.HawkSearchResults = Vue.extend({
 		])
 	}
 });
+
+export default HawkSearchResults;

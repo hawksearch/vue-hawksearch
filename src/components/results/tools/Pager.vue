@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-pagination__controls">
         <button class="hawk-pagination__item" @click="goToPreviousPage">
             <left-chevron-svg icon-class="hawk-pagination__left" />
@@ -15,8 +15,8 @@
 
 <script lang="js">
     import { mapState } from 'vuex';
-    import LeftChevronSvg from 'src/components/svg/LeftChevronSVG'
-    import RightChevronSvg from 'src/components/svg/RightChevronSVG'
+    import LeftChevronSvg from '../../svg/LeftChevronSvg'
+    import RightChevronSvg from '../../svg/RightChevronSvg'
 
     export default {
         name: 'pager',

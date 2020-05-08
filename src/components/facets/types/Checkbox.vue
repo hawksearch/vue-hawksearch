@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-checkbox">
             <ul class="hawk-facet-rail__facet-list">
@@ -36,9 +36,9 @@
 </template>
 
 <script lang="js">
-    import CheckmarkSvg from 'src/components/svg/CheckmarkSvg';
-    import PlusCircleSvg from 'src/components/svg/PlusCircleSvg';
-    import DashCircleSvg from 'src/components/svg/DashCircleSvg';
+    import CheckmarkSvg from '../../svg/CheckmarkSvg';
+    import PlusCircleSvg from '../../svg/PlusCircleSvg';
+    import DashCircleSvg from '../../svg/DashCircleSvg';
 
     export default {
         name: 'checkbox',

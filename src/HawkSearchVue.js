@@ -14,6 +14,9 @@ class HawkSearchVue {
         }
 
         this.config = Object.assign({}, this.config, config);
+        VueStore.commit('updateConfig', this.config);
+
+        this.addTemplateOverride();
     }
 
     static initialSearch() {
@@ -140,6 +143,31 @@ class HawkSearchVue {
         });
 
         callback(searchParamFacets);
+    }
+
+    // Overrides the template prioritization
+    // If the 'templateOverride' configuration is available, it overrides all other templates
+    static addTemplateOverride() {
+        if (!Vue) {
+            return false;
+        }
+
+        const mount = Vue.prototype.$mount;
+
+        Vue.prototype.$mount = function (el, hydrating) {
+            const options = this.$options;
+
+            if (options.templateOverride &&
+                typeof options.templateOverride === 'string' &&
+                options.templateOverride.charAt(0) === '#' &&
+                document.querySelector(options.templateOverride)) {
+
+                let renderFunctions = Vue.compile(document.querySelector(options.templateOverride).innerHTML);
+                Object.assign(options, renderFunctions);
+            }
+
+            return mount.call(this, el, hydrating);
+        }
     }
 }
 

@@ -1,6 +1,6 @@
-const path = require('path');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import * as path from 'path';
+import * as VueLoaderPlugin from 'vue-loader/lib/plugin';
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 module.exports = {
     entry: {
@@ -24,18 +24,30 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: [
-                            '@babel/plugin-proposal-object-rest-spread',
-                            '@babel/plugin-syntax-dynamic-import',
-                            '@babel/plugin-proposal-class-properties',
-                            'babel-plugin-transform-export-extensions',
-                            '@babel/plugin-proposal-export-default-from',
-                            'babel-plugin-transform-es2015-modules-commonjs'
-                        ]
-                    }
+                    loader: 'babel-loader'
+                    //options: {
+                    //    presets: [
+                    //        [
+                    //            '@babel/preset-env',
+                    //            {
+                    //                "targets": {
+                    //                    "esmodules": true,
+                    //                    "browsers": ['last 2 versions']
+                    //                },
+                    //                "modules": false
+                    //            }
+                    //        ]
+                    //    ],
+                    //    plugins: [
+                    //        //'@babel/plugin-proposal-object-rest-spread',
+                    //        //'@babel/plugin-syntax-dynamic-import',
+                    //        //'@babel/plugin-proposal-class-properties',
+                    //        //'babel-plugin-transform-export-extensions',
+                    //        //'@babel/plugin-proposal-export-default-from',
+                    //        //'babel-plugin-transform-es2015-modules-commonjs',
+                    //        ['@babel/plugin-transform-runtime', { useESModules: true }]
+                    //    ]
+                    //}
                 }
             },
             {

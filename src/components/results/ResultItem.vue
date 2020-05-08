@@ -1,5 +1,7 @@
 <template>
     <div class="hawk-results__item">
+        <result-image :imagePath="getField('image')"></result-image>
+
         <div class="hawk-results__item-name">
             <span>{{ this.getField('itemname') }}</span>
         </div>
@@ -7,10 +9,15 @@
 </template>
 
 <script>
+    import ResultImage from './ResultImage';
+
     export default {
         name: "ResultItem",
         data: function () {
             return {}
+        },
+        components: {
+            ResultImage
         },
         props: {
             result: {

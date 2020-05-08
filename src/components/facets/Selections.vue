@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 
   <section class="selections">
     <h1>selections Component</h1>

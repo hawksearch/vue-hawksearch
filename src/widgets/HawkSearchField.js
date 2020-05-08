@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import HawkSearchVue from "../HawkSearchVue";
-import store from 'src/store';
-import SearchBox from 'src/components/search-box/SearchBox';
+import store from '../store';
+import SearchBox from '../components/search-box/SearchBox';
 
-HawkSearchVue.HawkSearchField = Vue.extend({
+const HawkSearchField = Vue.extend({
 	data: function () {
 		return {
 
@@ -17,3 +16,5 @@ HawkSearchVue.HawkSearchField = Vue.extend({
 
 	}
 });
+
+export default HawkSearchField;

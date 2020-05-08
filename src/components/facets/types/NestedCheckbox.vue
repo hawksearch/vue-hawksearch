@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-checkbox">
             <ul class="hawk-facet-rail__facet-list">

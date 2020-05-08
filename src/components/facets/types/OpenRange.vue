@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 
   <section class="open-range">
     <h1>open-range Component</h1>

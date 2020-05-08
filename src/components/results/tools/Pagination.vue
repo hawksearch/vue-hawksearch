@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-pagination">
         <pager />
         <items-per-page />

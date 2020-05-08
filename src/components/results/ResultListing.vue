@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="hawk-results__listing">
         <template v-for="result in results">
             <result-item :result="result"></result-item>

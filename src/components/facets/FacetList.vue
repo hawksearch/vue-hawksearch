@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div v-if="extendedSearchParams" class="hawk-facet-rail">
         <div class="hawk-facet-rail__heading">Narrow Results</div>
 

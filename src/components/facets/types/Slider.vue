@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 
   <section class="slider">
     <h1>slider Component</h1>

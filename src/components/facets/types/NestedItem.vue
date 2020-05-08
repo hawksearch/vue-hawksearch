@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <li class="hawk-facet-rail__facet-list-item hawkFacet-group">
         <div class="hawkFacet-group__inline">
             <button @click="onValueSelected" class="hawk-facet-rail__facet-btn" >
@@ -33,9 +33,9 @@
 </template>
 
 <script lang="js">
-    import CheckmarkSvg from 'src/components/svg/CheckmarkSvg';
-    import PlusCircleSvg from 'src/components/svg/PlusCircleSvg';
-    import DashCircleSvg from 'src/components/svg/DashCircleSvg';
+    import CheckmarkSvg from '../../svg/CheckmarkSvg';
+    import PlusCircleSvg from '../../svg/PlusCircleSvg';
+    import DashCircleSvg from '../../svg/DashCircleSvg';
 
     export default {
         name: 'nested-item',

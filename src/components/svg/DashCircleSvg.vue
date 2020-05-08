@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <svg viewBox="0 0 32 32"
          :class="'icon ' + iconClass"
          focusable="false"

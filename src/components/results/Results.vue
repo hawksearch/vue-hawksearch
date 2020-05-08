@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div v-if="searchOutput" class="hawk-results">
         <search-results-label />
         <!--<selections />-->
@@ -17,7 +17,7 @@
 
 <script lang="js">
     import { mapState } from 'vuex';
-    import SearchResultsLabel from 'src/components/facets/SearchResultsLabel'
+    import SearchResultsLabel from '../facets/SearchResultsLabel'
     //import Selections from 'src/components/facets/Selections'
     import ToolRow from './ToolRow'
     import ResultListing from './ResultListing'

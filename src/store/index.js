@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import HawkSearchVue from '../HawkSearchVue';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        config: {},
         searchOutput: null,
         pendingSearch: {
             Keyword: "",
@@ -14,6 +14,9 @@ export default new Vuex.Store({
         extendedSearchParams: {}
     },
     mutations: {
+        updateConfig(state, value) {
+            state.config = Object.assign({}, state.config, value);
+        },
         updateResults(state, value) {
             state.searchOutput = value;
         },

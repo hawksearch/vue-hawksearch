@@ -1,6 +1,6 @@
 <template>
-    <div className="hawk-facet-rail__results-label">
-        <h3>Search Results {{ keyword ? 'for ' + keyword : null }}</h3>
+    <div className="hawk-results__item-image">
+        <img :src="imageUrl" />
     </div>
 </template>
 
@@ -8,8 +8,12 @@
     import { mapState } from 'vuex';
 
     export default {
-        name: 'search-results-label',
-        props: [],
+        name: 'result-image',
+        props: {
+            imagePath: {
+                default: null
+            }
+        },
         mounted() {
 
         },
@@ -23,16 +27,15 @@
         },
         computed: {
             ...mapState([
-                'searchOutput'
+                'config'
             ]),
-            keyword: function () {
-                return this.searchOutput.Keyword;
-            }
+            imageUrl: function () {
+                return this.imagePath;
+            } 
         }
     }
 
 </script>
 
 <style scoped lang="scss">
-
 </style>

@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
 
   <section class="swatch">
     <h1>swatch Component</h1>
