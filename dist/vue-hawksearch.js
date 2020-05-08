@@ -429,11 +429,11 @@ __vue_render__._withStripped = true;
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-4682f0aa_0", { source: "\n\n/*# sourceMappingURL=SearchBox.vue.map */", map: {"version":3,"sources":["SearchBox.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"SearchBox.vue"}, media: undefined });
+    inject("data-v-45a37966_0", { source: "\n\n/*# sourceMappingURL=SearchBox.vue.map */", map: {"version":3,"sources":["SearchBox.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"SearchBox.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__ = "data-v-4682f0aa";
+  const __vue_scope_id__ = "data-v-45a37966";
   /* module identifier */
   const __vue_module_identifier__ = undefined;
   /* functional template */
@@ -1288,15 +1288,17 @@ var __vue_staticRenderFns__$a = [];
 __vue_render__$a._withStripped = true;
 
   /* style */
-  const __vue_inject_styles__$a = undefined;
+  const __vue_inject_styles__$a = function (inject) {
+    if (!inject) return
+    inject("data-v-d5bff80a_0", { source: ".hawk-results__item-name[data-v-d5bff80a] {\n  background: red;\n}\n\n/*# sourceMappingURL=ResultItem.vue.map */", map: {"version":3,"sources":["C:\\projects1\\HAWK\\vue-hawksearch\\src\\components\\results\\ResultItem.vue","ResultItem.vue"],"names":[],"mappings":"AAyCA;EACA,eAAA;ACxCA;;AAEA,yCAAyC","file":"ResultItem.vue","sourcesContent":["<template>\r\n    <div class=\"hawk-results__item\">\r\n        <result-image :imagePath=\"getField('image')\"></result-image>\r\n\r\n        <div class=\"hawk-results__item-name\">\r\n            <span>{{ this.getField('itemname') }}</span>\r\n        </div>\r\n    </div>\r\n</template>\r\n\r\n<script>\r\n    import ResultImage from './ResultImage';\r\n\r\n    export default {\r\n        name: \"ResultItem\",\r\n        data: function () {\r\n            return {}\r\n        },\r\n        components: {\r\n            ResultImage\r\n        },\r\n        props: {\r\n            result: {\r\n                default: null\r\n            }\r\n        },\r\n        methods: {\r\n            getField: function (fieldName) {\r\n                if (this.result &&\r\n                    this.result.Document &&\r\n                    this.result.Document[fieldName] &&\r\n                    this.result.Document[fieldName].length) {\r\n\r\n                    return this.result.Document[fieldName][0];\r\n                }\r\n            }\r\n        }\r\n    };\r\n</script>\r\n\r\n<style scoped lang=\"scss\">\r\n    .hawk-results__item-name {\r\n        background: red;\r\n    }\r\n</style>",".hawk-results__item-name {\n  background: red;\n}\n\n/*# sourceMappingURL=ResultItem.vue.map */"]}, media: undefined });
+
+  };
   /* scoped */
-  const __vue_scope_id__$a = undefined;
+  const __vue_scope_id__$a = "data-v-d5bff80a";
   /* module identifier */
   const __vue_module_identifier__$a = undefined;
   /* functional template */
   const __vue_is_functional_template__$a = false;
-  /* style inject */
-  
   /* style inject SSR */
   
   /* style inject shadow dom */
@@ -1311,7 +1313,7 @@ __vue_render__$a._withStripped = true;
     __vue_is_functional_template__$a,
     __vue_module_identifier__$a,
     false,
-    undefined,
+    createInjector,
     undefined,
     undefined
   );

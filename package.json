@@ -4,9 +4,7 @@
   "description": "Vue.js SDK for HAWK Search",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
-    "dev": "webpack --watch --mode development",
-    "build": "cross-env BUILD_ENV=min webpack --mode production",
-    "build:esm": "cross-env BUILD_ENV=esm rollup -c"
+    "build": "cross-env BUILD_ENV=esm rollup -c"
   },
   "repository": {
     "type": "git",
@@ -20,47 +18,21 @@
   },
   "homepage": "https://github.com/GabrielGeorgiev/vue-hawksearch#readme",
   "dependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.9.6",
-    "@babel/preset-env": "^7.9.5",
-    "@vue/compiler-sfc": "^3.0.0-beta.9",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-plugin-transform-export-extensions": "^6.22.0",
-    "lodash": "^4.17.15",
-    "rollup-plugin-alias": "^2.2.0",
     "vue": "^2.6.11",
-    "vue-loader": "^15.9.1",
     "vue-resource": "^1.5.1",
-    "vue-template-compiler": "^2.6.11",
     "vuex": "^3.1.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/node": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/polyfill": "^7.4.4",
-    "@babel/register": "^7.5.5",
-    "@rollup/plugin-buble": "^0.21.3",
-    "@rollup/plugin-commonjs": "^11.1.0",
-    "@rollup/plugin-json": "^4.0.3",
+    "@babel/runtime": "^7.9.6",
     "@rollup/plugin-node-resolve": "^7.1.3",
-    "@rollup/plugin-replace": "^2.3.2",
-    "babel-loader": "^8.0.6",
+    "@vue/compiler-sfc": "^3.0.0-beta.9",
     "core-js": "^2.6.11",
-    "css-loader": "^3.5.2",
     "cross-env": "^5.2.1",
-    "mini-css-extract-plugin": "^0.9.0",
     "rollup": "^2.7.2",
-    "rollup-plugin-filesize": "^7.0.0",
-    "rollup-plugin-terser": "^5.3.0",
     "rollup-plugin-vue": "^5.1.6",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "vue-template-compiler": "^2.6.11"
   },
   "peerDependencies": {
     "vue": "^2.6.11",

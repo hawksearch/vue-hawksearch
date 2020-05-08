@@ -1,4 +1,4 @@
-import VueStore from 'src/store'
+import { default as VueStore } from './store';
 
 class HawkSearchVue {
     config = {
