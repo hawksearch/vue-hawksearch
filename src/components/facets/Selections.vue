@@ -31,7 +31,5 @@
 </script>
 
 <style scoped lang="scss">
-  .selections {
 
-  }
 </style>

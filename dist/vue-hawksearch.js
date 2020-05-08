@@ -1290,11 +1290,11 @@ __vue_render__$a._withStripped = true;
   /* style */
   const __vue_inject_styles__$a = function (inject) {
     if (!inject) return
-    inject("data-v-d5bff80a_0", { source: ".hawk-results__item-name[data-v-d5bff80a] {\n  background: red;\n}\n\n/*# sourceMappingURL=ResultItem.vue.map */", map: {"version":3,"sources":["C:\\projects1\\HAWK\\vue-hawksearch\\src\\components\\results\\ResultItem.vue","ResultItem.vue"],"names":[],"mappings":"AAyCA;EACA,eAAA;ACxCA;;AAEA,yCAAyC","file":"ResultItem.vue","sourcesContent":["<template>\r\n    <div class=\"hawk-results__item\">\r\n        <result-image :imagePath=\"getField('image')\"></result-image>\r\n\r\n        <div class=\"hawk-results__item-name\">\r\n            <span>{{ this.getField('itemname') }}</span>\r\n        </div>\r\n    </div>\r\n</template>\r\n\r\n<script>\r\n    import ResultImage from './ResultImage';\r\n\r\n    export default {\r\n        name: \"ResultItem\",\r\n        data: function () {\r\n            return {}\r\n        },\r\n        components: {\r\n            ResultImage\r\n        },\r\n        props: {\r\n            result: {\r\n                default: null\r\n            }\r\n        },\r\n        methods: {\r\n            getField: function (fieldName) {\r\n                if (this.result &&\r\n                    this.result.Document &&\r\n                    this.result.Document[fieldName] &&\r\n                    this.result.Document[fieldName].length) {\r\n\r\n                    return this.result.Document[fieldName][0];\r\n                }\r\n            }\r\n        }\r\n    };\r\n</script>\r\n\r\n<style scoped lang=\"scss\">\r\n    .hawk-results__item-name {\r\n        background: red;\r\n    }\r\n</style>",".hawk-results__item-name {\n  background: red;\n}\n\n/*# sourceMappingURL=ResultItem.vue.map */"]}, media: undefined });
+    inject("data-v-4170b38b_0", { source: "\n\n/*# sourceMappingURL=ResultItem.vue.map */", map: {"version":3,"sources":["ResultItem.vue"],"names":[],"mappings":";;AAEA,yCAAyC","file":"ResultItem.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$a = "data-v-d5bff80a";
+  const __vue_scope_id__$a = "data-v-4170b38b";
   /* module identifier */
   const __vue_module_identifier__$a = undefined;
   /* functional template */
@@ -2726,6 +2726,530 @@ const HawkSearchFacets = Vue$1.extend({
     }
 });
 
+var script$o = {
+    name: 'selections',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$o = script$o;
+
+/* template */
+var __vue_render__$o = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$o = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "selections" }, [
+      _c("h1", [_vm._v("selections Component")])
+    ])
+  }
+];
+__vue_render__$o._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$o = function (inject) {
+    if (!inject) return
+    inject("data-v-7e28d220_0", { source: "\n\n/*# sourceMappingURL=Selections.vue.map */", map: {"version":3,"sources":["Selections.vue"],"names":[],"mappings":";;AAEA,yCAAyC","file":"Selections.vue"}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$o = "data-v-7e28d220";
+  /* module identifier */
+  const __vue_module_identifier__$o = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$o = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$o = normalizeComponent(
+    { render: __vue_render__$o, staticRenderFns: __vue_staticRenderFns__$o },
+    __vue_inject_styles__$o,
+    __vue_script__$o,
+    __vue_scope_id__$o,
+    __vue_is_functional_template__$o,
+    __vue_module_identifier__$o,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$p = {
+    name: 'link',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$p = script$p;
+
+/* template */
+var __vue_render__$p = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$p = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "link" }, [
+      _c("h1", [_vm._v("link Component")])
+    ])
+  }
+];
+__vue_render__$p._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$p = function (inject) {
+    if (!inject) return
+    inject("data-v-75818897_0", { source: "\n\n/*# sourceMappingURL=Link.vue.map */", map: {"version":3,"sources":["Link.vue"],"names":[],"mappings":";;AAEA,mCAAmC","file":"Link.vue","sourcesContent":["\n\n/*# sourceMappingURL=Link.vue.map */"]}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$p = "data-v-75818897";
+  /* module identifier */
+  const __vue_module_identifier__$p = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$p = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$p = normalizeComponent(
+    { render: __vue_render__$p, staticRenderFns: __vue_staticRenderFns__$p },
+    __vue_inject_styles__$p,
+    __vue_script__$p,
+    __vue_scope_id__$p,
+    __vue_is_functional_template__$p,
+    __vue_module_identifier__$p,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$q = {
+    name: 'open-range',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$q = script$q;
+
+/* template */
+var __vue_render__$q = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$q = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "open-range" }, [
+      _c("h1", [_vm._v("open-range Component")])
+    ])
+  }
+];
+__vue_render__$q._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$q = function (inject) {
+    if (!inject) return
+    inject("data-v-39ca7892_0", { source: "\n\n/*# sourceMappingURL=OpenRange.vue.map */", map: {"version":3,"sources":["OpenRange.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"OpenRange.vue","sourcesContent":["\n\n/*# sourceMappingURL=OpenRange.vue.map */"]}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$q = "data-v-39ca7892";
+  /* module identifier */
+  const __vue_module_identifier__$q = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$q = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$q = normalizeComponent(
+    { render: __vue_render__$q, staticRenderFns: __vue_staticRenderFns__$q },
+    __vue_inject_styles__$q,
+    __vue_script__$q,
+    __vue_scope_id__$q,
+    __vue_is_functional_template__$q,
+    __vue_module_identifier__$q,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$r = {
+    name: 'search',
+    props: [],
+    mounted() {
+
+    },
+    data() {
+        return {
+            value: null
+        }
+    },
+    methods: {
+        onKeyDown: function () {
+            console.log("Search facets enter");
+        }
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$r = script$r;
+
+/* template */
+var __vue_render__$r = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _c("div", [
+    _c("div", { staticClass: "hawk-facet-rail__facet-values" }, [
+      _c("div", { staticClass: "hawk-facet-rail__facet-values__search" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.value,
+              expression: "value"
+            }
+          ],
+          domProps: { value: _vm.value },
+          on: {
+            keydown: _vm.onKeyDown,
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.value = $event.target.value;
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+     _vm._e()
+  ])
+};
+var __vue_staticRenderFns__$r = [];
+__vue_render__$r._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$r = function (inject) {
+    if (!inject) return
+    inject("data-v-efae03d2_0", { source: "\n\n/*# sourceMappingURL=Search.vue.map */", map: {"version":3,"sources":["Search.vue"],"names":[],"mappings":";;AAEA,qCAAqC","file":"Search.vue"}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$r = "data-v-efae03d2";
+  /* module identifier */
+  const __vue_module_identifier__$r = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$r = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$r = normalizeComponent(
+    { render: __vue_render__$r, staticRenderFns: __vue_staticRenderFns__$r },
+    __vue_inject_styles__$r,
+    __vue_script__$r,
+    __vue_scope_id__$r,
+    __vue_is_functional_template__$r,
+    __vue_module_identifier__$r,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$s = {
+    name: 'slider',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$s = script$s;
+
+/* template */
+var __vue_render__$s = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$s = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "slider" }, [
+      _c("h1", [_vm._v("slider Component")])
+    ])
+  }
+];
+__vue_render__$s._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$s = function (inject) {
+    if (!inject) return
+    inject("data-v-4385633d_0", { source: "\n\n/*# sourceMappingURL=Slider.vue.map */", map: {"version":3,"sources":["Slider.vue"],"names":[],"mappings":";;AAEA,qCAAqC","file":"Slider.vue"}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$s = "data-v-4385633d";
+  /* module identifier */
+  const __vue_module_identifier__$s = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$s = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$s = normalizeComponent(
+    { render: __vue_render__$s, staticRenderFns: __vue_staticRenderFns__$s },
+    __vue_inject_styles__$s,
+    __vue_script__$s,
+    __vue_scope_id__$s,
+    __vue_is_functional_template__$s,
+    __vue_module_identifier__$s,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$t = {
+    name: 'swatch',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$t = script$t;
+
+/* template */
+var __vue_render__$t = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$t = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "swatch" }, [
+      _c("h1", [_vm._v("swatch Component")])
+    ])
+  }
+];
+__vue_render__$t._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$t = function (inject) {
+    if (!inject) return
+    inject("data-v-53661306_0", { source: "\n\n/*# sourceMappingURL=Swatch.vue.map */", map: {"version":3,"sources":["Swatch.vue"],"names":[],"mappings":";;AAEA,qCAAqC","file":"Swatch.vue"}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$t = "data-v-53661306";
+  /* module identifier */
+  const __vue_module_identifier__$t = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$t = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$t = normalizeComponent(
+    { render: __vue_render__$t, staticRenderFns: __vue_staticRenderFns__$t },
+    __vue_inject_styles__$t,
+    __vue_script__$t,
+    __vue_scope_id__$t,
+    __vue_is_functional_template__$t,
+    __vue_module_identifier__$t,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
+var script$u = {
+    name: 'swatch-item',
+    props: [],
+    mounted () {
+
+    },
+    data () {
+      return {
+
+      }
+    },
+    methods: {
+
+    },
+    computed: {
+
+    }
+};
+
+/* script */
+const __vue_script__$u = script$u;
+
+/* template */
+var __vue_render__$u = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _vm._m(0)
+};
+var __vue_staticRenderFns__$u = [
+  function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("section", { staticClass: "swatch-item" }, [
+      _c("h1", [_vm._v("swatch-item Component")])
+    ])
+  }
+];
+__vue_render__$u._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$u = function (inject) {
+    if (!inject) return
+    inject("data-v-177e9a74_0", { source: "\n\n/*# sourceMappingURL=SwatchItem.vue.map */", map: {"version":3,"sources":["SwatchItem.vue"],"names":[],"mappings":";;AAEA,yCAAyC","file":"SwatchItem.vue"}, media: undefined });
+
+  };
+  /* scoped */
+  const __vue_scope_id__$u = "data-v-177e9a74";
+  /* module identifier */
+  const __vue_module_identifier__$u = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$u = false;
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$u = normalizeComponent(
+    { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
+    __vue_inject_styles__$u,
+    __vue_script__$u,
+    __vue_scope_id__$u,
+    __vue_is_functional_template__$u,
+    __vue_module_identifier__$u,
+    false,
+    createInjector,
+    undefined,
+    undefined
+  );
+
 window.Vue = Vue$1;
 
 Vue$1.config.devtools = true;
@@ -2733,5 +3257,5 @@ Vue$1.use(VueResource);
 window.HawkSearchVue = HawkSearchVue$1;
 
 export default HawkSearchVue$1;
-export { HawkSearchFacets, HawkSearchField, HawkSearchResults, store as HawkSearchStore, __vue_component__$a as ResultItem, __vue_component__$b as ResultListing, __vue_component__ as SearchBox };
+export { __vue_component__$j as Checkbox, __vue_component__$g as CheckmarkSvg, __vue_component__$i as DashCircleSvg, __vue_component__$m as Facet, __vue_component__$n as FacetList, HawkSearchFacets, HawkSearchField, HawkSearchResults, store as HawkSearchStore, __vue_component__$6 as ItemsPerPage, __vue_component__$3 as LeftChevronSvg, __vue_component__$p as Link, __vue_component__$f as MinusSvg, __vue_component__$l as NestedCheckbox, __vue_component__$k as NestedItem, __vue_component__$q as OpenRange, __vue_component__$5 as Pager, __vue_component__$7 as Pagination, __vue_component__$h as PlusCircleSvg, __vue_component__$e as PlusSvg, __vue_component__$d as QuestionmarkSvg, __vue_component__$9 as ResultImage, __vue_component__$a as ResultItem, __vue_component__$b as ResultListing, __vue_component__$c as Results, __vue_component__$4 as RightChevronSvg, __vue_component__$r as Search, __vue_component__ as SearchBox, __vue_component__$1 as SearchResultsLabel, __vue_component__$o as Selections, __vue_component__$s as Slider, __vue_component__$2 as Sorting, __vue_component__$t as Swatch, __vue_component__$u as SwatchItem, __vue_component__$8 as ToolRow };
 //# sourceMappingURL=vue-hawksearch.js.map

@@ -31,7 +31,5 @@
 </script>
 
 <style scoped lang="scss">
-  .swatch {
 
-  }
 </style>
