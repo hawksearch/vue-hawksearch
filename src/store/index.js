@@ -53,6 +53,25 @@ export default new Vuex.Store({
         },
         applySort({ dispatch, commit, state }, value) {
             dispatch('fetchResults', { SortBy: value });
+        },
+        applySearchWithin({ dispatch, commit, state }, value) {
+            dispatch('fetchResults', { SearchWithin: value });
+        },
+        clearFacet({ dispatch, commit, state }, facet, notReload) {
+            var pendingSearch = Object.assign({}, state.pendingSearch);
+
+            if (pendingSearch.hasOwnProperty(facet)) {
+                delete pendingSearch[facet];
+            }
+            else if (pendingSearch.FacetSelections && pendingSearch.FacetSelections.hasOwnProperty(facet)) {
+                delete pendingSearch.FacetSelections[facet];
+            }
+
+            commit('updatePendingSearch', pendingSearch);
+
+            if (!notReload) {
+                dispatch('fetchResults', {});
+            }
         }
     }
 });

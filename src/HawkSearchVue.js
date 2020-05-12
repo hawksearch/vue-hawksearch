@@ -5,7 +5,8 @@ class HawkSearchVue {
         clientGuid: '',
         apiUrl: '',
         dashboardUrl: '',
-        searchPageUrl: location.pathname
+        searchPageUrl: location.pathname,
+        indexName: ''
     }
 
     static configure(config) {
@@ -65,7 +66,7 @@ class HawkSearchVue {
             searchParams = {};
         }
 
-        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid });
+        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName });
 
         Vue.http.post(this.config.apiUrl, params).then(response => {
             if (response.status == '200' && response.data) {
@@ -127,20 +128,29 @@ class HawkSearchVue {
             return false;
         }
 
-        var field = facet.Field;
+        var field = facet.ParamName ? facet.ParamName : facet.Field;
         var searchParamFacets = Object.assign({}, pendingSearchFacets);
 
         // Create or clear the facet values
         searchParamFacets[field] = [];
 
-        facet.Values.forEach(value => {
-            if (value.Negated) {
-                searchParamFacets[field].push('-' + value.Value);
+        if (facet.FacetType == 'checkbox') {
+            facet.Values.forEach(value => {
+                if (value.Negated) {
+                    searchParamFacets[field].push('-' + value.Value);
+                }
+                else if (value.Selected) {
+                    searchParamFacets[field].push(value.Value);
+                }
+            });
+
+            if (searchParamFacets[field].length == 0) {
+                delete searchParamFacets[field];
             }
-            else if (value.Selected) {
-                searchParamFacets[field].push(value.Value);
-            }
-        });
+        }
+        else if (facet.FacetType == 'openRange') {
+            searchParamFacets[field].push(facet.Value);
+        }
 
         callback(searchParamFacets);
     }
@@ -168,6 +178,21 @@ class HawkSearchVue {
 
             return mount.call(this, el, hydrating);
         }
+    }
+
+    static isGlobal() {
+        if (this.config.searchPageUrl == location.pathname) {
+            return false
+        }
+        else {
+            return true;
+        }
+    }
+
+    static redirectSearch(keyword) {
+        var redirect = this.config.searchPageUrl + '?keyword=' + keyword;
+
+        location.assign(redirect);
     }
 }
 

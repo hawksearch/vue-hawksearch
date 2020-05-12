@@ -15,11 +15,9 @@
                     </div>-->
                     <template v-if="isCollapsed">
                         <plus-svg />
-                        <span class="visually-hidden">Expand facet category</span>
                     </template>
                     <template v-else>
                         <minus-svg />
-                        <span class="visually-hidden">Collapse facet category</span>
                     </template>
                 </div>
                 <div v-if="!isCollapsed" class="hawk-facet-rail__facet-body">
@@ -46,6 +44,8 @@
     // facet types
     import Checkbox from './types/Checkbox';
     import NestedCheckbox from './types/NestedCheckbox';
+    import Search from './types/Search';
+    import OpenRange from './types/OpenRange';
 
     export default {
         name: 'facet',
@@ -55,7 +55,9 @@
             PlusSvg,
             MinusSvg,
             Checkbox,
-            NestedCheckbox
+            NestedCheckbox,
+            Search,
+            OpenRange
         },
         mounted() {
 
@@ -101,16 +103,16 @@
                     //    break;
 
                     //case "recentsearches":
-                        //return "";
-                        //break;
+                    //return "";
+                    //break;
 
                     //case "related":
                     //    return "";
                     //    break;
 
-                    //case "search":
-                    //    return "search";
-                    //    break;
+                    case "search":
+                        return "search";
+                        break;
 
                     //case "size":
                     //    return "";
@@ -124,9 +126,9 @@
                     //    return "swatch";
                     //    break;
 
-                    //case "openRange":
-                    //    return "open-range";
-                    //    break;
+                    case "openRange":
+                        return "open-range";
+                        break;
 
                     default:
                         return false;

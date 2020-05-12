@@ -22,11 +22,9 @@
                     <button @click="negateFacet(value)" class="hawk-facet-rail__facet-btn-exclude">
                         <template v-if="value.Negated">
                             <plus-circle-svg class="hawk-facet-rail__facet-btn-include" />
-                            <span class="visually-hidden">Include facet</span>
                         </template>
                         <template v-else>
                             <dash-circle-svg />
-                            <span class="visually-hidden">Exclude facet</span>
                         </template>
                     </button>
                 </li>

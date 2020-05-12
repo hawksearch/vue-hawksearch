@@ -1,11 +1,9 @@
 <template>
-    <div v-if="extendedSearchParams" class="hawk-facet-rail">
+    <div v-if="isVisible" class="hawk-facet-rail">
         <div class="hawk-facet-rail__heading">Narrow Results</div>
 
         <div class="hawk-facet-rail__facet-list">
-            <template v-for="facetData in facets">
-                <facet :facet-data="facetData"></facet>
-            </template>
+            <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData"></facet>
         </div>
     </div>
 </template>
@@ -37,6 +35,14 @@
             ]),
             facets: function () {
                 return this.extendedSearchParams.Facets;
+            },
+            isVisible: function () {
+                if (this.extendedSearchParams) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
         }
     }

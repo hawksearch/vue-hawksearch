@@ -2,13 +2,11 @@
     <div class="hawk-pagination__controls">
         <button class="hawk-pagination__item" @click="goToPreviousPage">
             <left-chevron-svg icon-class="hawk-pagination__left" />
-            <span class="visually-hidden">Previous page</span>
         </button>
         <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" />
         <span class="hawk-pagination__total-text"><span class="break"></span> of {{ totalPages }}</span>
         <button class="hawk-pagination__item" @click="goToNextPage">
             <right-chevron-svg icon-class="hawk-pagination__right" />
-            <span class="visually-hidden">Next page</span>
         </button>
     </div>
 </template>

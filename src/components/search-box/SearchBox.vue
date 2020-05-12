@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import HawkSearchVue from "../../HawkSearchVue";
+
     export default {
         name: 'search-box',
         props: [],
@@ -21,7 +23,12 @@
         methods: {
             onInput: function (e) {
                 if (e.key == 'Enter') {
-                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword });
+                    if (HawkSearchVue.isGlobal()) {
+                        HawkSearchVue.redirectSearch(this.keyword);
+                    }
+                    else {
+                        this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword });
+                    }
                 }
             }
         },
