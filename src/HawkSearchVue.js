@@ -1,12 +1,15 @@
 import { default as VueStore } from './store';
 
 class HawkSearchVue {
-    config = {
+    static config = {
         clientGuid: '',
-        apiUrl: '',
+        apiUrl: 'https://searchapi-dev.hawksearch.net',
+        searchUrl: '/api/v2/search',
+        autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
         searchPageUrl: location.pathname,
-        indexName: ''
+        indexName: '',
+        indexRequired: false
     }
 
     static configure(config) {
@@ -68,7 +71,30 @@ class HawkSearchVue {
 
         var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName });
 
-        Vue.http.post(this.config.apiUrl, params).then(response => {
+        Vue.http.post(this.getFullSearchUrl(), params).then(response => {
+            if (response.status == '200' && response.data) {
+                callback(response.data);
+            }
+        });
+    }
+
+    static fetchSuggestions(searchParams, callback) {
+        if (!Vue.http) {
+            callback(false);
+            return false;
+        }
+
+        if (!callback) {
+            callback = function () { };
+        }
+
+        if (!searchParams) {
+            searchParams = {};
+        }
+
+        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName, DisplayFullResponse: true });
+
+        Vue.http.post(this.getFullAutocompleteUrl(), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
@@ -193,6 +219,16 @@ class HawkSearchVue {
         var redirect = this.config.searchPageUrl + '?keyword=' + keyword;
 
         location.assign(redirect);
+    }
+
+    static getFullSearchUrl() {
+        let url = new URL(this.config.searchUrl, this.config.apiUrl);
+        return url.href;
+    }
+
+    static getFullAutocompleteUrl() {
+        let url = new URL(this.config.autocompleteUrl, this.config.apiUrl);
+        return url.href;
     }
 }
 

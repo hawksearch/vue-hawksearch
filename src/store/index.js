@@ -5,12 +5,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        config: {},
+        config: {}, // defaults are set in HawkSearchVue class
         searchOutput: null,
         pendingSearch: {
             Keyword: "",
             FacetSelections: {}
         },
+        suggestions: null,
         extendedSearchParams: {}
     },
     mutations: {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         updateResults(state, value) {
             state.searchOutput = value;
+        },
+        updateSuggestions(state, value) {
+            state.suggestions = value;
         },
         updatePendingSearch(state, value) {
             state.pendingSearch = value;
@@ -32,12 +36,21 @@ export default new Vuex.Store({
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
             commit('updatePendingSearch', pendingSearch);
 
+            // reset suggestions
+            commit('updateSuggestions', null);
+
             HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
                 commit('updateResults', searchOutput);
 
                 HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
                     commit('updateExtendedSearchParams', extendedSearchParams);
                 });
+            });
+        },
+        fetchSuggestions({ commit, state }, { searchParams, callback }) {
+            HawkSearchVue.fetchSuggestions(searchParams, (suggestions) => {
+                commit('updateSuggestions', suggestions);
+                callback();
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {
