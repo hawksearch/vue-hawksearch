@@ -1,6 +1,13 @@
 <template>
     <div className="hawk-facet-rail__results-label">
-        <h3>Search Results {{ keyword ? 'for ' + keyword : null }}</h3>
+        <h3>
+            <template v-if="keyword">
+                {{ $t('Search Results for') }} {{ keyword }}
+            </template>
+            <template v-else>
+                {{ $t('Search Results') }}
+            </template>
+        </h3>
     </div>
 </template>
 

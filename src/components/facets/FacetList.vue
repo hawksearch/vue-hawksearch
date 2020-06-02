@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible" class="hawk-facet-rail">
-        <div class="hawk-facet-rail__heading">Narrow Results</div>
+        <div class="hawk-facet-rail__heading">{{ $t('Narrow Results') }}</div>
 
         <div class="hawk-facet-rail__facet-list">
             <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData"></facet>

@@ -532,7 +532,7 @@ var __vue_render__ = function() {
                 _vm.loading
                   ? [
                       _c("li", { staticClass: "autosuggest-menu__item" }, [
-                        _vm._v("Loading...")
+                        _vm._v(_vm._s(_vm.$t("Loading")) + "...")
                       ])
                     ]
                   : _vm.suggestions.Products.length
@@ -554,7 +554,7 @@ var __vue_render__ = function() {
                     })
                   : [
                       _c("li", { staticClass: "autosuggest-menu__item" }, [
-                        _vm._v("No results.")
+                        _vm._v(_vm._s(_vm.$t("No Results")))
                       ])
                     ]
               ],
@@ -572,11 +572,11 @@ __vue_render__._withStripped = true;
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-70938d7e_0", { source: ".autosuggest-menu__item-link[data-v-70938d7e] {\n  text-decoration: none;\n  color: inherit;\n}\n\n/*# sourceMappingURL=SearchSuggestions.vue.map */", map: {"version":3,"sources":["C:\\projects1\\HAWK\\vue-hawksearch\\src\\components\\search-box\\SearchSuggestions.vue","SearchSuggestions.vue"],"names":[],"mappings":"AAgDA;EACA,qBAAA;EACA,cAAA;AC/CA;;AAEA,gDAAgD","file":"SearchSuggestions.vue","sourcesContent":["<template>\r\n    <div class=\"autosuggest-menu\">\r\n        <template v-if=\"loading || suggestions\">\r\n            <ul class=\"dropdown-menu autosuggest-menu__list\">\r\n                <template v-if=\"loading\">\r\n                    <li class=\"autosuggest-menu__item\">Loading...</li>\r\n                </template>\r\n                <template v-else-if=\"suggestions.Products.length\">\r\n                    <li v-for=\"item in suggestions.Products\" class=\"autosuggest-menu__item\">\r\n                        <a class=\"autosuggest-menu__item-link\" :href=\"item.Url\">{{ item.ProductName }}</a>\r\n                    </li>\r\n                </template>\r\n                <template v-else>\r\n                    <li class=\"autosuggest-menu__item\">No results.</li>\r\n                </template>\r\n            </ul>\r\n        </template>\r\n    </div>\r\n</template>\r\n\r\n<script lang=\"js\">\r\n    import { mapState } from 'vuex';\r\n\r\n    export default {\r\n        name: 'search-suggestions',\r\n        props: ['loading'],\r\n        mounted() {\r\n\r\n        },\r\n        data() {\r\n            return {\r\n\r\n            }\r\n        },\r\n        methods: {\r\n\r\n        },\r\n        computed: {\r\n            ...mapState([\r\n                'suggestions'\r\n            ])\r\n        }\r\n    }\r\n\r\n\r\n</script>\r\n\r\n<style scoped lang=\"scss\">\r\n    .autosuggest-menu__item-link {\r\n        text-decoration: none;\r\n        color: inherit;\r\n    }\r\n</style>\r\n",".autosuggest-menu__item-link {\n  text-decoration: none;\n  color: inherit;\n}\n\n/*# sourceMappingURL=SearchSuggestions.vue.map */"]}, media: undefined });
+    inject("data-v-4c8eeb50_0", { source: ".autosuggest-menu__item-link[data-v-4c8eeb50] {\n  text-decoration: none;\n  color: inherit;\n}\n\n/*# sourceMappingURL=SearchSuggestions.vue.map */", map: {"version":3,"sources":["C:\\projects1\\HAWK\\vue-hawksearch\\src\\components\\search-box\\SearchSuggestions.vue","SearchSuggestions.vue"],"names":[],"mappings":"AAgDA;EACA,qBAAA;EACA,cAAA;AC/CA;;AAEA,gDAAgD","file":"SearchSuggestions.vue","sourcesContent":["<template>\r\n    <div class=\"autosuggest-menu\">\r\n        <template v-if=\"loading || suggestions\">\r\n            <ul class=\"dropdown-menu autosuggest-menu__list\">\r\n                <template v-if=\"loading\">\r\n                    <li class=\"autosuggest-menu__item\">{{ $t('Loading') }}...</li>\r\n                </template>\r\n                <template v-else-if=\"suggestions.Products.length\">\r\n                    <li v-for=\"item in suggestions.Products\" class=\"autosuggest-menu__item\">\r\n                        <a class=\"autosuggest-menu__item-link\" :href=\"item.Url\">{{ item.ProductName }}</a>\r\n                    </li>\r\n                </template>\r\n                <template v-else>\r\n                    <li class=\"autosuggest-menu__item\">{{ $t('No Results') }}</li>\r\n                </template>\r\n            </ul>\r\n        </template>\r\n    </div>\r\n</template>\r\n\r\n<script lang=\"js\">\r\n    import { mapState } from 'vuex';\r\n\r\n    export default {\r\n        name: 'search-suggestions',\r\n        props: ['loading'],\r\n        mounted() {\r\n\r\n        },\r\n        data() {\r\n            return {\r\n\r\n            }\r\n        },\r\n        methods: {\r\n\r\n        },\r\n        computed: {\r\n            ...mapState([\r\n                'suggestions'\r\n            ])\r\n        }\r\n    }\r\n\r\n\r\n</script>\r\n\r\n<style scoped lang=\"scss\">\r\n    .autosuggest-menu__item-link {\r\n        text-decoration: none;\r\n        color: inherit;\r\n    }\r\n</style>\r\n",".autosuggest-menu__item-link {\n  text-decoration: none;\n  color: inherit;\n}\n\n/*# sourceMappingURL=SearchSuggestions.vue.map */"]}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__ = "data-v-70938d7e";
+  const __vue_scope_id__ = "data-v-4c8eeb50";
   /* module identifier */
   const __vue_module_identifier__ = undefined;
   /* functional template */
@@ -686,7 +686,7 @@ var __vue_render__$1 = function() {
               expression: "keyword"
             }
           ],
-          attrs: { type: "text", placeholder: _vm.placeholder },
+          attrs: { type: "text", placeholder: _vm.$t("Enter a search term") },
           domProps: { value: _vm.keyword },
           on: {
             input: [
@@ -715,11 +715,11 @@ __vue_render__$1._withStripped = true;
   /* style */
   const __vue_inject_styles__$1 = function (inject) {
     if (!inject) return
-    inject("data-v-770ae4ad_0", { source: "\n\n/*# sourceMappingURL=SearchBox.vue.map */", map: {"version":3,"sources":["SearchBox.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"SearchBox.vue"}, media: undefined });
+    inject("data-v-0f5e5ff0_0", { source: "\n\n/*# sourceMappingURL=SearchBox.vue.map */", map: {"version":3,"sources":["SearchBox.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"SearchBox.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$1 = "data-v-770ae4ad";
+  const __vue_scope_id__$1 = "data-v-0f5e5ff0";
   /* module identifier */
   const __vue_module_identifier__$1 = undefined;
   /* functional template */
@@ -2880,7 +2880,11 @@ Vue$2.use(VueI18n);
 //        "No Results": "No results (en)"
 //    }
 //}
-const messages = {};
+const messages = {
+    en: {
+        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
+    }
+};
 
 // Create VueI18n instance with options
 const i18n = new VueI18n({
@@ -2934,11 +2938,29 @@ var __vue_render__$2 = function() {
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
   return _c("div", { attrs: { className: "hawk-facet-rail__results-label" } }, [
-    _c("h3", [
-      _vm._v(
-        "Search Results " + _vm._s(_vm.keyword ? "for " + _vm.keyword : null)
-      )
-    ])
+    _c(
+      "h3",
+      [
+        _vm.keyword
+          ? [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$t("Search Results for")) +
+                  " " +
+                  _vm._s(_vm.keyword) +
+                  "\n        "
+              )
+            ]
+          : [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$t("Search Results")) +
+                  "\n        "
+              )
+            ]
+      ],
+      2
+    )
   ])
 };
 var __vue_staticRenderFns__$2 = [];
@@ -2947,11 +2969,11 @@ __vue_render__$2._withStripped = true;
   /* style */
   const __vue_inject_styles__$2 = function (inject) {
     if (!inject) return
-    inject("data-v-f8b5f3b4_0", { source: "\n\n/*# sourceMappingURL=SearchResultsLabel.vue.map */", map: {"version":3,"sources":["SearchResultsLabel.vue"],"names":[],"mappings":";;AAEA,iDAAiD","file":"SearchResultsLabel.vue"}, media: undefined });
+    inject("data-v-9c366146_0", { source: "\n\n/*# sourceMappingURL=SearchResultsLabel.vue.map */", map: {"version":3,"sources":["SearchResultsLabel.vue"],"names":[],"mappings":";;AAEA,iDAAiD","file":"SearchResultsLabel.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$2 = "data-v-f8b5f3b4";
+  const __vue_scope_id__$2 = "data-v-9c366146";
   /* module identifier */
   const __vue_module_identifier__$2 = undefined;
   /* functional template */
@@ -3010,7 +3032,9 @@ var __vue_render__$3 = function() {
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
   return _c("div", { staticClass: "hawk-sorting" }, [
-    _c("span", { staticClass: "hawk-sorting__label" }, [_vm._v("Sort By")]),
+    _c("span", { staticClass: "hawk-sorting__label" }, [
+      _vm._v(_vm._s(_vm.$t("Sort By")))
+    ]),
     _vm._v(" "),
     _c(
       "select",
@@ -3032,11 +3056,11 @@ __vue_render__$3._withStripped = true;
   /* style */
   const __vue_inject_styles__$3 = function (inject) {
     if (!inject) return
-    inject("data-v-3814f145_0", { source: "\n\n/*# sourceMappingURL=Sorting.vue.map */", map: {"version":3,"sources":["Sorting.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Sorting.vue"}, media: undefined });
+    inject("data-v-da79e6ec_0", { source: "\n\n/*# sourceMappingURL=Sorting.vue.map */", map: {"version":3,"sources":["Sorting.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Sorting.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$3 = "data-v-3814f145";
+  const __vue_scope_id__$3 = "data-v-da79e6ec";
   /* module identifier */
   const __vue_module_identifier__$3 = undefined;
   /* functional template */
@@ -3884,13 +3908,7 @@ var __vue_render__$d = function() {
             )
           ]
         : _vm.searchError
-        ? [
-            _c("span", [
-              _vm._v(
-                "An error occurred while searching for your results. Please contact the site administrator."
-              )
-            ])
-          ]
+        ? [_c("span", [_vm._v(_vm._s(_vm.$t("response_error_generic")))])]
         : [_c("span", [_vm._v(_vm._s(_vm.$t("No Results")))])]
     ],
     2
@@ -3902,11 +3920,11 @@ __vue_render__$d._withStripped = true;
   /* style */
   const __vue_inject_styles__$d = function (inject) {
     if (!inject) return
-    inject("data-v-1628706c_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
+    inject("data-v-4c21bb29_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$d = "data-v-1628706c";
+  const __vue_scope_id__$d = "data-v-4c21bb29";
   /* module identifier */
   const __vue_module_identifier__$d = undefined;
   /* functional template */
@@ -4946,7 +4964,11 @@ var __vue_render__$n = function() {
             _c(
               "button",
               { staticClass: "link-button", on: { click: _vm.clearFacet } },
-              [_vm._v("\n            Clear\n        ")]
+              [
+                _vm._v(
+                  "\n            " + _vm._s(_vm.$t("Clear")) + "\n        "
+                )
+              ]
             )
           ]
         )
@@ -4959,11 +4981,11 @@ __vue_render__$n._withStripped = true;
   /* style */
   const __vue_inject_styles__$n = function (inject) {
     if (!inject) return
-    inject("data-v-3586fddc_0", { source: "\n\n/*# sourceMappingURL=Search.vue.map */", map: {"version":3,"sources":["Search.vue"],"names":[],"mappings":";;AAEA,qCAAqC","file":"Search.vue"}, media: undefined });
+    inject("data-v-6eb7ce49_0", { source: "\n\n/*# sourceMappingURL=Search.vue.map */", map: {"version":3,"sources":["Search.vue"],"names":[],"mappings":";;AAEA,qCAAqC","file":"Search.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$n = "data-v-3586fddc";
+  const __vue_scope_id__$n = "data-v-6eb7ce49";
   /* module identifier */
   const __vue_module_identifier__$n = undefined;
   /* functional template */
@@ -5251,11 +5273,11 @@ __vue_render__$p._withStripped = true;
   /* style */
   const __vue_inject_styles__$p = function (inject) {
     if (!inject) return
-    inject("data-v-d3ed6958_0", { source: "\n\n/*# sourceMappingURL=Facet.vue.map */", map: {"version":3,"sources":["Facet.vue"],"names":[],"mappings":";;AAEA,oCAAoC","file":"Facet.vue"}, media: undefined });
+    inject("data-v-378c3afa_0", { source: "\n\n/*# sourceMappingURL=Facet.vue.map */", map: {"version":3,"sources":["Facet.vue"],"names":[],"mappings":";;AAEA,oCAAoC","file":"Facet.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$p = "data-v-d3ed6958";
+  const __vue_scope_id__$p = "data-v-378c3afa";
   /* module identifier */
   const __vue_module_identifier__$p = undefined;
   /* functional template */
@@ -5325,7 +5347,7 @@ var __vue_render__$q = function() {
   return _vm.isVisible
     ? _c("div", { staticClass: "hawk-facet-rail" }, [
         _c("div", { staticClass: "hawk-facet-rail__heading" }, [
-          _vm._v("Narrow Results")
+          _vm._v(_vm._s(_vm.$t("Narrow Results")))
         ]),
         _vm._v(" "),
         _c(
@@ -5348,11 +5370,11 @@ __vue_render__$q._withStripped = true;
   /* style */
   const __vue_inject_styles__$q = function (inject) {
     if (!inject) return
-    inject("data-v-70bee714_0", { source: "\n\n/*# sourceMappingURL=FacetList.vue.map */", map: {"version":3,"sources":["FacetList.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"FacetList.vue"}, media: undefined });
+    inject("data-v-ba437c7e_0", { source: "\n\n/*# sourceMappingURL=FacetList.vue.map */", map: {"version":3,"sources":["FacetList.vue"],"names":[],"mappings":";;AAEA,wCAAwC","file":"FacetList.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$q = "data-v-70bee714";
+  const __vue_scope_id__$q = "data-v-ba437c7e";
   /* module identifier */
   const __vue_module_identifier__$q = undefined;
   /* functional template */

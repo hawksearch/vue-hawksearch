@@ -9,7 +9,11 @@ Vue.use(VueI18n);
 //        "No Results": "No results (en)"
 //    }
 //}
-const messages = {};
+const messages = {
+    en: {
+        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
+    }
+};
 
 // Create VueI18n instance with options
 const i18n = new VueI18n({

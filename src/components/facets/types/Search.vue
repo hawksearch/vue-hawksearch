@@ -7,7 +7,7 @@
         </div>
         <div v-if="value" class="hawk-facet-rail__facet-values__search-clear">
             <button class="link-button" @click="clearFacet">
-                Clear
+                {{ $t('Clear') }}
             </button>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
     <div class="hawk-sorting">
-        <span class="hawk-sorting__label">Sort By</span>
+        <span class="hawk-sorting__label">{{ $t('Sort By') }}</span>
 
         <select @change="onChange">
             <option v-for="(sortingItem, key) in sorting.Items" :key="sortingItem.Value" :value="sortingItem.Value">

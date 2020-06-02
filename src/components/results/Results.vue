@@ -15,7 +15,7 @@
             </div>
         </template>
         <template v-else-if="searchError">
-            <span>An error occurred while searching for your results. Please contact the site administrator.</span>
+            <span>{{ $t('response_error_generic') }}</span>
         </template>
         <template v-else>
             <span>{{ $t('No Results') }}</span>

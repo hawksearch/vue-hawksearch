@@ -22,7 +22,7 @@
                 </div>
                 <div v-if="!isCollapsed" class="hawk-facet-rail__facet-body">
                     <!--<div v-if="shouldSearch" class="hawk-facet-rail__facet__quick-lookup">
-                        <input :value="filter" @change="setFilter" type="text" placeholder="Quick Lookup" />
+                        <input :value="filter" @change="setFilter" type="text" :placeholder="$t('Quick Lookup')" />
                     </div>-->
                     <component :is="componentName" :facet-data="facetData"></component>
                 </div>
