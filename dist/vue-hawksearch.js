@@ -13,7 +13,8 @@ var store = new Vuex.Store({
             FacetSelections: {}
         },
         suggestions: null,
-        extendedSearchParams: {}
+        extendedSearchParams: {},
+        searchError: false
     },
     mutations: {
         updateConfig(state, value) {
@@ -30,6 +31,9 @@ var store = new Vuex.Store({
         },
         updateExtendedSearchParams(state, value) {
             state.extendedSearchParams = value;
+        },
+        setSearchError(state, value) {
+            state.searchError = value;
         }
     },
     actions: {
@@ -41,11 +45,18 @@ var store = new Vuex.Store({
             commit('updateSuggestions', null);
 
             HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
-                commit('updateResults', searchOutput);
+                if (searchOutput) {
+                    commit('setSearchError', false);
+                    commit('updateResults', searchOutput);
 
-                HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
-                    commit('updateExtendedSearchParams', extendedSearchParams);
-                });
+                    HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                        commit('updateExtendedSearchParams', extendedSearchParams);
+                    });
+                }
+                else {
+                    commit('updateResults', null);
+                    commit('setSearchError', true);
+                }
             });
         },
         fetchSuggestions({ commit, state }, { searchParams, callback }) {
@@ -175,6 +186,8 @@ class HawkSearchVue$1 {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
+        }).catch(response => {
+            callback(false);
         });
     }
 
@@ -197,6 +210,8 @@ class HawkSearchVue$1 {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
+        }).catch(response => {
+            callback(false);
         });
     }
 
@@ -1685,7 +1700,8 @@ var script$d = {
     },
     computed: {
         ...mapState([
-            'searchOutput'
+            'searchOutput',
+            'searchError'
         ])
     }
 };
@@ -1722,6 +1738,14 @@ var __vue_render__$d = function() {
               1
             )
           ]
+        : _vm.searchError
+        ? [
+            _c("span", [
+              _vm._v(
+                "An error occurred while searching for your results. Please contact the site administrator."
+              )
+            ])
+          ]
         : [_c("span", [_vm._v("No Results")])]
     ],
     2
@@ -1733,11 +1757,11 @@ __vue_render__$d._withStripped = true;
   /* style */
   const __vue_inject_styles__$d = function (inject) {
     if (!inject) return
-    inject("data-v-47dbe836_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
+    inject("data-v-728ecd0e_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$d = "data-v-47dbe836";
+  const __vue_scope_id__$d = "data-v-728ecd0e";
   /* module identifier */
   const __vue_module_identifier__$d = undefined;
   /* functional template */

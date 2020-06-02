@@ -85,6 +85,8 @@ class HawkSearchVue {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
+        }).catch(response => {
+            callback(false);
         });
     }
 
@@ -107,6 +109,8 @@ class HawkSearchVue {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
+        }).catch(response => {
+            callback(false);
         });
     }
 

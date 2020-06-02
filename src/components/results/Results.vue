@@ -14,6 +14,9 @@
                 <tool-row />
             </div>
         </template>
+        <template v-else-if="searchError">
+            <span>An error occurred while searching for your results. Please contact the site administrator.</span>
+        </template>
         <template v-else>
             <span>No Results</span>
         </template>
@@ -49,7 +52,8 @@
         },
         computed: {
             ...mapState([
-                'searchOutput'
+                'searchOutput',
+                'searchError'
             ])
         }
     }

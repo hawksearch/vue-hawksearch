@@ -12,7 +12,8 @@ export default new Vuex.Store({
             FacetSelections: {}
         },
         suggestions: null,
-        extendedSearchParams: {}
+        extendedSearchParams: {},
+        searchError: false
     },
     mutations: {
         updateConfig(state, value) {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
         },
         updateExtendedSearchParams(state, value) {
             state.extendedSearchParams = value;
+        },
+        setSearchError(state, value) {
+            state.searchError = value
         }
     },
     actions: {
@@ -40,11 +44,18 @@ export default new Vuex.Store({
             commit('updateSuggestions', null);
 
             HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
-                commit('updateResults', searchOutput);
+                if (searchOutput) {
+                    commit('setSearchError', false);
+                    commit('updateResults', searchOutput);
 
-                HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
-                    commit('updateExtendedSearchParams', extendedSearchParams);
-                });
+                    HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                        commit('updateExtendedSearchParams', extendedSearchParams);
+                    });
+                }
+                else {
+                    commit('updateResults', null);
+                    commit('setSearchError', true);
+                }
             });
         },
         fetchSuggestions({ commit, state }, { searchParams, callback }) {
