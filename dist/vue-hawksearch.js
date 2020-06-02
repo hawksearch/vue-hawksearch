@@ -98,9 +98,11 @@ class HawkSearchVue$1 {
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
         searchPageUrl: location.pathname,
-        indexName: '',
-        indexRequired: false
+        indexName: null,
+        indexNameRequired: false
     }
+
+    static configurationApplied = false
 
     static configure(config) {
         if (!config) {
@@ -110,7 +112,11 @@ class HawkSearchVue$1 {
         this.config = Object.assign({}, this.config, config);
         store.commit('updateConfig', this.config);
 
-        this.addTemplateOverride();
+        if (!this.configurationApplied) {
+            this.addTemplateOverride();
+        }
+
+        this.configurationApplied = true;
     }
 
     static initialSearch() {
@@ -142,12 +148,16 @@ class HawkSearchVue$1 {
             initialSearchParams = { Keyword: urlParams.keyword };
         }
 
+        if (!this.config.indexName && urlParams.indexName) {
+            this.config.indexName = urlParams.indexName;
+            this.configure({});
+        }
+
         store.dispatch('fetchResults', initialSearchParams);
     }
 
     static fetchResults(searchParams, callback) {
-        if (!Vue.http) {
-            callback(false);
+        if (!this.requestConditionsMet()) {
             return false;
         }
 
@@ -169,8 +179,7 @@ class HawkSearchVue$1 {
     }
 
     static fetchSuggestions(searchParams, callback) {
-        if (!Vue.http) {
-            callback(false);
+        if (!this.requestConditionsMet()) {
             return false;
         }
 
@@ -189,6 +198,22 @@ class HawkSearchVue$1 {
                 callback(response.data);
             }
         });
+    }
+
+    static requestConditionsMet() {
+        if (!Vue.http) {
+            return false;
+        }
+
+        if (!this.configurationApplied) {
+            return false;
+        }
+
+        if (this.config.indexNameRequired && !this.config.indexName) {
+            return false;
+        }
+
+        return true;
     }
 
     static extendSearchData(searchOutput, pendingSearch, callback) {
@@ -1673,32 +1698,34 @@ var __vue_render__$d = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
-  return _vm.searchOutput
-    ? _c(
-        "div",
-        { staticClass: "hawk-results" },
-        [
-          _c("search-results-label"),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "hawk-results__top-tool-row" },
-            [_c("tool-row")],
-            1
-          ),
-          _vm._v(" "),
-          _c("result-listing"),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "hawk-results__bottom-tool-row" },
-            [_c("tool-row")],
-            1
-          )
-        ],
-        1
-      )
-    : _vm._e()
+  return _c(
+    "div",
+    { staticClass: "hawk-results" },
+    [
+      _vm.searchOutput
+        ? [
+            _c("search-results-label"),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "hawk-results__top-tool-row" },
+              [_c("tool-row")],
+              1
+            ),
+            _vm._v(" "),
+            _c("result-listing"),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "hawk-results__bottom-tool-row" },
+              [_c("tool-row")],
+              1
+            )
+          ]
+        : [_c("span", [_vm._v("No Results")])]
+    ],
+    2
+  )
 };
 var __vue_staticRenderFns__$d = [];
 __vue_render__$d._withStripped = true;
@@ -1706,11 +1733,11 @@ __vue_render__$d._withStripped = true;
   /* style */
   const __vue_inject_styles__$d = function (inject) {
     if (!inject) return
-    inject("data-v-7587c202_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
+    inject("data-v-47dbe836_0", { source: "\n\n/*# sourceMappingURL=Results.vue.map */", map: {"version":3,"sources":["Results.vue"],"names":[],"mappings":";;AAEA,sCAAsC","file":"Results.vue"}, media: undefined });
 
   };
   /* scoped */
-  const __vue_scope_id__$d = "data-v-7587c202";
+  const __vue_scope_id__$d = "data-v-47dbe836";
   /* module identifier */
   const __vue_module_identifier__$d = undefined;
   /* functional template */

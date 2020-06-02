@@ -8,9 +8,11 @@ class HawkSearchVue {
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
         searchPageUrl: location.pathname,
-        indexName: '',
-        indexRequired: false
+        indexName: null,
+        indexNameRequired: false
     }
+
+    static configurationApplied = false
 
     static configure(config) {
         if (!config) {
@@ -20,7 +22,11 @@ class HawkSearchVue {
         this.config = Object.assign({}, this.config, config);
         VueStore.commit('updateConfig', this.config);
 
-        this.addTemplateOverride();
+        if (!this.configurationApplied) {
+            this.addTemplateOverride();
+        }
+
+        this.configurationApplied = true;
     }
 
     static initialSearch() {
@@ -52,12 +58,16 @@ class HawkSearchVue {
             initialSearchParams = { Keyword: urlParams.keyword };
         }
 
+        if (!this.config.indexName && urlParams.indexName) {
+            this.config.indexName = urlParams.indexName;
+            this.configure({});
+        }
+
         VueStore.dispatch('fetchResults', initialSearchParams);
     }
 
     static fetchResults(searchParams, callback) {
-        if (!Vue.http) {
-            callback(false);
+        if (!this.requestConditionsMet()) {
             return false;
         }
 
@@ -79,8 +89,7 @@ class HawkSearchVue {
     }
 
     static fetchSuggestions(searchParams, callback) {
-        if (!Vue.http) {
-            callback(false);
+        if (!this.requestConditionsMet()) {
             return false;
         }
 
@@ -99,6 +108,22 @@ class HawkSearchVue {
                 callback(response.data);
             }
         });
+    }
+
+    static requestConditionsMet() {
+        if (!Vue.http) {
+            return false;
+        }
+
+        if (!this.configurationApplied) {
+            return false;
+        }
+
+        if (this.config.indexNameRequired && !this.config.indexName) {
+            return false;
+        }
+
+        return true;
     }
 
     static extendSearchData(searchOutput, pendingSearch, callback) {

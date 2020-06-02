@@ -1,17 +1,22 @@
 <template>
-    <div v-if="searchOutput" class="hawk-results">
-        <search-results-label />
-        <!--<selections />-->
+    <div class="hawk-results">
+        <template v-if="searchOutput">
+            <search-results-label />
+            <!--<selections />-->
 
-        <div class="hawk-results__top-tool-row">
-            <tool-row />
-        </div>
+            <div class="hawk-results__top-tool-row">
+                <tool-row />
+            </div>
 
-        <result-listing />
+            <result-listing />
 
-        <div class="hawk-results__bottom-tool-row">
-            <tool-row />
-        </div>
+            <div class="hawk-results__bottom-tool-row">
+                <tool-row />
+            </div>
+        </template>
+        <template v-else>
+            <span>No Results</span>
+        </template>
     </div>
 </template>
 
