@@ -12,4 +12,5 @@ window.HawkSearchVue = HawkSearchVue;
 export * from "./widgets";
 export * from './components';
 export { default as HawkSearchStore } from './store';
+export { default as tConfig } from './i18n';
 export default HawkSearchVue;

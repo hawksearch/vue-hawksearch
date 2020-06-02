@@ -1,6 +1,6 @@
 <template>
     <div class="hawk-results">
-        <template v-if="searchOutput">
+        <template v-if="searchOutput && searchOutput.Results && searchOutput.Results.length">
             <search-results-label />
             <!--<selections />-->
 
@@ -18,7 +18,7 @@
             <span>An error occurred while searching for your results. Please contact the site administrator.</span>
         </template>
         <template v-else>
-            <span>No Results</span>
+            <span>{{ $t('No Results') }}</span>
         </template>
     </div>
 </template>
