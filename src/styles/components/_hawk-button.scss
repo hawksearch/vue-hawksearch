@@ -1,0 +1,623 @@
+/*
+ *
+ * Button
+ *
+ */
+.hawk-btn {
+	display: inline-block;
+	padding: 7px 1.15rem;
+	margin-bottom: 0;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	touch-action: manipulation;
+	cursor: pointer;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	background-color: $primary;
+	color: #fff;
+	border-radius: 4px;
+	outline: none;
+
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+		box-shadow 0.15s ease-in-out;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+/*
+ *
+ * Button states
+ *
+ */
+.hawk-btn.focus,
+.hawk-btn:focus,
+.hawk-btn:hover {
+	color: #fff;
+	text-decoration: none;
+	background-color: darken($primary, 5%);
+}
+
+.hawk-btn.active,
+.hawk-btn:active {
+	background-image: none;
+	outline: 0;
+	background-color: darken($primary, 5%);
+}
+
+/*
+ *
+ * Disabled
+ *
+ */
+.hawk-btn.disabled,
+.hawk-btn[disabled],
+fieldset[disabled] .hawk-btn {
+	cursor: not-allowed;
+	filter: alpha(opacity=65);
+	box-shadow: none;
+	opacity: 0.65;
+}
+
+a.hawk-btn.disabled,
+fieldset[disabled] a.hawk-btn {
+	pointer-events: none;
+}
+
+/*
+ *
+ * Default
+ *
+ */
+.hawk-btn-default {
+	color: #333;
+	background-color: #fff;
+	border-color: #ccc;
+}
+
+.hawk-btn-default.focus,
+.hawk-btn-default:focus {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #8c8c8c;
+}
+
+.hawk-btn-default:hover {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+.hawk-btn-default.active,
+.hawk-btn-default:active,
+.open > .dropdown-toggle.hawk-btn-default {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+.hawk-btn-default.active.focus,
+.hawk-btn-default.active:focus,
+.hawk-btn-default.active:hover,
+.hawk-btn-default:active.focus,
+.hawk-btn-default:active:focus,
+.hawk-btn-default:active:hover,
+.open > .dropdown-toggle.hawk-btn-default.focus,
+.open > .dropdown-toggle.hawk-btn-default:focus,
+.open > .dropdown-toggle.hawk-btn-default:hover {
+	color: #333;
+	background-color: #d4d4d4;
+	border-color: #8c8c8c;
+}
+
+.hawk-btn-default.active,
+.hawk-btn-default:active,
+.open > .dropdown-toggle.hawk-btn-default {
+	background-image: none;
+}
+
+.hawk-btn-default.disabled.focus,
+.hawk-btn-default.disabled:focus,
+.hawk-btn-default.disabled:hover,
+.hawk-btn-default[disabled].focus,
+.hawk-btn-default[disabled]:focus,
+.hawk-btn-default[disabled]:hover,
+fieldset[disabled] .hawk-btn-default.focus,
+fieldset[disabled] .hawk-btn-default:focus,
+fieldset[disabled] .hawk-btn-default:hover {
+	background-color: #fff;
+	border-color: #ccc;
+}
+
+.hawk-btn-default .badge {
+	color: #fff;
+	background-color: #333;
+}
+
+/*
+ *
+ * Primary
+ *
+ */
+.hawk-btn-primary {
+	color: #fff;
+	background-color: $primary;
+	border-color: transparent;
+}
+
+.hawk-btn-primary.focus,
+.hawk-btn-primary:focus {
+	color: #fff;
+	background-color: darken($primary, 5%);
+	border-color: transparent;
+}
+
+.hawk-btn-primary:hover {
+	color: #fff;
+	background-color: darken($primary, 5%);
+	border-color: transparent;
+}
+
+.hawk-btn-primary.active,
+.hawk-btn-primary:active,
+.open > .dropdown-toggle.hawk-btn-primary {
+	color: #fff;
+	background-color: darken($primary, 5%);
+	border-color: transparent;
+}
+
+.hawk-btn-primary.active.focus,
+.hawk-btn-primary.active:focus,
+.hawk-btn-primary.active:hover,
+.hawk-btn-primary:active.focus,
+.hawk-btn-primary:active:focus,
+.hawk-btn-primary:active:hover,
+.open > .dropdown-toggle.hawk-btn-primary.focus,
+.open > .dropdown-toggle.hawk-btn-primary:focus,
+.open > .dropdown-toggle.hawk-btn-primary:hover {
+	color: #fff;
+	background-color: darken($primary, 10%);
+	border-color: transparent;
+}
+
+.hawk-btn-primary.active,
+.hawk-btn-primary:active,
+.open > .dropdown-toggle.hawk-btn-primary {
+	background-image: none;
+}
+
+.hawk-btn-primary.disabled.focus,
+.hawk-btn-primary.disabled:focus,
+.hawk-btn-primary.disabled:hover,
+.hawk-btn-primary[disabled].focus,
+.hawk-btn-primary[disabled]:focus,
+.hawk-btn-primary[disabled]:hover,
+fieldset[disabled] .hawk-btn-primary.focus,
+fieldset[disabled] .hawk-btn-primary:focus,
+fieldset[disabled] .hawk-btn-primary:hover {
+	background-color: darken($primary, 5%);
+	border-color: transparent;
+}
+
+.hawk-btn-primary .badge {
+	color: #337ab7;
+	background-color: #fff;
+}
+
+.hawk-btn-primary-outline {
+	color: $primary-btn-outline;
+	background-color: transparent;
+	background-image: none;
+	border-color: $primary-btn-outline-border;
+}
+
+.hawk-btn-primary-outline:hover {
+	color: $white;
+	background-color: $primary-btn-outline-bg-hover;
+	border-color: $primary-btn-outline-border-hover;
+}
+
+/*
+ *
+ * Success
+ *
+ */
+.hawk-btn-success {
+	color: #fff;
+	background-color: #5cb85c;
+	border-color: #4cae4c;
+}
+
+.hawk-btn-success.focus,
+.hawk-btn-success:focus {
+	color: #fff;
+	background-color: #449d44;
+	border-color: #255625;
+}
+
+.hawk-btn-success:hover {
+	color: #fff;
+	background-color: #449d44;
+	border-color: #398439;
+}
+
+.hawk-btn-success.active,
+.hawk-btn-success:active,
+.open > .dropdown-toggle.hawk-btn-success {
+	color: #fff;
+	background-color: #449d44;
+	border-color: #398439;
+}
+
+.hawk-btn-success.active.focus,
+.hawk-btn-success.active:focus,
+.hawk-btn-success.active:hover,
+.hawk-btn-success:active.focus,
+.hawk-btn-success:active:focus,
+.hawk-btn-success:active:hover,
+.open > .dropdown-toggle.hawk-btn-success.focus,
+.open > .dropdown-toggle.hawk-btn-success:focus,
+.open > .dropdown-toggle.hawk-btn-success:hover {
+	color: #fff;
+	background-color: #398439;
+	border-color: #255625;
+}
+
+.hawk-btn-success.active,
+.hawk-btn-success:active,
+.open > .dropdown-toggle.hawk-btn-success {
+	background-image: none;
+}
+
+.hawk-btn-success.disabled.focus,
+.hawk-btn-success.disabled:focus,
+.hawk-btn-success.disabled:hover,
+.hawk-btn-success[disabled].focus,
+.hawk-btn-success[disabled]:focus,
+.hawk-btn-success[disabled]:hover,
+fieldset[disabled] .hawk-btn-success.focus,
+fieldset[disabled] .hawk-btn-success:focus,
+fieldset[disabled] .hawk-btn-success:hover {
+	background-color: #5cb85c;
+	border-color: #4cae4c;
+}
+
+.hawk-btn-success .badge {
+	color: #5cb85c;
+	background-color: #fff;
+}
+
+/*
+ *
+ * Info
+ *
+ */
+.hawk-btn-info {
+	color: #fff;
+	background-color: #5bc0de;
+	border-color: #46b8da;
+}
+
+.hawk-btn-info.focus,
+.hawk-btn-info:focus {
+	color: #fff;
+	background-color: #31b0d5;
+	border-color: #1b6d85;
+}
+
+.hawk-btn-info:hover {
+	color: #fff;
+	background-color: #31b0d5;
+	border-color: #269abc;
+}
+
+.hawk-btn-info.active,
+.hawk-btn-info:active,
+.open > .dropdown-toggle.hawk-btn-info {
+	color: #fff;
+	background-color: #31b0d5;
+	border-color: #269abc;
+}
+
+.hawk-btn-info.active.focus,
+.hawk-btn-info.active:focus,
+.hawk-btn-info.active:hover,
+.hawk-btn-info:active.focus,
+.hawk-btn-info:active:focus,
+.hawk-btn-info:active:hover,
+.open > .dropdown-toggle.hawk-btn-info.focus,
+.open > .dropdown-toggle.hawk-btn-info:focus,
+.open > .dropdown-toggle.hawk-btn-info:hover {
+	color: #fff;
+	background-color: #269abc;
+	border-color: #1b6d85;
+}
+
+.hawk-btn-info.active,
+.hawk-btn-info:active,
+.open > .dropdown-toggle.hawk-btn-info {
+	background-image: none;
+}
+
+.hawk-btn-info.disabled.focus,
+.hawk-btn-info.disabled:focus,
+.hawk-btn-info.disabled:hover,
+.hawk-btn-info[disabled].focus,
+.hawk-btn-info[disabled]:focus,
+.hawk-btn-info[disabled]:hover,
+fieldset[disabled] .hawk-btn-info.focus,
+fieldset[disabled] .hawk-btn-info:focus,
+fieldset[disabled] .hawk-btn-info:hover {
+	background-color: #5bc0de;
+	border-color: #46b8da;
+}
+
+.hawk-btn-info .badge {
+	color: #5bc0de;
+	background-color: #fff;
+}
+
+/*
+ *
+ * Warning
+ *
+ */
+.hawk-btn-warning {
+	color: #fff;
+	background-color: #f0ad4e;
+	border-color: #eea236;
+}
+
+.hawk-btn-warning.focus,
+.hawk-btn-warning:focus {
+	color: #fff;
+	background-color: #ec971f;
+	border-color: #985f0d;
+}
+
+.hawk-btn-warning:hover {
+	color: #fff;
+	background-color: #ec971f;
+	border-color: #d58512;
+}
+
+.hawk-btn-warning.active,
+.hawk-btn-warning:active,
+.open > .dropdown-toggle.hawk-btn-warning {
+	color: #fff;
+	background-color: #ec971f;
+	border-color: #d58512;
+}
+
+.hawk-btn-warning.active.focus,
+.hawk-btn-warning.active:focus,
+.hawk-btn-warning.active:hover,
+.hawk-btn-warning:active.focus,
+.hawk-btn-warning:active:focus,
+.hawk-btn-warning:active:hover,
+.open > .dropdown-toggle.hawk-btn-warning.focus,
+.open > .dropdown-toggle.hawk-btn-warning:focus,
+.open > .dropdown-toggle.hawk-btn-warning:hover {
+	color: #fff;
+	background-color: #d58512;
+	border-color: #985f0d;
+}
+
+.hawk-btn-warning.active,
+.hawk-btn-warning:active,
+.open > .dropdown-toggle.hawk-btn-warning {
+	background-image: none;
+}
+
+.hawk-btn-warning.disabled.focus,
+.hawk-btn-warning.disabled:focus,
+.hawk-btn-warning.disabled:hover,
+.hawk-btn-warning[disabled].focus,
+.hawk-btn-warning[disabled]:focus,
+.hawk-btn-warning[disabled]:hover,
+fieldset[disabled] .hawk-btn-warning.focus,
+fieldset[disabled] .hawk-btn-warning:focus,
+fieldset[disabled] .hawk-btn-warning:hover {
+	background-color: #f0ad4e;
+	border-color: #eea236;
+}
+
+.hawk-btn-warning .badge {
+	color: #f0ad4e;
+	background-color: #fff;
+}
+
+/*
+ *
+ * Danger
+ *
+ */
+.hawk-btn-danger {
+	color: #fff;
+	background-color: #d9534f;
+	border-color: #d43f3a;
+}
+
+.hawk-btn-danger.focus,
+.hawk-btn-danger:focus {
+	color: #fff;
+	background-color: #c9302c;
+	border-color: #761c19;
+}
+
+.hawk-btn-danger:hover {
+	color: #fff;
+	background-color: #c9302c;
+	border-color: #ac2925;
+}
+
+.hawk-btn-danger.active,
+.hawk-btn-danger:active,
+.open > .dropdown-toggle.hawk-btn-danger {
+	color: #fff;
+	background-color: #c9302c;
+	border-color: #ac2925;
+}
+
+.hawk-btn-danger.active.focus,
+.hawk-btn-danger.active:focus,
+.hawk-btn-danger.active:hover,
+.hawk-btn-danger:active.focus,
+.hawk-btn-danger:active:focus,
+.hawk-btn-danger:active:hover,
+.open > .dropdown-toggle.hawk-btn-danger.focus,
+.open > .dropdown-toggle.hawk-btn-danger:focus,
+.open > .dropdown-toggle.hawk-btn-danger:hover {
+	color: #fff;
+	background-color: #ac2925;
+	border-color: #761c19;
+}
+
+.hawk-btn-danger.active,
+.hawk-btn-danger:active,
+.open > .dropdown-toggle.hawk-btn-danger {
+	background-image: none;
+}
+
+.hawk-btn-danger.disabled.focus,
+.hawk-btn-danger.disabled:focus,
+.hawk-btn-danger.disabled:hover,
+.hawk-btn-danger[disabled].focus,
+.hawk-btn-danger[disabled]:focus,
+.hawk-btn-danger[disabled]:hover,
+fieldset[disabled] .hawk-btn-danger.focus,
+fieldset[disabled] .hawk-btn-danger:focus,
+fieldset[disabled] .hawk-btn-danger:hover {
+	background-color: #d9534f;
+	border-color: #d43f3a;
+}
+
+.hawk-btn-danger .badge {
+	color: #d9534f;
+	background-color: #fff;
+}
+
+/*
+ *
+ * Button link
+ *
+ */
+.hawk-btn-link {
+	.body & {
+		display: inline;
+		font-weight: 400;
+		color: #337ab7;
+		border-radius: 0;
+		outline: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		vertical-align: inherit;
+
+		&:hover {
+			text-decoration: underline;
+			color: darken(#337ab7, 10%);
+		}
+
+		&--logout {
+			color: #fff;
+
+			&:hover,
+			&:active,
+			&:focus {
+				color: #fff;
+			}
+		}
+	}
+}
+
+.hawk-btn-link,
+.hawk-btn-link.active,
+.hawk-btn-link:active,
+.hawk-btn-link[disabled],
+fieldset[disabled] .hawk-btn-link {
+	background-color: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.hawk-btn-link,
+.hawk-btn-link:active,
+.hawk-btn-link:focus,
+.hawk-btn-link:hover {
+	border-color: transparent;
+}
+
+.hawk-btn-link:focus,
+.hawk-btn-link:hover {
+	color: #23527c;
+	text-decoration: underline;
+	background-color: transparent;
+}
+
+.hawk-btn-link[disabled]:focus,
+.hawk-btn-link[disabled]:hover,
+fieldset[disabled] .hawk-btn-link:focus,
+fieldset[disabled] .hawk-btn-link:hover {
+	color: #777;
+	text-decoration: none;
+}
+
+/*
+ *
+ * Button group
+ *
+ */
+.hawk-btn-group-lg > .hawk-btn,
+.hawk-btn-lg {
+	padding: 1rem 1.8rem;
+	font-size: 18px;
+	line-height: 1.3333333;
+	border-radius: 6px;
+}
+
+.hawk-btn-group-sm > .hawk-btn,
+.hawk-btn-sm {
+	padding: 5px 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+
+.hawk-btn-group-xs > .hawk-btn,
+.hawk-btn-xs {
+	padding: 1px 5px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+
+/*
+ *
+ * Block
+ *
+ */
+.hawk-btn-block {
+	display: block;
+	width: 100%;
+}
+
+.hawk-btn-block + .hawk-btn-block {
+	margin-top: 5px;
+}
+
+input[type='button'].hawk-btn-block,
+input[type='reset'].hawk-btn-block,
+input[type='submit'].hawk-btn-block {
+	width: 100%;
+}
+
+.hawk-btn-bottom-margin {
+	margin-bottom: 1em;
+}

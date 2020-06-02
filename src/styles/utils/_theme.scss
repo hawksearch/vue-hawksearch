@@ -1,0 +1,63 @@
+// Base colors
+$blue: #004c97;
+$blue2: #00386f;
+$blue3: #3c68ec;
+$blue4: #0f2b53;
+$blue5: #115da7;
+$blue6: #1f5489;
+$green: #007041;
+$green2: #53565a;
+$green3: #a4d65e;
+$green4: #717178;
+$green5: #5d5f62;
+$green6: #3f4044;
+$green7: #00843d;
+$green8: #89e6b4;
+$green9: #007a3e;
+$green10: #353e35;
+$green11: #ccebcd;
+$green12: #008b3d;
+$green13: #c9f788;
+$green14: #ecfaeb;
+$cyan: #5bc0de;
+$red: #d9534f;
+$orange: #f0ad4e;
+$orange1: #f47b20;
+$white: #fff;
+$black: #000;
+$grey: #d9d9d6;
+$grey2: #f7f7f7;
+$grey3: #f9fafb;
+$grey4: rgba(230, 230, 230, 0.5);
+$grey5: #373a3c;
+$grey6: #696969;
+
+// General
+$primary: $green6;
+$secondary: $green3;
+$site-text: $green6;
+
+// Moods
+$success: #5cb85c;
+$info: #5bc0de;
+$warning: $orange;
+$danger: $red;
+
+// Pagination
+$pagination-control-path: $black;
+
+// Dropdowns
+$dropdown-toggle: $black;
+
+// Autosuggest
+$autosuggest-item-bg: $white;
+$autosuggest-item-hover-bg: $primary;
+
+// Hawk Facet Rail
+$hawk-facet-rail-heading-bg: $primary;
+
+// Buttons
+$primary-btn-outline: $primary;
+$primary-btn-outline-border: $primary;
+$primary-btn-outline-bg-hover: $primary;
+$primary-btn-outline-border-hover: $primary;

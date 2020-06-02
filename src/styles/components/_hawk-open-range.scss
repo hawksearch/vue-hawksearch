@@ -1,0 +1,16 @@
+.hawk-open-range {
+	margin-bottom: 10px;
+}
+
+.hawk-open-range {
+	min-height: 36px;
+	input.hawk-text-input {
+		width: 80px;
+		&.value-start {
+			float: left;
+		}
+		&.value-end {
+			float: right;
+		}
+	}
+}

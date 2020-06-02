@@ -9,6 +9,8 @@ Vue.use(VueResource);
 import HawkSearchVue from "./HawkSearchVue";
 window.HawkSearchVue = HawkSearchVue;
 
+import 'styles/app.scss';
+
 export * from "./widgets";
 export * from './components';
 export { default as HawkSearchStore } from './store';

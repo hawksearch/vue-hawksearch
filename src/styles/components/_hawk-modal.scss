@@ -1,0 +1,15 @@
+.hawk-modal {
+	position: absolute;
+
+	left: 50%;
+	top: 35%;
+}
+
+.hawk-modal__content {
+	padding: 10px;
+
+	border: 2px solid $grey6;
+	border-radius: 10px 10px;
+
+	background-color: white;
+}

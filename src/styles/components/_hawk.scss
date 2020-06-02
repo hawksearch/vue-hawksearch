@@ -1,0 +1,18 @@
+.hawk {
+	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	font-size: 16px;
+}
+
+.hawk__header {
+	margin-bottom: 1em;
+}
+
+.hawk__body {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 70px;
+
+	@include md {
+		flex-wrap: nowrap;
+	}
+}

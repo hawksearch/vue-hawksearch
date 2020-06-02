@@ -1,6 +1,7 @@
 import pkg from './package.json';
 import resolve from '@rollup/plugin-node-resolve';
 import vuePlugin from 'rollup-plugin-vue';
+import scss from 'rollup-plugin-scss'
 
 const extensions = ['.mjs', '.web.js', '.js', '.json', '.vue'];
 
@@ -13,7 +14,7 @@ const config = {
 	output: {
 		file: pkg.module,
 		format: 'esm',
-		sourcemap: true,
+		compact: true
 	},
 
 	external,
@@ -27,7 +28,12 @@ const config = {
 				moduleDirectory: ['src', 'node_modules'],
 			},
 		}),
-		vuePlugin()
+		vuePlugin({
+			css: false
+		}),
+		scss({
+			outputStyle: 'compressed'
+		})
 	],
 };
 

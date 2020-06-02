@@ -1,0 +1,87 @@
+.hawk-facet-rail__facet-values-swatch ul {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 250px;
+}
+
+.hawk-facet-rail__facet-values-swatch li {
+	float: left;
+	padding: 0;
+	margin: 1px;
+	position: relative;
+
+	button.hawk-facet-rail__facet-btn.hawk-styleSwatch {
+		display: inline-block;
+		height: 36px;
+		width: 36px;
+		padding: 0;
+		margin: 2px;
+		text-align: center;
+		overflow: hidden;
+		text-shadow: 0 1px 0 #fff;
+		color: #333;
+		font-weight: bold;
+		border: 3px solid #fff;
+	}
+
+	button.hawk-negativeIcon {
+		display: none;
+		background-color: inherit;
+		border: none;
+		padding: 0;
+		float: right;
+		color: #999;
+		position: absolute;
+		right: 0px;
+		top: 2px;
+
+		.hawkIcon-blocked {
+			min-width: 10px;
+			line-height: 1;
+			display: inline-block;
+			font-style: normal;
+			font-weight: normal;
+			font-variant: normal;
+			text-transform: none;
+			line-height: 1;
+			-webkit-font-smoothing: antialiased;
+			&:before {
+				content: '\20e0';
+			}
+			&:hover {
+				color: #444;
+			}
+		}
+	}
+
+	&.hawkFacet-active button.hawk-facet-rail__facet-btn.hawk-styleSwatch {
+		border-color: #e98820;
+	}
+
+	&.hawkFacet-negative,
+	&:hover {
+		button.hawk-negativeIcon {
+			cursor: pointer;
+			display: block;
+		}
+	}
+}
+
+ul.hawk-facet-rail__facet-list.colors {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.hawk-facet-rail__facet-values-swatch .hawk-selectionInner {
+	display: block;
+	height: 32px;
+	width: 32px;
+	border: 2px solid #fff;
+	overflow: hidden;
+}
+
+.hawk-facet-rail__facet-values-swatch .hawk-selectionInner .hawk-swatchColor {
+	display: block;
+	width: 32px;
+	height: 32px;
+}

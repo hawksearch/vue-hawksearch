@@ -1,0 +1,45 @@
+@mixin paginationControl() {
+	height: 15px;
+	cursor: pointer;
+
+	path {
+		fill: $pagination-control-path;
+	}
+}
+
+.hawk-pagination__left {
+	@include paginationControl;
+}
+
+.hawk-pagination__right {
+	@include paginationControl;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0);
+	}
+	6.5% {
+		transform: rotateY(-9deg) translateX(-6px);
+	}
+	18.5% {
+		transform: rotateY(7deg) translateX(5px);
+	}
+	31.5% {
+		transform: rotateY(5deg) translateX(-3px);
+	}
+	43.5% {
+		transform: rotateY(3deg) translateX(2px);
+	}
+	50% {
+		transform: translateX(0);
+	}
+}
+
+/*
+ * Items Per Page
+ */
+
+.hawk-items-per-page {
+	display: inline-block;
+}

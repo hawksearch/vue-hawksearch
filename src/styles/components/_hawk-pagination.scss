@@ -1,0 +1,47 @@
+.hawk-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+
+	@include md {
+		justify-content: flex-start;
+	}
+}
+
+.hawk-pagination__controls {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 0;
+	margin-bottom: 15px;
+	width: 100%;
+
+	@include sm {
+		width: auto;
+		margin-bottom: 0;
+		margin-right: 15px;
+	}
+}
+
+.hawk-pagination__item {
+	@include HoverCircleAccent;
+	@include ButtonLink;
+
+	cursor: pointer;
+	margin: 0 18px;
+
+	.hawk & {
+		box-shadow: none;
+	}
+}
+
+.hawk-pagination__input[type='number'] {
+	.hawk & {
+		width: 70px;
+	}
+}
+
+.hawk-pagination__total-text {
+	white-space: nowrap;
+}

@@ -1,0 +1,38 @@
+.dropdown-toggle {
+	display: flex;
+	align-items: center;
+}
+
+.dropdown-toggle::after {
+	vertical-align: 0.155em;
+}
+
+.dropdown-toggle:not(:disabled):not(.disabled):active:focus,
+.dropdown-toggle:not(:disabled):not(.disabled).active:focus,
+.show > .dropdown-toggle.dropdown-toggle:focus .hawk-btn-outline-secondary {
+	color: $dropdown-toggle;
+}
+
+.dropdown-toggle__text {
+	width: 100%;
+}
+
+.dropdown-item:not(:disabled) {
+	cursor: pointer;
+}
+
+// Need importants to override styles from js.
+.dropdown--right .dropdown-menu {
+	transform: none !important;
+	top: 100% !important;
+	left: auto !important;
+	right: 0 !important;
+}
+
+// Need importants to override styles from js.
+.dropdown--left .dropdown-menu {
+	transform: none !important;
+	top: 100% !important;
+	left: 0 !important;
+	right: auto !important;
+}

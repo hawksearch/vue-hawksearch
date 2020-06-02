@@ -1,0 +1,42 @@
+.icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
+/* Roc Logo SVG */
+.icon-roc-logo {
+    width: 100px;
+    height: auto;
+    position: relative;
+    top: -5px;
+}
+
+.icon-primary {
+    fill: $primary;
+    color: $primary;
+
+    path {
+        fill: $primary;
+        color: $primary;
+    }
+}
+
+.icon-disabled {
+    pointer-events: none;
+
+    path {
+        fill: #b9bbbd !important;
+    }
+}
+
+.listing-item-status-icon {
+    width: 30px;
+
+    @include xlg {
+        width: 15px;
+    }
+}
