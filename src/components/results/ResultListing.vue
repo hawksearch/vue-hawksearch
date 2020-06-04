@@ -1,7 +1,14 @@
 <template>
     <div class="hawk-results__listing">
-        <template v-for="result in results">
-            <result-item :result="result"></result-item>
+        <template v-if="loadingResults">
+            <spinner></spinner>
+        </template>
+
+        <template v-if="results && results.length">
+            <result-item v-for="result in results" :key="result.DocId" :result="result"></result-item>
+        </template>
+        <template v-else>
+            <placeholder-item v-for="index in 12" :key="index"></placeholder-item>
         </template>
     </div>
 </template>
@@ -9,12 +16,16 @@
 <script lang="js">
     import { mapState } from 'vuex'
     import ResultItem from './ResultItem'
+    import PlaceholderItem from './PlaceholderItem'
+    import Spinner from './Spinner'
 
     export default {
         name: 'result-listing',
         props: [],
         components: {
-            ResultItem
+            ResultItem,
+            PlaceholderItem,
+            Spinner
         },
         mounted() {
 
@@ -29,10 +40,11 @@
         },
         computed: {
             ...mapState([
-                'searchOutput'
+                'searchOutput',
+                'loadingResults'
             ]),
             results: function () {
-                return this.searchOutput.Results
+                return this.searchOutput ? this.searchOutput.Results : null;
             }
         }
     }
@@ -40,5 +52,4 @@
 </script>
 
 <style scoped lang="scss">
-
 </style>

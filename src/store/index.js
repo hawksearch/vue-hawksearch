@@ -7,13 +7,15 @@ export default new Vuex.Store({
     state: {
         config: {}, // defaults are set in HawkSearchVue class
         searchOutput: null,
+        suggestions: null,
         pendingSearch: {
             Keyword: "",
             FacetSelections: {}
         },
-        suggestions: null,
         extendedSearchParams: {},
-        searchError: false
+        searchError: false,
+        loadingResults: false,
+        loadingSuggestions: false
     },
     mutations: {
         updateConfig(state, value) {
@@ -33,17 +35,25 @@ export default new Vuex.Store({
         },
         setSearchError(state, value) {
             state.searchError = value
+        },
+        updateLoadingResults(state, value) {
+            state.loadingResults = value;
+        },
+        updateLoadingSuggestions(state, value) {
+            state.loadingSuggestions = value;
         }
     },
     actions: {
         fetchResults({ commit, state }, searchParams) {
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
             commit('updatePendingSearch', pendingSearch);
-
-            // reset suggestions
             commit('updateSuggestions', null);
+            commit('updateLoadingSuggestions', false);
+            commit('updateLoadingResults', true);
 
             HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
+                commit('updateLoadingResults', false);
+
                 if (searchOutput) {
                     commit('setSearchError', false);
                     commit('updateResults', searchOutput);
@@ -58,10 +68,12 @@ export default new Vuex.Store({
                 }
             });
         },
-        fetchSuggestions({ commit, state }, { searchParams, callback }) {
+        fetchSuggestions({ commit, state }, searchParams) {
             HawkSearchVue.fetchSuggestions(searchParams, (suggestions) => {
-                commit('updateSuggestions', suggestions);
-                callback();
+                if (suggestions) {
+                    commit('updateLoadingSuggestions', false);
+                    commit('updateSuggestions', suggestions);
+                }
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {

@@ -1,13 +1,14 @@
 <template>
     <div class="hawk__searchBox">
         <div class="hawk__searchBox__searchInput">
-            <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur"/>
+            <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
-        <search-suggestions :loading="loading"></search-suggestions>
+        <search-suggestions></search-suggestions>
     </div>
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     import HawkSearchVue from "../../HawkSearchVue";
     import SearchSuggestions from "./SearchSuggestions";
 
@@ -25,14 +26,13 @@
                 keyword: null,
                 placeholder: 'Enter search term',
                 suggestionDelay: null,
-                loading: false
+                loadingSuggestions: false
             }
         },
         methods: {
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
-                    this.loading = false;
-                    this.$root.$store.commit('updateSuggestions', null);
+                    this.cancelSuggestions();
 
                     if (HawkSearchVue.isGlobal()) {
                         HawkSearchVue.redirectSearch(keyword);
@@ -45,31 +45,34 @@
             onInput: function (e) {
                 let keyword = e.target.value;
 
-                clearTimeout(this.suggestionDelay);
-                this.loading = true;
-
-                let searchParams = { Keyword: keyword };
-                let callback = () => {
-                    this.loading = false;
-                };
-
                 if (keyword) {
+                    this.$root.$store.commit('updateLoadingSuggestions', true);
+
+                    clearTimeout(this.suggestionDelay);
                     this.suggestionDelay = setTimeout(() => {
-                        this.$root.$store.dispatch('fetchSuggestions', { searchParams, callback });
+                        this.$root.$store.dispatch('fetchSuggestions', { Keyword: keyword });
                     }, 250);
                 }
                 else {
-                    this.$root.$store.commit('updateSuggestions', null);
-                    callback();
+                    this.cancelSuggestions()
                 }
             },
             onBlur: function () {
                 this.keyword = null;
+                this.cancelSuggestions();
+            },
+            cancelSuggestions: function () {
+                clearTimeout(this.suggestionDelay);
+                HawkSearchVue.cancelSuggestionsRequest();
+                this.$root.$store.commit('updateLoadingSuggestions', false);
                 this.$root.$store.commit('updateSuggestions', null);
             }
         },
         computed: {
-
+            ...mapState([
+                'loadingResults',
+                'loadingSuggestions'
+            ])
         }
     }
 

@@ -13,6 +13,7 @@ class HawkSearchVue {
     }
 
     static configurationApplied = false
+    static suggestionRequest = null
 
     static configure(config) {
         if (!config) {
@@ -81,6 +82,8 @@ class HawkSearchVue {
 
         var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName });
 
+        this.cancelSuggestionsRequest();
+
         Vue.http.post(this.getFullSearchUrl(), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
@@ -105,13 +108,26 @@ class HawkSearchVue {
 
         var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName, DisplayFullResponse: true });
 
-        Vue.http.post(this.getFullAutocompleteUrl(), params).then(response => {
+        Vue.http.post(this.getFullAutocompleteUrl(), params, {
+            before(request) {
+                // TOOD: Fix scope
+                HawkSearchVue.cancelSuggestionsRequest();
+                HawkSearchVue.suggestionRequest = request;
+            }
+        }).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
         }).catch(response => {
             callback(false);
         });
+
+    }
+
+    static cancelSuggestionsRequest() {
+        if (this.suggestionRequest) {
+            this.suggestionRequest.abort();
+        }
     }
 
     static requestConditionsMet() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-tool-row">
+    <div v-if="searchOutput" class="hawk-tool-row">
         <div class="hawk-tool-row__item">
             <sorting />
         </div>
@@ -13,27 +13,18 @@
 <script lang="js">
     import Sorting from './tools/Sorting'
     import Pagination from './tools/Pagination'
+    import { mapState } from 'vuex';
 
     export default {
         name: 'tool-row',
-        props: [],
         components: {
             Sorting,
             Pagination
         },
-        mounted() {
-
-        },
-        data() {
-            return {
-
-            }
-        },
-        methods: {
-
-        },
         computed: {
-
+            ...mapState([
+                'searchOutput'
+            ])
         }
     }
 

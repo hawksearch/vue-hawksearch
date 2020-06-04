@@ -1,5 +1,5 @@
 <template>
-    <div className="hawk-facet-rail__results-label">
+    <div class="hawk-facet-rail__results-label">
         <h3>
             <template v-if="keyword">
                 {{ $t('Search Results for') }} {{ keyword }}
@@ -33,7 +33,7 @@
                 'searchOutput'
             ]),
             keyword: function () {
-                return this.searchOutput.Keyword;
+                return this.searchOutput ? this.searchOutput.Keyword : null;
             }
         }
     }

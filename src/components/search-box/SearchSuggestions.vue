@@ -1,8 +1,8 @@
 <template>
     <div class="autosuggest-menu">
-        <template v-if="loading || suggestions">
+        <template v-if="loadingSuggestions || suggestions">
             <ul class="dropdown-menu autosuggest-menu__list">
-                <template v-if="loading">
+                <template v-if="loadingSuggestions">
                     <li class="autosuggest-menu__item">{{ $t('Loading') }}...</li>
                 </template>
                 <template v-else-if="suggestions.Products.length">
@@ -23,7 +23,7 @@
 
     export default {
         name: 'search-suggestions',
-        props: ['loading'],
+        props: [],
         mounted() {
 
         },
@@ -37,7 +37,8 @@
         },
         computed: {
             ...mapState([
-                'suggestions'
+                'suggestions',
+                'loadingSuggestions'
             ])
         }
     }

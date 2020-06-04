@@ -1,6 +1,12 @@
 <template>
     <div class="hawk-results">
-        <template v-if="searchOutput && searchOutput.Results && searchOutput.Results.length">
+        <template v-if="searchError">
+            <span>{{ $t('response_error_generic') }}</span>
+        </template>
+        <template v-else-if="searchOutput && searchOutput.Results && searchOutput.Results.length == 0">
+            <span>{{ $t('No Results') }}</span>
+        </template>
+        <template v-else>
             <search-results-label />
             <!--<selections />-->
 
@@ -13,12 +19,6 @@
             <div class="hawk-results__bottom-tool-row">
                 <tool-row />
             </div>
-        </template>
-        <template v-else-if="searchError">
-            <span>{{ $t('response_error_generic') }}</span>
-        </template>
-        <template v-else>
-            <span>{{ $t('No Results') }}</span>
         </template>
     </div>
 </template>
@@ -62,5 +62,4 @@
 </script>
 
 <style scoped lang="scss">
-
 </style>
