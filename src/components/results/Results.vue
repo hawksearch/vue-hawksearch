@@ -8,7 +8,7 @@
         </template>
         <template v-else>
             <search-results-label />
-            <!--<selections />-->
+            <selections />
 
             <div class="hawk-results__top-tool-row">
                 <tool-row />
@@ -23,10 +23,10 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
     import SearchResultsLabel from '../facets/SearchResultsLabel'
-    //import Selections from 'src/components/facets/Selections'
+    import Selections from '../facets/Selections'
     import ToolRow from './ToolRow'
     import ResultListing from './ResultListing'
 
@@ -35,7 +35,7 @@
         props: [],
         components: {
             SearchResultsLabel,
-            //Selections,
+            Selections,
             ToolRow,
             ResultListing
         },
