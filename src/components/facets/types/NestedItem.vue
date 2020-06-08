@@ -1,32 +1,30 @@
 <template>
     <li class="hawk-facet-rail__facet-list-item hawkFacet-group">
         <div class="hawkFacet-group__inline">
-            <button @click="onValueSelected" class="hawk-facet-rail__facet-btn" >
-                <span :class="isSelected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'" >
-                    <template v-if="isSelected">
+            <button @click="selectFacet(itemData)" class="hawk-facet-rail__facet-btn" >
+                <span :class="itemData.Selected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'" >
+                    <template v-if="itemData.Selected">
                         <checkmark-svg class="hawk-facet-rail__facet-checkbox-icon" />
                     </template>
                 </span>
-                <span :style="isNegated ? '{ textDecoration: \'line-through\' }' : ''" class="hawk-facet-rail__facet-name">
+                <span :class="itemData.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
                     {{ itemData.Label }} ({{ itemData.Count }})
                 </span>
             </button>
-            <button @click="onValueSelected" class="hawk-facet-rail__facet-btn-exclude">
-                <template v-if="isNegated">
+            <button @click="negateFacet(itemData)" class="hawk-facet-rail__facet-btn-exclude">
+                <template v-if="itemData.Negated">
                     <plus-circle-svg class="hawk-facet-rail__facet-btn-include" />
-                    <span class="visually-hidden">Include facet</span>
                 </template>
                 <template v-else>
                     <dash-circle-svg />
-                    <span class="visually-hidden">Exclude facet</span>
                 </template>
             </button>
-            <button :class="isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'" aria-expanded="false" @click="toggleExpanded">
+            <button v-if="itemData.Children && itemData.Children.length" :class="isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'" aria-expanded="false" @click="toggleExpanded">
             </button>
         </div>
-        <div v-if="isExpanded && itemData.children" class="hawk-facet-rail__w-100">
+        <div v-if="isExpanded && itemData.Children" class="hawk-facet-rail__w-100">
             <ul class="hawkFacet-group-inside">
-                <nested-item v-for="item in itemData.children" :key="item.Value" :item-data="item" />
+                <nested-item v-for="item in itemData.Children" :key="item.Value" :item-data="item" :facet-data="facetData" />
             </ul>
         </div>
     </li>
@@ -39,7 +37,7 @@
 
     export default {
         name: 'nested-item',
-        props: ['itemData'],
+        props: ['facetData', 'itemData'],
         components: {
             CheckmarkSvg,
             PlusCircleSvg,
@@ -50,17 +48,31 @@
         },
         data() {
             return {
-                isExpanded: false,
-                isSelected: false,
-                isNegated: false
+                isExpanded: false
             }
         },
         methods: {
-            onValueSelected: function () {
-                console.log('Value selected');
-            },
             toggleExpanded: function () {
                 this.isExpanded = !this.isExpanded;
+            },
+            selectFacet: function (value) {
+                if (value.Negated) {
+                    value.Selected = true;
+                    value.Negated = false;
+                }
+                else {
+                    value.Selected = !value.Selected;
+                }
+
+                this.applyFacets();
+            },
+            negateFacet: function (value) {
+                value.Negated = !value.Negated;
+                value.Selected = value.Negated;
+                this.applyFacets();
+            },
+            applyFacets: function () {
+                this.$root.$store.dispatch('applyFacets', this.facetData);
             }
         },
         computed: {

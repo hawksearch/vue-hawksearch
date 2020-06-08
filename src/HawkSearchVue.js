@@ -88,7 +88,7 @@ class HawkSearchVue {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }).catch(response => {
+        }, response => {
             callback(false);
         });
     }
@@ -118,7 +118,7 @@ class HawkSearchVue {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }).catch(response => {
+        }, response => {
             callback(false);
         });
 
@@ -157,33 +157,42 @@ class HawkSearchVue {
         }
 
         var extendedSearchParams = Object.assign({}, searchOutput);
+        var paramPool = pendingSearch.FacetSelections;
 
-        var extendParam = function (param, paramPool) {
-            if (param && param.Field && paramPool.hasOwnProperty(param.Field)) {
-                if (param.Values.length) {
-                    param.Values.map(value => {
-                        value.Selected = Boolean(paramPool[param.Field].find(param => {
-                            return param == value.Value
-                        }));
+        var handleSelections = (options, param) => {
+            options.map(value => {
+                value.Selected = Boolean(paramPool[this.getFacetParamName(param)].find(param => {
+                    return param == value.Value
+                }));
 
-                        value.Negated = Boolean(paramPool[param.Field].find(param => {
-                            return param == ('-' + value.Value)
-                        }));
+                value.Negated = Boolean(paramPool[this.getFacetParamName(param)].find(param => {
+                    return param == ('-' + value.Value)
+                }));
 
-                        if (value.Negated) {
-                            value.Selected = true;
-                        }
-
-                        return value;
-                    });
+                if (value.Negated) {
+                    value.Selected = true;
                 }
+
+                if (value.Children && value.Children.length) {
+                    handleSelections(value.Children, param);
+                }
+            });
+        }
+
+        var extendParam = function (param) {
+            if (param && param.Values && param.Values.length) {
+                handleSelections(param.Values, param);
 
                 return param;
             }
         }
 
         extendedSearchParams.Facets.map(facet => {
-            return extendParam(facet, pendingSearch.FacetSelections);
+            if (facet && facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
+                handleSelections(facet.Values, facet);
+            }
+
+            return facet;
         });
 
         callback(extendedSearchParams);
@@ -199,31 +208,47 @@ class HawkSearchVue {
             return false;
         }
 
-        var field = facet.ParamName ? facet.ParamName : facet.Field;
+        var field = this.getFacetParamName(facet);
         var searchParamFacets = Object.assign({}, pendingSearchFacets);
 
         // Create or clear the facet values
         searchParamFacets[field] = [];
 
-        if (facet.FacetType == 'checkbox') {
-            facet.Values.forEach(value => {
+        var handleCheckboxes = function (options) {
+            options.forEach(value => {
                 if (value.Negated) {
                     searchParamFacets[field].push('-' + value.Value);
                 }
                 else if (value.Selected) {
                     searchParamFacets[field].push(value.Value);
                 }
-            });
 
-            if (searchParamFacets[field].length == 0) {
-                delete searchParamFacets[field];
-            }
+                if (value.Children && value.Children.length) {
+                    handleCheckboxes(value.Children);
+                }
+            });
         }
-        else if (facet.FacetType == 'openRange') {
-            searchParamFacets[field].push(facet.Value);
+
+        switch (facet.FacetType) {
+            case 'checkbox':
+            case 'nestedcheckbox':
+                handleCheckboxes(facet.Values);
+
+                if (searchParamFacets[field].length == 0) {
+                    delete searchParamFacets[field];
+                }
+                break;
+
+            case 'openRange':
+                searchParamFacets[field].push(facet.Value);
+                break;
         }
 
         callback(searchParamFacets);
+    }
+
+    static getFacetParamName(facet) {
+        return facet.ParamName ? facet.ParamName : facet.Field;
     }
 
     // Overrides the template prioritization

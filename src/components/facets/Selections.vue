@@ -69,6 +69,11 @@
 
                 if (selections.hasOwnProperty(field)) {
                     selections[field] = selections[field].filter(v => v != item);
+
+                    if (selections[field].length == 0) {
+                        delete selections[field];
+                    }
+
                     this.refreshResults(selections);
                 }
             },

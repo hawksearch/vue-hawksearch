@@ -38,7 +38,7 @@
                         HawkSearchVue.redirectSearch(keyword);
                     }
                     else {
-                        this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword });
+                        this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
                     }
                 }
             },

@@ -195,7 +195,7 @@ var store = new Vuex.Store({
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }).catch(response => {
+        }, response => {
             callback(false);
         });
     }
@@ -225,7 +225,7 @@ var store = new Vuex.Store({
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }).catch(response => {
+        }, response => {
             callback(false);
         });
 
@@ -264,33 +264,34 @@ var store = new Vuex.Store({
         }
 
         var extendedSearchParams = Object.assign({}, searchOutput);
+        var paramPool = pendingSearch.FacetSelections;
 
-        var extendParam = function (param, paramPool) {
-            if (param && param.Field && paramPool.hasOwnProperty(param.Field)) {
-                if (param.Values.length) {
-                    param.Values.map(value => {
-                        value.Selected = Boolean(paramPool[param.Field].find(param => {
-                            return param == value.Value
-                        }));
+        var handleSelections = (options, param) => {
+            options.map(value => {
+                value.Selected = Boolean(paramPool[this.getFacetParamName(param)].find(param => {
+                    return param == value.Value
+                }));
 
-                        value.Negated = Boolean(paramPool[param.Field].find(param => {
-                            return param == ('-' + value.Value)
-                        }));
+                value.Negated = Boolean(paramPool[this.getFacetParamName(param)].find(param => {
+                    return param == ('-' + value.Value)
+                }));
 
-                        if (value.Negated) {
-                            value.Selected = true;
-                        }
-
-                        return value;
-                    });
+                if (value.Negated) {
+                    value.Selected = true;
                 }
 
-                return param;
-            }
+                if (value.Children && value.Children.length) {
+                    handleSelections(value.Children, param);
+                }
+            });
         };
 
         extendedSearchParams.Facets.map(facet => {
-            return extendParam(facet, pendingSearch.FacetSelections);
+            if (facet && facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
+                handleSelections(facet.Values, facet);
+            }
+
+            return facet;
         });
 
         callback(extendedSearchParams);
@@ -306,31 +307,47 @@ var store = new Vuex.Store({
             return false;
         }
 
-        var field = facet.ParamName ? facet.ParamName : facet.Field;
+        var field = this.getFacetParamName(facet);
         var searchParamFacets = Object.assign({}, pendingSearchFacets);
 
         // Create or clear the facet values
         searchParamFacets[field] = [];
 
-        if (facet.FacetType == 'checkbox') {
-            facet.Values.forEach(value => {
+        var handleCheckboxes = function (options) {
+            options.forEach(value => {
                 if (value.Negated) {
                     searchParamFacets[field].push('-' + value.Value);
                 }
                 else if (value.Selected) {
                     searchParamFacets[field].push(value.Value);
                 }
-            });
 
-            if (searchParamFacets[field].length == 0) {
-                delete searchParamFacets[field];
-            }
-        }
-        else if (facet.FacetType == 'openRange') {
-            searchParamFacets[field].push(facet.Value);
+                if (value.Children && value.Children.length) {
+                    handleCheckboxes(value.Children);
+                }
+            });
+        };
+
+        switch (facet.FacetType) {
+            case 'checkbox':
+            case 'nestedcheckbox':
+                handleCheckboxes(facet.Values);
+
+                if (searchParamFacets[field].length == 0) {
+                    delete searchParamFacets[field];
+                }
+                break;
+
+            case 'openRange':
+                searchParamFacets[field].push(facet.Value);
+                break;
         }
 
         callback(searchParamFacets);
+    }
+
+    static getFacetParamName(facet) {
+        return facet.ParamName ? facet.ParamName : facet.Field;
     }
 
     // Overrides the template prioritization
@@ -587,7 +604,7 @@ var script$1 = {
                     HawkSearchVue$1.redirectSearch(keyword);
                 }
                 else {
-                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword });
+                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
                 }
             }
         },
@@ -673,7 +690,7 @@ __vue_render__$1._withStripped = true;
   /* style */
   const __vue_inject_styles__$1 = undefined;
   /* scoped */
-  const __vue_scope_id__$1 = "data-v-1f285f66";
+  const __vue_scope_id__$1 = "data-v-a5038df4";
   /* module identifier */
   const __vue_module_identifier__$1 = undefined;
   /* functional template */
@@ -2834,7 +2851,7 @@ VueI18n.version = '8.18.1';Vue$2.use(VueI18n);
 //}
 const messages = {
     en: {
-        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
+        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator.",
     }
 };
 
@@ -3073,6 +3090,11 @@ var script$4 = {
 
             if (selections.hasOwnProperty(field)) {
                 selections[field] = selections[field].filter(v => v != item);
+
+                if (selections[field].length == 0) {
+                    delete selections[field];
+                }
+
                 this.refreshResults(selections);
             }
         },
@@ -3225,7 +3247,7 @@ __vue_render__$4._withStripped = true;
   /* style */
   const __vue_inject_styles__$4 = undefined;
   /* scoped */
-  const __vue_scope_id__$4 = "data-v-787eeabf";
+  const __vue_scope_id__$4 = "data-v-060e9670";
   /* module identifier */
   const __vue_module_identifier__$4 = undefined;
   /* functional template */
@@ -4858,111 +4880,119 @@ var __vue_render__$p = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
-  return _c("div", { staticClass: "hawk-facet-rail__facet-values" }, [
-    _c("div", { staticClass: "hawk-facet-rail__facet-values-checkbox" }, [
-      _c(
-        "ul",
-        { staticClass: "hawk-facet-rail__facet-list" },
-        _vm._l(_vm.items, function(value) {
-          return _c(
-            "li",
-            {
-              key: value.Value,
-              staticClass: "hawk-facet-rail__facet-list-item"
-            },
-            [
-              _c(
-                "button",
-                {
-                  staticClass: "hawk-facet-rail__facet-btn",
-                  on: {
-                    click: function($event) {
-                      return _vm.selectFacet(value)
+  return _c(
+    "div",
+    { staticClass: "hawk-facet-rail__facet-values" },
+    [
+      _c("div", { staticClass: "hawk-facet-rail__facet-values-checkbox" }, [
+        _c(
+          "ul",
+          { staticClass: "hawk-facet-rail__facet-list" },
+          _vm._l(_vm.items, function(value) {
+            return _c(
+              "li",
+              {
+                key: value.Value,
+                staticClass: "hawk-facet-rail__facet-list-item"
+              },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "hawk-facet-rail__facet-btn",
+                    on: {
+                      click: function($event) {
+                        return _vm.selectFacet(value)
+                      }
                     }
-                  }
-                },
-                [
-                  _c(
-                    "span",
-                    {
-                      class: value.Selected
-                        ? "hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked"
-                        : "hawk-facet-rail__facet-checkbox"
-                    },
-                    [
-                      value.Selected
-                        ? _c("checkmark-svg", {
-                            staticClass: "hawk-facet-rail__facet-checkbox-icon"
+                  },
+                  [
+                    _c(
+                      "span",
+                      {
+                        class: value.Selected
+                          ? "hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked"
+                          : "hawk-facet-rail__facet-checkbox"
+                      },
+                      [
+                        value.Selected
+                          ? _c("checkmark-svg", {
+                              staticClass:
+                                "hawk-facet-rail__facet-checkbox-icon"
+                            })
+                          : _vm._e()
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _vm.rangeValueAssetUrl
+                      ? _c("span", { staticClass: "hawk-selectionInner" }, [
+                          _c("span", {
+                            staticClass: "hawk-range-asset",
+                            attrs: { title: value.Label }
+                          }),
+                          _vm._v(" "),
+                          _c("img", {
+                            attrs: {
+                              src: _vm.rangeValueAssetUrl,
+                              alt: value.Label
+                            }
                           })
-                        : _vm._e()
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _vm.rangeValueAssetUrl
-                    ? _c("span", { staticClass: "hawk-selectionInner" }, [
-                        _c("span", {
-                          staticClass: "hawk-range-asset",
-                          attrs: { title: value.Label }
-                        }),
-                        _vm._v(" "),
-                        _c("img", {
-                          attrs: {
-                            src: _vm.rangeValueAssetUrl,
-                            alt: value.Label
-                          }
-                        })
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    {
-                      class: value.Negated
-                        ? "hawk-facet-rail__facet-name line-through"
-                        : "hawk-facet-rail__facet-name"
-                    },
-                    [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(value.Label) +
-                          " (" +
-                          _vm._s(value.Count) +
-                          ")\n                    "
-                      )
-                    ]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "hawk-facet-rail__facet-btn-exclude",
-                  on: {
-                    click: function($event) {
-                      return _vm.negateFacet(value)
-                    }
-                  }
-                },
-                [
-                  value.Negated
-                    ? [
-                        _c("plus-circle-svg", {
-                          staticClass: "hawk-facet-rail__facet-btn-include"
-                        })
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        class: value.Negated
+                          ? "hawk-facet-rail__facet-name line-through"
+                          : "hawk-facet-rail__facet-name"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(value.Label) +
+                            " (" +
+                            _vm._s(value.Count) +
+                            ")\n                    "
+                        )
                       ]
-                    : [_c("dash-circle-svg")]
-                ],
-                2
-              )
-            ]
-          )
-        }),
-        0
-      )
-    ])
-  ])
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "hawk-facet-rail__facet-btn-exclude",
+                    on: {
+                      click: function($event) {
+                        return _vm.negateFacet(value)
+                      }
+                    }
+                  },
+                  [
+                    value.Negated
+                      ? [
+                          _c("plus-circle-svg", {
+                            staticClass: "hawk-facet-rail__facet-btn-include"
+                          })
+                        ]
+                      : [_c("dash-circle-svg")]
+                  ],
+                  2
+                )
+              ]
+            )
+          }),
+          0
+        )
+      ]),
+      _vm._v(" "),
+      _vm._t("default")
+    ],
+    2
+  )
 };
 var __vue_staticRenderFns__$p = [];
 __vue_render__$p._withStripped = true;
@@ -4970,7 +5000,7 @@ __vue_render__$p._withStripped = true;
   /* style */
   const __vue_inject_styles__$p = undefined;
   /* scoped */
-  const __vue_scope_id__$p = "data-v-0d302f3c";
+  const __vue_scope_id__$p = "data-v-02a9df84";
   /* module identifier */
   const __vue_module_identifier__$p = undefined;
   /* functional template */
@@ -4996,7 +5026,7 @@ __vue_render__$p._withStripped = true;
     undefined
   );var script$q = {
     name: 'nested-item',
-    props: ['itemData'],
+    props: ['facetData', 'itemData'],
     components: {
         CheckmarkSvg: __vue_component__$m,
         PlusCircleSvg: __vue_component__$n,
@@ -5007,17 +5037,31 @@ __vue_render__$p._withStripped = true;
     },
     data() {
         return {
-            isExpanded: false,
-            isSelected: false,
-            isNegated: false
+            isExpanded: false
         }
     },
     methods: {
-        onValueSelected: function () {
-            console.log('Value selected');
-        },
         toggleExpanded: function () {
             this.isExpanded = !this.isExpanded;
+        },
+        selectFacet: function (value) {
+            if (value.Negated) {
+                value.Selected = true;
+                value.Negated = false;
+            }
+            else {
+                value.Selected = !value.Selected;
+            }
+
+            this.applyFacets();
+        },
+        negateFacet: function (value) {
+            value.Negated = !value.Negated;
+            value.Selected = value.Negated;
+            this.applyFacets();
+        },
+        applyFacets: function () {
+            this.$root.$store.dispatch('applyFacets', this.facetData);
         }
     },
     computed: {
@@ -5038,18 +5082,22 @@ var __vue_render__$q = function() {
           "button",
           {
             staticClass: "hawk-facet-rail__facet-btn",
-            on: { click: _vm.onValueSelected }
+            on: {
+              click: function($event) {
+                return _vm.selectFacet(_vm.itemData)
+              }
+            }
           },
           [
             _c(
               "span",
               {
-                class: _vm.isSelected
+                class: _vm.itemData.Selected
                   ? "hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked"
                   : "hawk-facet-rail__facet-checkbox"
               },
               [
-                _vm.isSelected
+                _vm.itemData.Selected
                   ? [
                       _c("checkmark-svg", {
                         staticClass: "hawk-facet-rail__facet-checkbox-icon"
@@ -5063,8 +5111,9 @@ var __vue_render__$q = function() {
             _c(
               "span",
               {
-                staticClass: "hawk-facet-rail__facet-name",
-                style: _vm.isNegated ? "{ textDecoration: 'line-through' }" : ""
+                class: _vm.itemData.Negated
+                  ? "hawk-facet-rail__facet-name line-through"
+                  : "hawk-facet-rail__facet-name"
               },
               [
                 _vm._v(
@@ -5083,48 +5132,44 @@ var __vue_render__$q = function() {
           "button",
           {
             staticClass: "hawk-facet-rail__facet-btn-exclude",
-            on: { click: _vm.onValueSelected }
+            on: {
+              click: function($event) {
+                return _vm.negateFacet(_vm.itemData)
+              }
+            }
           },
           [
-            _vm.isNegated
+            _vm.itemData.Negated
               ? [
                   _c("plus-circle-svg", {
                     staticClass: "hawk-facet-rail__facet-btn-include"
-                  }),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "visually-hidden" }, [
-                    _vm._v("Include facet")
-                  ])
+                  })
                 ]
-              : [
-                  _c("dash-circle-svg"),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "visually-hidden" }, [
-                    _vm._v("Exclude facet")
-                  ])
-                ]
+              : [_c("dash-circle-svg")]
           ],
           2
         ),
         _vm._v(" "),
-        _c("button", {
-          class: _vm.isExpanded
-            ? "hawk-collapseState"
-            : "hawk-collapseState collapsed",
-          attrs: { "aria-expanded": "false" },
-          on: { click: _vm.toggleExpanded }
-        })
+        _vm.itemData.Children && _vm.itemData.Children.length
+          ? _c("button", {
+              class: _vm.isExpanded
+                ? "hawk-collapseState"
+                : "hawk-collapseState collapsed",
+              attrs: { "aria-expanded": "false" },
+              on: { click: _vm.toggleExpanded }
+            })
+          : _vm._e()
       ]),
       _vm._v(" "),
-      _vm.isExpanded && _vm.itemData.children
+      _vm.isExpanded && _vm.itemData.Children
         ? _c("div", { staticClass: "hawk-facet-rail__w-100" }, [
             _c(
               "ul",
               { staticClass: "hawkFacet-group-inside" },
-              _vm._l(_vm.itemData.children, function(item) {
+              _vm._l(_vm.itemData.Children, function(item) {
                 return _c("nested-item", {
                   key: item.Value,
-                  attrs: { "item-data": item }
+                  attrs: { "item-data": item, "facet-data": _vm.facetData }
                 })
               }),
               1
@@ -5140,7 +5185,7 @@ __vue_render__$q._withStripped = true;
   /* style */
   const __vue_inject_styles__$q = undefined;
   /* scoped */
-  const __vue_scope_id__$q = "data-v-3d6b9714";
+  const __vue_scope_id__$q = "data-v-fb61375c";
   /* module identifier */
   const __vue_module_identifier__$q = undefined;
   /* functional template */
@@ -5164,7 +5209,9 @@ __vue_render__$q._withStripped = true;
     undefined,
     undefined,
     undefined
-  );var script$r = {
+  );//
+
+var script$r = {
     name: 'nested-checkbox',
     props: ['facetData'],
     components: {
@@ -5193,21 +5240,28 @@ var __vue_render__$r = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
-  return _c("div", { staticClass: "hawk-facet-rail__facet-values" }, [
-    _c("div", { staticClass: "hawk-facet-rail__facet-values-checkbox" }, [
-      _c(
-        "ul",
-        { staticClass: "hawk-facet-rail__facet-list" },
-        _vm._l(_vm.items, function(item) {
-          return _c("nested-item", {
-            key: item.Value,
-            attrs: { "item-data": item }
-          })
-        }),
-        1
-      )
-    ])
-  ])
+  return _c(
+    "div",
+    { staticClass: "hawk-facet-rail__facet-values" },
+    [
+      _c("div", { staticClass: "hawk-facet-rail__facet-values-checkbox" }, [
+        _c(
+          "ul",
+          { staticClass: "hawk-facet-rail__facet-list" },
+          _vm._l(_vm.items, function(item) {
+            return _c("nested-item", {
+              key: item.Value,
+              attrs: { "item-data": item, "facet-data": _vm.facetData }
+            })
+          }),
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _vm._t("default")
+    ],
+    2
+  )
 };
 var __vue_staticRenderFns__$r = [];
 __vue_render__$r._withStripped = true;
@@ -5215,7 +5269,7 @@ __vue_render__$r._withStripped = true;
   /* style */
   const __vue_inject_styles__$r = undefined;
   /* scoped */
-  const __vue_scope_id__$r = "data-v-805d3334";
+  const __vue_scope_id__$r = "data-v-05a63a24";
   /* module identifier */
   const __vue_module_identifier__$r = undefined;
   /* functional template */
@@ -5464,7 +5518,9 @@ __vue_render__$t._withStripped = true;
     undefined,
     undefined,
     undefined
-  );var script$u = {
+  );//
+
+var script$u = {
     name: 'facet',
     props: ['facetData'],
     components: {
@@ -5476,13 +5532,15 @@ __vue_render__$t._withStripped = true;
         Search: __vue_component__$s,
         OpenRange: __vue_component__$t
     },
-    mounted() {
-
+    created: function () {
+        this.setFilter();
     },
     data() {
         return {
             isCollapsed: false,
-            filter: null
+            filter: null,
+            filteredData: null,
+            isTruncated: true
         }
     },
     methods: {
@@ -5490,12 +5548,41 @@ __vue_render__$t._withStripped = true;
             this.isCollapsed = !this.isCollapsed;
         },
         setFilter: function () {
-            console.log("Set filter");
+            if (this.filteredData && this.filter) {
+                this.filteredData.Values = this.facetData.Values.filter(item => this.valueIncludesString(item.Label, this.filter) || this.valueIncludesString(item.Value, this.filter));
+            }
+            else {
+                let facetData = Object.assign({}, this.facetData);
+
+                if (this.isTruncated && this.shouldTruncate) {
+                    facetData.Values = facetData.Values.slice(0, facetData.TruncateThreshold);
+                }
+
+                this.filteredData = facetData;
+            }
+        },
+        valueIncludesString: function (value, str) {
+            return value.toLowerCase().includes(str.toLowerCase());
+        },
+        toggleTruncate: function () {
+            this.isTruncated = !this.isTruncated;
+            this.setFilter();
+        }
+    },
+    watch: {
+        facetData: {
+            handler(newValue, oldValue) {
+                this.setFilter();
+            },
+            deep: true
         }
     },
     computed: {
         shouldSearch: function () {
             return this.facetData.IsSearch && this.facetData.Values.length > this.facetData.SearchThreshold;
+        },
+        shouldTruncate: function () {
+            return this.facetData.DisplayType === 'truncating' && this.facetData.Values.length > this.facetData.TruncateThreshold;
         },
         componentName: function () {
             switch (this.facetData.FacetType) {
@@ -5506,9 +5593,8 @@ __vue_render__$t._withStripped = true;
                 //    return "link";
                 //    break;
 
-                //case "nestedcheckbox":
-                //    return "nested-checkbox";
-                //    break;
+                case "nestedcheckbox":
+                    return "nested-checkbox";
 
                 //case "nestedlinklist":
                 //    return "";
@@ -5547,6 +5633,12 @@ __vue_render__$t._withStripped = true;
                 default:
                     return false;
             }
+        },
+        remainingFacets: function () {
+            return this.facetData.Values.length - this.filteredData.Values.length;
+        },
+        truncateVisible: function () {
+            return this.shouldTruncate && !this.filter;
         }
     }
 };/* script */
@@ -5571,6 +5663,29 @@ var __vue_render__$u = function() {
                 [
                   _c("h4", [_vm._v(_vm._s(_vm.facetData.Name))]),
                   _vm._v(" "),
+                  _vm.facetData.Tooltip
+                    ? _c(
+                        "div",
+                        { staticClass: "custom-tooltip" },
+                        [
+                          _c("questionmark-svg", {
+                            staticClass: "hawk-questionmark"
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "right" }, [
+                            _c("div", {
+                              domProps: {
+                                innerHTML: _vm._s(_vm.facetData.Tooltip)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("i")
+                          ])
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
                   _vm.isCollapsed ? [_c("plus-svg")] : [_c("minus-svg")]
                 ],
                 2
@@ -5581,12 +5696,85 @@ var __vue_render__$u = function() {
                     "div",
                     { staticClass: "hawk-facet-rail__facet-body" },
                     [
-                      _c(_vm.componentName, {
-                        tag: "component",
-                        attrs: { "facet-data": _vm.facetData }
-                      })
+                      _vm.shouldSearch
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "hawk-facet-rail__facet__quick-lookup"
+                            },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.filter,
+                                    expression: "filter"
+                                  }
+                                ],
+                                attrs: {
+                                  type: "text",
+                                  placeholder: _vm.$t("Quick Lookup")
+                                },
+                                domProps: { value: _vm.filter },
+                                on: {
+                                  input: [
+                                    function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.filter = $event.target.value;
+                                    },
+                                    _vm.setFilter
+                                  ]
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.filteredData
+                        ? [
+                            _c(
+                              _vm.componentName,
+                              {
+                                tag: "component",
+                                attrs: { "facet-data": _vm.filteredData }
+                              },
+                              [
+                                _vm.truncateVisible
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass:
+                                          "hawk-facet-rail__show-more-btn",
+                                        on: { click: _vm.toggleTruncate }
+                                      },
+                                      [
+                                        _vm.isTruncated
+                                          ? [
+                                              _vm._v(
+                                                "\n                                (+) Show " +
+                                                  _vm._s(_vm.remainingFacets) +
+                                                  " More\n                            "
+                                              )
+                                            ]
+                                          : [
+                                              _vm._v(
+                                                "\n                                (-) Show Less\n                            "
+                                              )
+                                            ]
+                                      ],
+                                      2
+                                    )
+                                  : _vm._e()
+                              ]
+                            )
+                          ]
+                        : _vm._e()
                     ],
-                    1
+                    2
                   )
                 : _vm._e()
             ])
@@ -5602,7 +5790,7 @@ __vue_render__$u._withStripped = true;
   /* style */
   const __vue_inject_styles__$u = undefined;
   /* scoped */
-  const __vue_scope_id__$u = "data-v-378c3afa";
+  const __vue_scope_id__$u = "data-v-4b1aeabe";
   /* module identifier */
   const __vue_module_identifier__$u = undefined;
   /* functional template */

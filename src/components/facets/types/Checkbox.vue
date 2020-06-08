@@ -11,7 +11,7 @@
                         <span v-if="rangeValueAssetUrl" class="hawk-selectionInner">
                             <span class="hawk-range-asset" :title="value.Label" />
 
-                            <img :src="rangeValueAssetUrl" :alt="value.Label"  />
+                            <img :src="rangeValueAssetUrl" :alt="value.Label" />
                         </span>
 
                         <span :class="value.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
@@ -30,6 +30,7 @@
                 </li>
             </ul>
         </div>
+        <slot></slot>
     </div>
 </template>
 

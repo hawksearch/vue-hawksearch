@@ -4,15 +4,13 @@
             <div class="hawk-facet-rail__facet">
                 <div class="hawk-facet-rail__facet-heading" @click="toggleCollapse">
                     <h4>{{ facetData.Name }}</h4>
-                    <!--<div v-if="facetData.Tooltip" class="custom-tooltip">
+                    <div v-if="facetData.Tooltip" class="custom-tooltip">
                         <questionmark-svg class="hawk-questionmark" />
                         <div class="right">
-                            <div>
-                                {{ facetData.Tooltip }}
-                            </div>
+                            <div v-html="facetData.Tooltip"></div>
                             <i />
                         </div>
-                    </div>-->
+                    </div>
                     <template v-if="isCollapsed">
                         <plus-svg />
                     </template>
@@ -21,10 +19,21 @@
                     </template>
                 </div>
                 <div v-if="!isCollapsed" class="hawk-facet-rail__facet-body">
-                    <!--<div v-if="shouldSearch" class="hawk-facet-rail__facet__quick-lookup">
-                        <input :value="filter" @change="setFilter" type="text" :placeholder="$t('Quick Lookup')" />
-                    </div>-->
-                    <component :is="componentName" :facet-data="facetData"></component>
+                    <div v-if="shouldSearch" class="hawk-facet-rail__facet__quick-lookup">
+                        <input v-model="filter" @input="setFilter" type="text" :placeholder="$t('Quick Lookup')" />
+                    </div>
+                    <template v-if="filteredData">
+                        <component :is="componentName" :facet-data="filteredData">
+                            <button v-if="truncateVisible" @click="toggleTruncate" class="hawk-facet-rail__show-more-btn">
+                                <template v-if="isTruncated">
+                                    (+) Show {{ remainingFacets }} More
+                                </template>
+                                <template v-else>
+                                    (-) Show Less
+                                </template>
+                            </button>
+                        </component>
+                    </template>
                 </div>
             </div>
         </template>
@@ -36,7 +45,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import QuestionmarkSvg from '../svg/QuestionmarkSvg';
     import PlusSvg from '../svg/PlusSvg';
     import MinusSvg from '../svg/MinusSvg';
@@ -59,13 +68,15 @@
             Search,
             OpenRange
         },
-        mounted() {
-
+        created: function () {
+            this.setFilter();
         },
         data() {
             return {
                 isCollapsed: false,
-                filter: null
+                filter: null,
+                filteredData: null,
+                isTruncated: true
             }
         },
         methods: {
@@ -73,12 +84,41 @@
                 this.isCollapsed = !this.isCollapsed;
             },
             setFilter: function () {
-                console.log("Set filter");
+                if (this.filteredData && this.filter) {
+                    this.filteredData.Values = this.facetData.Values.filter(item => this.valueIncludesString(item.Label, this.filter) || this.valueIncludesString(item.Value, this.filter));
+                }
+                else {
+                    let facetData = Object.assign({}, this.facetData);
+
+                    if (this.isTruncated && this.shouldTruncate) {
+                        facetData.Values = facetData.Values.slice(0, facetData.TruncateThreshold);
+                    }
+
+                    this.filteredData = facetData;
+                }
+            },
+            valueIncludesString: function (value, str) {
+                return value.toLowerCase().includes(str.toLowerCase());
+            },
+            toggleTruncate: function () {
+                this.isTruncated = !this.isTruncated;
+                this.setFilter();
+            }
+        },
+        watch: {
+            facetData: {
+                handler(newValue, oldValue) {
+                    this.setFilter();
+                },
+                deep: true
             }
         },
         computed: {
             shouldSearch: function () {
                 return this.facetData.IsSearch && this.facetData.Values.length > this.facetData.SearchThreshold;
+            },
+            shouldTruncate: function () {
+                return this.facetData.DisplayType === 'truncating' && this.facetData.Values.length > this.facetData.TruncateThreshold;
             },
             componentName: function () {
                 switch (this.facetData.FacetType) {
@@ -90,9 +130,9 @@
                     //    return "link";
                     //    break;
 
-                    //case "nestedcheckbox":
-                    //    return "nested-checkbox";
-                    //    break;
+                    case "nestedcheckbox":
+                        return "nested-checkbox";
+                        break;
 
                     //case "nestedlinklist":
                     //    return "";
@@ -134,6 +174,12 @@
                         return false;
                         break;
                 }
+            },
+            remainingFacets: function () {
+                return this.facetData.Values.length - this.filteredData.Values.length;
+            },
+            truncateVisible: function () {
+                return this.shouldTruncate && !this.filter;
             }
         }
     }

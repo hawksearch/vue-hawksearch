@@ -2,13 +2,14 @@
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-checkbox">
             <ul class="hawk-facet-rail__facet-list">
-                <nested-item v-for="item in items" :key="item.Value" :item-data="item" ></nested-item>
+                <nested-item v-for="item in items" :key="item.Value" :item-data="item" :facet-data="facetData" ></nested-item>
             </ul>
         </div>
+        <slot></slot>
     </div>
 </template>
 
-<script lang="js">
+<script>
     import NestedItem from './NestedItem';
 
     export default {
