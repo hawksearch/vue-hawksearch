@@ -56,6 +56,7 @@
     import Search from './types/Search';
     import OpenRange from './types/OpenRange';
     import Swatch from './types/Swatch';
+    import Slider from './types/Slider';
 
     export default {
         name: 'facet',
@@ -68,7 +69,8 @@
             NestedCheckbox,
             Search,
             OpenRange,
-            Swatch
+            Swatch,
+            Slider
         },
         created: function () {
             this.setFilter();
@@ -140,9 +142,9 @@
                         return "search";
                         break;
 
-                    //case "slider":
-                    //    return "slider";
-                    //    break;
+                    case "slider":
+                        return "slider";
+                        break;
 
                     case "swatch":
                         return "swatch";

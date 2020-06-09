@@ -5780,8 +5780,222 @@ __vue_render__$v._withStripped = true;
     undefined,
     undefined
   );//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 var script$w = {
+    name: 'slider',
+    props: ['facetData'],
+    mounted() {
+
+    },
+    data() {
+        return {
+            target: null,
+            minTemp: 0,
+            maxTemp: 100
+        }
+    },
+    methods: {
+        onMouseDown: function (e) {
+            this.target = e.target;
+        },
+        onMouseMove: function (e) {
+            if (this.target) {
+                var left = (e.clientX - 12);
+                var wrapper = this.$refs.wrapper.getBoundingClientRect();
+                var wrapperLeft = wrapper.left + 26;
+                var wrapperRight = wrapper.right + 26;
+
+                if (left > wrapperLeft && left < wrapperRight) {
+                    //this.target.style.left = (e.clientX - 12) + 'px';
+
+                    if (this.target == this.$refs.min) {
+                        this.minTemp = left;
+                    }
+                    else if (this.target == this.$refs.max) {
+                        this.maxTemp = left;
+                    }
+                }
+                else {
+                    this.target = null;
+                }
+            }
+        },
+        onMouseUp: function (e) {
+            this.target = null;
+            //this.facetData.Value = (this.minValue || '') + ',' + (this.maxValue || '');
+            //this.$root.$store.dispatch('applyFacets', this.facetData);
+        }
+    },
+    computed: {
+        facetValue: function () {
+            if (this.facetData && this.facetData.Values && this.facetData.Values.length) {
+                return this.facetData.Values[0];
+            }
+            else {
+                return {};
+            }
+        },
+        minRangeStyle: function () {
+            var aggrValue = this.minTemp;
+            return 'left: ' + aggrValue + 'px;';
+        },
+        maxRangeStyle: function () {
+            var aggrValue = this.maxTemp;
+            return 'left: ' + aggrValue + 'px;';
+        },
+        sliderStyle: function () {
+            var left = this.minTemp;
+            var width = this.maxTemp - this.minTemp;
+            return 'left: ' + left + 'px; width: ' + width + 'px;';
+        },
+        ratio: function () {
+            return this.$refs.wrapper.getBoundingClientRect().width / (parseInt(this.facetValue.RangeMax, 10) - parseInt(this.facetValue.RangeMin, 10))
+        }
+    }
+};/* script */
+const __vue_script__$w = script$w;
+/* template */
+var __vue_render__$w = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _c("div", { staticClass: "hawk-facet-rail__facet-values" }, [
+    _c("div", { staticClass: "hawk-facet-rail__facet-values-link" }, [
+      _c("div", { staticClass: "hawk-sliderNumeric" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.facetValue.RangeStart,
+              expression: "facetValue.RangeStart"
+            }
+          ],
+          staticClass: "hawk-numericInput numeric-from",
+          attrs: { min: "0", max: "5", type: "text", value: "2" },
+          domProps: { value: _vm.facetValue.RangeStart },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.facetValue, "RangeStart", $event.target.value);
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.facetValue.RangeEnd,
+              expression: "facetValue.RangeEnd"
+            }
+          ],
+          staticClass: "hawk-numericInput numeric-to",
+          attrs: { min: "0", max: "5", type: "text", value: "5" },
+          domProps: { value: _vm.facetValue.RangeEnd },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.facetValue, "RangeEnd", $event.target.value);
+            }
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "slider",
+          on: { mouseup: _vm.onMouseUp, mousemove: _vm.onMouseMove }
+        },
+        [
+          _c("div", { staticClass: "slider-background" }),
+          _vm._v(" "),
+          _c("div", { ref: "wrapper", staticClass: "slider-wrapper" }, [
+            _c("button", {
+              ref: "min",
+              staticClass: "slider-button",
+              style: _vm.minRangeStyle,
+              attrs: { type: "button" },
+              on: { mousedown: _vm.onMouseDown }
+            }),
+            _vm._v(" "),
+            _c("button", {
+              ref: "max",
+              staticClass: "slider-button",
+              style: _vm.maxRangeStyle,
+              attrs: { type: "button" },
+              on: { mousedown: _vm.onMouseDown }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", {
+            ref: "bar",
+            staticClass: "slider-progressbar",
+            style: _vm.sliderStyle
+          })
+        ]
+      )
+    ])
+  ])
+};
+var __vue_staticRenderFns__$w = [];
+__vue_render__$w._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$w = undefined;
+  /* scoped */
+  const __vue_scope_id__$w = "data-v-31c6f26f";
+  /* module identifier */
+  const __vue_module_identifier__$w = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$w = false;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$w = normalizeComponent(
+    { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
+    __vue_inject_styles__$w,
+    __vue_script__$w,
+    __vue_scope_id__$w,
+    __vue_is_functional_template__$w,
+    __vue_module_identifier__$w,
+    false,
+    undefined,
+    undefined,
+    undefined
+  );//
+
+var script$x = {
     name: 'facet',
     props: ['facetData'],
     components: {
@@ -5792,7 +6006,8 @@ var script$w = {
         NestedCheckbox: __vue_component__$r,
         Search: __vue_component__$s,
         OpenRange: __vue_component__$t,
-        Swatch: __vue_component__$v
+        Swatch: __vue_component__$v,
+        Slider: __vue_component__$w
     },
     created: function () {
         this.setFilter();
@@ -5861,9 +6076,8 @@ var script$w = {
                 case "search":
                     return "search";
 
-                //case "slider":
-                //    return "slider";
-                //    break;
+                case "slider":
+                    return "slider";
 
                 case "swatch":
                     return "swatch";
@@ -5883,9 +6097,9 @@ var script$w = {
         }
     }
 };/* script */
-const __vue_script__$w = script$w;
+const __vue_script__$x = script$x;
 /* template */
-var __vue_render__$w = function() {
+var __vue_render__$x = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -6025,17 +6239,17 @@ var __vue_render__$w = function() {
     2
   )
 };
-var __vue_staticRenderFns__$w = [];
-__vue_render__$w._withStripped = true;
+var __vue_staticRenderFns__$x = [];
+__vue_render__$x._withStripped = true;
 
   /* style */
-  const __vue_inject_styles__$w = undefined;
+  const __vue_inject_styles__$x = undefined;
   /* scoped */
-  const __vue_scope_id__$w = "data-v-76c2f4c2";
+  const __vue_scope_id__$x = "data-v-18f55844";
   /* module identifier */
-  const __vue_module_identifier__$w = undefined;
+  const __vue_module_identifier__$x = undefined;
   /* functional template */
-  const __vue_is_functional_template__$w = false;
+  const __vue_is_functional_template__$x = false;
   /* style inject */
   
   /* style inject SSR */
@@ -6044,13 +6258,13 @@ __vue_render__$w._withStripped = true;
   
 
   
-  const __vue_component__$w = normalizeComponent(
-    { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
-    __vue_inject_styles__$w,
-    __vue_script__$w,
-    __vue_scope_id__$w,
-    __vue_is_functional_template__$w,
-    __vue_module_identifier__$w,
+  const __vue_component__$x = normalizeComponent(
+    { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
+    __vue_inject_styles__$x,
+    __vue_script__$x,
+    __vue_scope_id__$x,
+    __vue_is_functional_template__$x,
+    __vue_module_identifier__$x,
     false,
     undefined,
     undefined,
@@ -6082,7 +6296,7 @@ __vue_render__$w._withStripped = true;
 //
 
 
-  var script$x = {
+  var script$y = {
     name: 'placeholder-facet',
     props: [],
     mounted () {
@@ -6105,9 +6319,9 @@ __vue_render__$w._withStripped = true;
 
     }
 };/* script */
-const __vue_script__$x = script$x;
+const __vue_script__$y = script$y;
 /* template */
-var __vue_render__$x = function() {
+var __vue_render__$y = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -6172,17 +6386,17 @@ var __vue_render__$x = function() {
     ])
   ])
 };
-var __vue_staticRenderFns__$x = [];
-__vue_render__$x._withStripped = true;
+var __vue_staticRenderFns__$y = [];
+__vue_render__$y._withStripped = true;
 
   /* style */
-  const __vue_inject_styles__$x = undefined;
+  const __vue_inject_styles__$y = undefined;
   /* scoped */
-  const __vue_scope_id__$x = "data-v-3b6dfca2";
+  const __vue_scope_id__$y = "data-v-3b6dfca2";
   /* module identifier */
-  const __vue_module_identifier__$x = undefined;
+  const __vue_module_identifier__$y = undefined;
   /* functional template */
-  const __vue_is_functional_template__$x = false;
+  const __vue_is_functional_template__$y = false;
   /* style inject */
   
   /* style inject SSR */
@@ -6191,23 +6405,23 @@ __vue_render__$x._withStripped = true;
   
 
   
-  const __vue_component__$x = normalizeComponent(
-    { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
-    __vue_inject_styles__$x,
-    __vue_script__$x,
-    __vue_scope_id__$x,
-    __vue_is_functional_template__$x,
-    __vue_module_identifier__$x,
+  const __vue_component__$y = normalizeComponent(
+    { render: __vue_render__$y, staticRenderFns: __vue_staticRenderFns__$y },
+    __vue_inject_styles__$y,
+    __vue_script__$y,
+    __vue_scope_id__$y,
+    __vue_is_functional_template__$y,
+    __vue_module_identifier__$y,
     false,
     undefined,
     undefined,
     undefined
-  );var script$y = {
+  );var script$z = {
     name: 'facet-list',
     props: [],
     components: {
-        Facet: __vue_component__$w,
-        PlaceholderFacet: __vue_component__$x
+        Facet: __vue_component__$x,
+        PlaceholderFacet: __vue_component__$y
     },
     mounted() {
 
@@ -6229,9 +6443,9 @@ __vue_render__$x._withStripped = true;
         }
     }
 };/* script */
-const __vue_script__$y = script$y;
+const __vue_script__$z = script$z;
 /* template */
-var __vue_render__$y = function() {
+var __vue_render__$z = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -6259,84 +6473,13 @@ var __vue_render__$y = function() {
     )
   ])
 };
-var __vue_staticRenderFns__$y = [];
-__vue_render__$y._withStripped = true;
-
-  /* style */
-  const __vue_inject_styles__$y = undefined;
-  /* scoped */
-  const __vue_scope_id__$y = "data-v-3f7868d9";
-  /* module identifier */
-  const __vue_module_identifier__$y = undefined;
-  /* functional template */
-  const __vue_is_functional_template__$y = false;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-  /* style inject shadow dom */
-  
-
-  
-  const __vue_component__$y = normalizeComponent(
-    { render: __vue_render__$y, staticRenderFns: __vue_staticRenderFns__$y },
-    __vue_inject_styles__$y,
-    __vue_script__$y,
-    __vue_scope_id__$y,
-    __vue_is_functional_template__$y,
-    __vue_module_identifier__$y,
-    false,
-    undefined,
-    undefined,
-    undefined
-  );const HawkSearchFacets = Vue$2.extend({
-    store,
-    i18n,
-    components: {
-        FacetList: __vue_component__$y
-    }
-});var script$z = {
-    name: 'link',
-    props: [],
-    mounted () {
-
-    },
-    data () {
-      return {
-
-      }
-    },
-    methods: {
-
-    },
-    computed: {
-
-    }
-};/* script */
-const __vue_script__$z = script$z;
-/* template */
-var __vue_render__$z = function() {
-  var _vm = this;
-  var _h = _vm.$createElement;
-  var _c = _vm._self._c || _h;
-  return _vm._m(0)
-};
-var __vue_staticRenderFns__$z = [
-  function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "link" }, [
-      _c("h1", [_vm._v("link Component")])
-    ])
-  }
-];
+var __vue_staticRenderFns__$z = [];
 __vue_render__$z._withStripped = true;
 
   /* style */
   const __vue_inject_styles__$z = undefined;
   /* scoped */
-  const __vue_scope_id__$z = "data-v-75818897";
+  const __vue_scope_id__$z = "data-v-3f7868d9";
   /* module identifier */
   const __vue_module_identifier__$z = undefined;
   /* functional template */
@@ -6360,8 +6503,14 @@ __vue_render__$z._withStripped = true;
     undefined,
     undefined,
     undefined
-  );var script$A = {
-    name: 'slider',
+  );const HawkSearchFacets = Vue$2.extend({
+    store,
+    i18n,
+    components: {
+        FacetList: __vue_component__$z
+    }
+});var script$A = {
+    name: 'link',
     props: [],
     mounted () {
 
@@ -6391,8 +6540,8 @@ var __vue_staticRenderFns__$A = [
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "slider" }, [
-      _c("h1", [_vm._v("slider Component")])
+    return _c("section", { staticClass: "link" }, [
+      _c("h1", [_vm._v("link Component")])
     ])
   }
 ];
@@ -6401,7 +6550,7 @@ __vue_render__$A._withStripped = true;
   /* style */
   const __vue_inject_styles__$A = undefined;
   /* scoped */
-  const __vue_scope_id__$A = "data-v-4385633d";
+  const __vue_scope_id__$A = "data-v-75818897";
   /* module identifier */
   const __vue_module_identifier__$A = undefined;
   /* functional template */
@@ -6429,4 +6578,4 @@ __vue_render__$A._withStripped = true;
 
 Vue$2.config.devtools = true;
 Vue$2.use(VueResource);
-window.HawkSearchVue = HawkSearchVue$1;export default HawkSearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$w as Facet,__vue_component__$y as FacetList,HawkSearchFacets,HawkSearchField,HawkSearchResults,store as HawkSearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$z as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$A as Slider,__vue_component__$5 as Sorting,__vue_component__$v as Swatch,__vue_component__$u as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};
+window.HawkSearchVue = HawkSearchVue$1;export default HawkSearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$x as Facet,__vue_component__$z as FacetList,HawkSearchFacets,HawkSearchField,HawkSearchResults,store as HawkSearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$A as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$w as Slider,__vue_component__$5 as Sorting,__vue_component__$v as Swatch,__vue_component__$u as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};
