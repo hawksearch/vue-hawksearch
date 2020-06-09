@@ -287,8 +287,16 @@ var store = new Vuex.Store({
         };
 
         extendedSearchParams.Facets.map(facet => {
-            if (facet && facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
+            if (facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
                 handleSelections(facet.Values, facet);
+            }
+
+            if (facet.Values && facet.Values.length && facet.SwatchData && facet.SwatchData.length) {
+                facet.Values = facet.Values.map(facetValue => {
+                    return Object.assign({}, facet.SwatchData.find(item => item.Value.toLowerCase() == facetValue.Value.toLowerCase()), facetValue);
+                });
+
+                facet.Values = facet.Values.filter(item => Boolean(item.AssetName));
             }
 
             return facet;
@@ -331,6 +339,7 @@ var store = new Vuex.Store({
         switch (facet.FacetType) {
             case 'checkbox':
             case 'nestedcheckbox':
+            case 'swatch':
                 handleCheckboxes(facet.Values);
 
                 if (searchParamFacets[field].length == 0) {
@@ -2851,7 +2860,7 @@ VueI18n.version = '8.18.1';Vue$2.use(VueI18n);
 //}
 const messages = {
     en: {
-        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator.",
+        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
     }
 };
 
@@ -3103,6 +3112,23 @@ var script$4 = {
         },
         refreshResults: function (facetSelections) {
             this.$root.$store.dispatch('fetchResults', { FacetSelections: facetSelections });
+        },
+        getFacetType: function (field) {
+            if (this.searchOutput) {
+                var facets = this.searchOutput.Facets;
+                var type;
+
+                facets.forEach(facet => {
+                    if (HawkSearchVue.getFacetParamName(facet) == field) {
+                        type = facet.FieldType;
+                    }
+                });
+
+                return type;
+            }
+        },
+        rangeLabel: function (item) {
+            return item.split(',').join(' - ');
         }
     },
     computed: {
@@ -3124,7 +3150,7 @@ var script$4 = {
                 var field;
 
                 facets.forEach(facet => {
-                    field = facet.ParamName ? facet.ParamName : facet.Field;
+                    field = HawkSearchVue.getFacetParamName(facet);
 
                     if (facetSelectionsLabels.hasOwnProperty(field)) {
                         facetSelectionsLabels[field] = facet.Name;
@@ -3187,13 +3213,28 @@ var __vue_render__$4 = function() {
                                 1
                               ),
                               _vm._v(" "),
-                              _c("span", { class: _vm.itemClass(item) }, [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(item) +
-                                    "\n                        "
-                                )
-                              ])
+                              _c(
+                                "span",
+                                { class: _vm.itemClass(item) },
+                                [
+                                  _vm.getFacetType(field) == "range"
+                                    ? [
+                                        _vm._v(
+                                          "\n                                " +
+                                            _vm._s(_vm.rangeLabel(item)) +
+                                            "\n                            "
+                                        )
+                                      ]
+                                    : [
+                                        _vm._v(
+                                          "\n                                " +
+                                            _vm._s(item) +
+                                            "\n                            "
+                                        )
+                                      ]
+                                ],
+                                2
+                              )
                             ]
                           )
                         }),
@@ -3247,7 +3288,7 @@ __vue_render__$4._withStripped = true;
   /* style */
   const __vue_inject_styles__$4 = undefined;
   /* scoped */
-  const __vue_scope_id__$4 = "data-v-060e9670";
+  const __vue_scope_id__$4 = "data-v-78ab9ab7";
   /* module identifier */
   const __vue_module_identifier__$4 = undefined;
   /* functional template */
@@ -5519,8 +5560,227 @@ __vue_render__$t._withStripped = true;
     undefined,
     undefined
   );//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 var script$u = {
+    name: 'swatch-item',
+    props: ['facetData', 'item'],
+    mounted() {
+
+    },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+        selectFacet: function () {
+            if (this.item.Negated) {
+                this.item.Selected = true;
+                this.item.Negated = false;
+            }
+            else {
+                this.item.Selected = !this.item.Selected;
+            }
+
+            this.applyFacets();
+        },
+        negateFacet: function () {
+            this.item.Negated = !this.item.Negated;
+            this.item.Selected = this.item.Negated;
+            this.applyFacets();
+        },
+        applyFacets: function () {
+            this.$root.$store.dispatch('applyFacets', this.facetData);
+        }
+    },
+    computed: {
+        listItemClass: function () {
+            return 'hawk-facet-rail__facet-list-item' + (this.item.Selected ? ' hawkFacet-active' : '') + (this.item.Negated ? ' hawkFacet-negative' : '');
+        },
+        colorStyle: function () {
+            return 'background: ' + this.item.Color;
+        },
+        url: function () {
+            return HawkSearchVue.config.dashboardUrl + (!this.item.AssetUrl ? this.item.AssetName : this.item.AssetUrl);
+        }
+    }
+};/* script */
+const __vue_script__$u = script$u;
+/* template */
+var __vue_render__$u = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _c("li", { class: _vm.listItemClass }, [
+    _c(
+      "button",
+      {
+        staticClass: "hawk-facet-rail__facet-btn hawk-styleSwatch",
+        on: { click: _vm.selectFacet }
+      },
+      [
+        _c(
+          "span",
+          { staticClass: "hawk-selectionInner" },
+          [
+            _vm.item.isColor
+              ? [
+                  _c("span", {
+                    staticClass: "hawk-swatchColor",
+                    style: _vm.colorStyle,
+                    attrs: { title: _vm.item.Value }
+                  })
+                ]
+              : [_c("img", { attrs: { src: _vm.url, alt: _vm.item.Value } })]
+          ],
+          2
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c("button", { staticClass: "hawk-negativeIcon" }, [
+      _c("i", {
+        staticClass: "hawkIcon-blocked",
+        on: { click: _vm.negateFacet }
+      })
+    ])
+  ])
+};
+var __vue_staticRenderFns__$u = [];
+__vue_render__$u._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$u = undefined;
+  /* scoped */
+  const __vue_scope_id__$u = "data-v-75824be5";
+  /* module identifier */
+  const __vue_module_identifier__$u = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$u = false;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$u = normalizeComponent(
+    { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
+    __vue_inject_styles__$u,
+    __vue_script__$u,
+    __vue_scope_id__$u,
+    __vue_is_functional_template__$u,
+    __vue_module_identifier__$u,
+    false,
+    undefined,
+    undefined,
+    undefined
+  );//
+
+var script$v = {
+    name: 'swatch',
+    props: ['facetData'],
+    components: {
+        SwatchItem: __vue_component__$u
+    },
+    mounted() {
+
+    },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+
+    },
+    computed: {
+        items: function () {
+            return this.facetData.Values;
+        }
+    }
+};/* script */
+const __vue_script__$v = script$v;
+/* template */
+var __vue_render__$v = function() {
+  var _vm = this;
+  var _h = _vm.$createElement;
+  var _c = _vm._self._c || _h;
+  return _c(
+    "div",
+    { staticClass: "hawk-facet-rail__facet-values" },
+    [
+      _c("div", { staticClass: "hawk-facet-rail__facet-values-swatch" }, [
+        _c(
+          "ul",
+          { staticClass: "hawk-facet-rail__facet-list" },
+          _vm._l(_vm.items, function(item) {
+            return _c("swatch-item", {
+              key: item.Value,
+              attrs: { item: item, "facet-data": _vm.facetData }
+            })
+          }),
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _vm._t("default")
+    ],
+    2
+  )
+};
+var __vue_staticRenderFns__$v = [];
+__vue_render__$v._withStripped = true;
+
+  /* style */
+  const __vue_inject_styles__$v = undefined;
+  /* scoped */
+  const __vue_scope_id__$v = "data-v-48972e8a";
+  /* module identifier */
+  const __vue_module_identifier__$v = undefined;
+  /* functional template */
+  const __vue_is_functional_template__$v = false;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+  /* style inject shadow dom */
+  
+
+  
+  const __vue_component__$v = normalizeComponent(
+    { render: __vue_render__$v, staticRenderFns: __vue_staticRenderFns__$v },
+    __vue_inject_styles__$v,
+    __vue_script__$v,
+    __vue_scope_id__$v,
+    __vue_is_functional_template__$v,
+    __vue_module_identifier__$v,
+    false,
+    undefined,
+    undefined,
+    undefined
+  );//
+
+var script$w = {
     name: 'facet',
     props: ['facetData'],
     components: {
@@ -5530,7 +5790,8 @@ var script$u = {
         Checkbox: __vue_component__$p,
         NestedCheckbox: __vue_component__$r,
         Search: __vue_component__$s,
-        OpenRange: __vue_component__$t
+        OpenRange: __vue_component__$t,
+        Swatch: __vue_component__$v
     },
     created: function () {
         this.setFilter();
@@ -5596,36 +5857,15 @@ var script$u = {
                 case "nestedcheckbox":
                     return "nested-checkbox";
 
-                //case "nestedlinklist":
-                //    return "";
-                //    break;
-
-                //case "rating":
-                //    return "";
-                //    break;
-
-                //case "recentsearches":
-                //return "";
-                //break;
-
-                //case "related":
-                //    return "";
-                //    break;
-
                 case "search":
                     return "search";
-
-                //case "size":
-                //    return "";
-                //    break;
 
                 //case "slider":
                 //    return "slider";
                 //    break;
 
-                //case "swatch":
-                //    return "swatch";
-                //    break;
+                case "swatch":
+                    return "swatch";
 
                 case "openRange":
                     return "open-range";
@@ -5642,9 +5882,9 @@ var script$u = {
         }
     }
 };/* script */
-const __vue_script__$u = script$u;
+const __vue_script__$w = script$w;
 /* template */
-var __vue_render__$u = function() {
+var __vue_render__$w = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -5784,17 +6024,17 @@ var __vue_render__$u = function() {
     2
   )
 };
-var __vue_staticRenderFns__$u = [];
-__vue_render__$u._withStripped = true;
+var __vue_staticRenderFns__$w = [];
+__vue_render__$w._withStripped = true;
 
   /* style */
-  const __vue_inject_styles__$u = undefined;
+  const __vue_inject_styles__$w = undefined;
   /* scoped */
-  const __vue_scope_id__$u = "data-v-4b1aeabe";
+  const __vue_scope_id__$w = "data-v-76c2f4c2";
   /* module identifier */
-  const __vue_module_identifier__$u = undefined;
+  const __vue_module_identifier__$w = undefined;
   /* functional template */
-  const __vue_is_functional_template__$u = false;
+  const __vue_is_functional_template__$w = false;
   /* style inject */
   
   /* style inject SSR */
@@ -5803,13 +6043,13 @@ __vue_render__$u._withStripped = true;
   
 
   
-  const __vue_component__$u = normalizeComponent(
-    { render: __vue_render__$u, staticRenderFns: __vue_staticRenderFns__$u },
-    __vue_inject_styles__$u,
-    __vue_script__$u,
-    __vue_scope_id__$u,
-    __vue_is_functional_template__$u,
-    __vue_module_identifier__$u,
+  const __vue_component__$w = normalizeComponent(
+    { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
+    __vue_inject_styles__$w,
+    __vue_script__$w,
+    __vue_scope_id__$w,
+    __vue_is_functional_template__$w,
+    __vue_module_identifier__$w,
     false,
     undefined,
     undefined,
@@ -5841,7 +6081,7 @@ __vue_render__$u._withStripped = true;
 //
 
 
-  var script$v = {
+  var script$x = {
     name: 'placeholder-facet',
     props: [],
     mounted () {
@@ -5864,9 +6104,9 @@ __vue_render__$u._withStripped = true;
 
     }
 };/* script */
-const __vue_script__$v = script$v;
+const __vue_script__$x = script$x;
 /* template */
-var __vue_render__$v = function() {
+var __vue_render__$x = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -5931,17 +6171,17 @@ var __vue_render__$v = function() {
     ])
   ])
 };
-var __vue_staticRenderFns__$v = [];
-__vue_render__$v._withStripped = true;
+var __vue_staticRenderFns__$x = [];
+__vue_render__$x._withStripped = true;
 
   /* style */
-  const __vue_inject_styles__$v = undefined;
+  const __vue_inject_styles__$x = undefined;
   /* scoped */
-  const __vue_scope_id__$v = "data-v-3b6dfca2";
+  const __vue_scope_id__$x = "data-v-3b6dfca2";
   /* module identifier */
-  const __vue_module_identifier__$v = undefined;
+  const __vue_module_identifier__$x = undefined;
   /* functional template */
-  const __vue_is_functional_template__$v = false;
+  const __vue_is_functional_template__$x = false;
   /* style inject */
   
   /* style inject SSR */
@@ -5950,23 +6190,23 @@ __vue_render__$v._withStripped = true;
   
 
   
-  const __vue_component__$v = normalizeComponent(
-    { render: __vue_render__$v, staticRenderFns: __vue_staticRenderFns__$v },
-    __vue_inject_styles__$v,
-    __vue_script__$v,
-    __vue_scope_id__$v,
-    __vue_is_functional_template__$v,
-    __vue_module_identifier__$v,
+  const __vue_component__$x = normalizeComponent(
+    { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
+    __vue_inject_styles__$x,
+    __vue_script__$x,
+    __vue_scope_id__$x,
+    __vue_is_functional_template__$x,
+    __vue_module_identifier__$x,
     false,
     undefined,
     undefined,
     undefined
-  );var script$w = {
+  );var script$y = {
     name: 'facet-list',
     props: [],
     components: {
-        Facet: __vue_component__$u,
-        PlaceholderFacet: __vue_component__$v
+        Facet: __vue_component__$w,
+        PlaceholderFacet: __vue_component__$x
     },
     mounted() {
 
@@ -5988,9 +6228,9 @@ __vue_render__$v._withStripped = true;
         }
     }
 };/* script */
-const __vue_script__$w = script$w;
+const __vue_script__$y = script$y;
 /* template */
-var __vue_render__$w = function() {
+var __vue_render__$y = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
@@ -6018,149 +6258,13 @@ var __vue_render__$w = function() {
     )
   ])
 };
-var __vue_staticRenderFns__$w = [];
-__vue_render__$w._withStripped = true;
-
-  /* style */
-  const __vue_inject_styles__$w = undefined;
-  /* scoped */
-  const __vue_scope_id__$w = "data-v-3f7868d9";
-  /* module identifier */
-  const __vue_module_identifier__$w = undefined;
-  /* functional template */
-  const __vue_is_functional_template__$w = false;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-  /* style inject shadow dom */
-  
-
-  
-  const __vue_component__$w = normalizeComponent(
-    { render: __vue_render__$w, staticRenderFns: __vue_staticRenderFns__$w },
-    __vue_inject_styles__$w,
-    __vue_script__$w,
-    __vue_scope_id__$w,
-    __vue_is_functional_template__$w,
-    __vue_module_identifier__$w,
-    false,
-    undefined,
-    undefined,
-    undefined
-  );const HawkSearchFacets = Vue$2.extend({
-    store,
-    i18n,
-    components: {
-        FacetList: __vue_component__$w
-    }
-});var script$x = {
-    name: 'link',
-    props: [],
-    mounted () {
-
-    },
-    data () {
-      return {
-
-      }
-    },
-    methods: {
-
-    },
-    computed: {
-
-    }
-};/* script */
-const __vue_script__$x = script$x;
-/* template */
-var __vue_render__$x = function() {
-  var _vm = this;
-  var _h = _vm.$createElement;
-  var _c = _vm._self._c || _h;
-  return _vm._m(0)
-};
-var __vue_staticRenderFns__$x = [
-  function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "link" }, [
-      _c("h1", [_vm._v("link Component")])
-    ])
-  }
-];
-__vue_render__$x._withStripped = true;
-
-  /* style */
-  const __vue_inject_styles__$x = undefined;
-  /* scoped */
-  const __vue_scope_id__$x = "data-v-75818897";
-  /* module identifier */
-  const __vue_module_identifier__$x = undefined;
-  /* functional template */
-  const __vue_is_functional_template__$x = false;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-  /* style inject shadow dom */
-  
-
-  
-  const __vue_component__$x = normalizeComponent(
-    { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
-    __vue_inject_styles__$x,
-    __vue_script__$x,
-    __vue_scope_id__$x,
-    __vue_is_functional_template__$x,
-    __vue_module_identifier__$x,
-    false,
-    undefined,
-    undefined,
-    undefined
-  );var script$y = {
-    name: 'slider',
-    props: [],
-    mounted () {
-
-    },
-    data () {
-      return {
-
-      }
-    },
-    methods: {
-
-    },
-    computed: {
-
-    }
-};/* script */
-const __vue_script__$y = script$y;
-/* template */
-var __vue_render__$y = function() {
-  var _vm = this;
-  var _h = _vm.$createElement;
-  var _c = _vm._self._c || _h;
-  return _vm._m(0)
-};
-var __vue_staticRenderFns__$y = [
-  function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "slider" }, [
-      _c("h1", [_vm._v("slider Component")])
-    ])
-  }
-];
+var __vue_staticRenderFns__$y = [];
 __vue_render__$y._withStripped = true;
 
   /* style */
   const __vue_inject_styles__$y = undefined;
   /* scoped */
-  const __vue_scope_id__$y = "data-v-4385633d";
+  const __vue_scope_id__$y = "data-v-3f7868d9";
   /* module identifier */
   const __vue_module_identifier__$y = undefined;
   /* functional template */
@@ -6184,8 +6288,14 @@ __vue_render__$y._withStripped = true;
     undefined,
     undefined,
     undefined
-  );var script$z = {
-    name: 'swatch',
+  );const HawkSearchFacets = Vue$2.extend({
+    store,
+    i18n,
+    components: {
+        FacetList: __vue_component__$y
+    }
+});var script$z = {
+    name: 'link',
     props: [],
     mounted () {
 
@@ -6215,8 +6325,8 @@ var __vue_staticRenderFns__$z = [
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "swatch" }, [
-      _c("h1", [_vm._v("swatch Component")])
+    return _c("section", { staticClass: "link" }, [
+      _c("h1", [_vm._v("link Component")])
     ])
   }
 ];
@@ -6225,7 +6335,7 @@ __vue_render__$z._withStripped = true;
   /* style */
   const __vue_inject_styles__$z = undefined;
   /* scoped */
-  const __vue_scope_id__$z = "data-v-53661306";
+  const __vue_scope_id__$z = "data-v-75818897";
   /* module identifier */
   const __vue_module_identifier__$z = undefined;
   /* functional template */
@@ -6250,7 +6360,7 @@ __vue_render__$z._withStripped = true;
     undefined,
     undefined
   );var script$A = {
-    name: 'swatch-item',
+    name: 'slider',
     props: [],
     mounted () {
 
@@ -6280,8 +6390,8 @@ var __vue_staticRenderFns__$A = [
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
-    return _c("section", { staticClass: "swatch-item" }, [
-      _c("h1", [_vm._v("swatch-item Component")])
+    return _c("section", { staticClass: "slider" }, [
+      _c("h1", [_vm._v("slider Component")])
     ])
   }
 ];
@@ -6290,7 +6400,7 @@ __vue_render__$A._withStripped = true;
   /* style */
   const __vue_inject_styles__$A = undefined;
   /* scoped */
-  const __vue_scope_id__$A = "data-v-177e9a74";
+  const __vue_scope_id__$A = "data-v-4385633d";
   /* module identifier */
   const __vue_module_identifier__$A = undefined;
   /* functional template */
@@ -6318,4 +6428,4 @@ __vue_render__$A._withStripped = true;
 
 Vue$2.config.devtools = true;
 Vue$2.use(VueResource);
-window.HawkSearchVue = HawkSearchVue$1;export default HawkSearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$u as Facet,__vue_component__$w as FacetList,HawkSearchFacets,HawkSearchField,HawkSearchResults,store as HawkSearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$x as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$y as Slider,__vue_component__$5 as Sorting,__vue_component__$z as Swatch,__vue_component__$A as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};
+window.HawkSearchVue = HawkSearchVue$1;export default HawkSearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$w as Facet,__vue_component__$y as FacetList,HawkSearchFacets,HawkSearchField,HawkSearchResults,store as HawkSearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$z as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$A as Slider,__vue_component__$5 as Sorting,__vue_component__$v as Swatch,__vue_component__$u as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};

@@ -179,17 +179,17 @@ class HawkSearchVue {
             });
         }
 
-        var extendParam = function (param) {
-            if (param && param.Values && param.Values.length) {
-                handleSelections(param.Values, param);
-
-                return param;
-            }
-        }
-
         extendedSearchParams.Facets.map(facet => {
-            if (facet && facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
+            if (facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
                 handleSelections(facet.Values, facet);
+            }
+
+            if (facet.Values && facet.Values.length && facet.SwatchData && facet.SwatchData.length) {
+                facet.Values = facet.Values.map(facetValue => {
+                    return Object.assign({}, facet.SwatchData.find(item => item.Value.toLowerCase() == facetValue.Value.toLowerCase()), facetValue);
+                });
+
+                facet.Values = facet.Values.filter(item => Boolean(item.AssetName));
             }
 
             return facet;
@@ -232,6 +232,7 @@ class HawkSearchVue {
         switch (facet.FacetType) {
             case 'checkbox':
             case 'nestedcheckbox':
+            case 'swatch':
                 handleCheckboxes(facet.Values);
 
                 if (searchParamFacets[field].length == 0) {

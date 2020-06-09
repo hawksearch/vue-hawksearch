@@ -11,7 +11,12 @@
                                 <x-circle-svg></x-circle-svg>
                             </button>
                             <span :class="itemClass(item)">
-                                {{ item }}
+                                <template v-if="getFacetType(field) == 'range'">
+                                    {{ rangeLabel(item) }}
+                                </template>
+                                <template v-else>
+                                    {{ item }}
+                                </template>
                             </span>
                         </li>
                     </ul>
@@ -82,6 +87,23 @@
             },
             refreshResults: function (facetSelections) {
                 this.$root.$store.dispatch('fetchResults', { FacetSelections: facetSelections });
+            },
+            getFacetType: function (field) {
+                if (this.searchOutput) {
+                    var facets = this.searchOutput.Facets;
+                    var type;
+
+                    facets.forEach(facet => {
+                        if (HawkSearchVue.getFacetParamName(facet) == field) {
+                            type = facet.FieldType
+                        }
+                    });
+
+                    return type;
+                }
+            },
+            rangeLabel: function (item) {
+                return item.split(',').join(' - ');
             }
         },
         computed: {
@@ -103,7 +125,7 @@
                     var field;
 
                     facets.forEach(facet => {
-                        field = facet.ParamName ? facet.ParamName : facet.Field;
+                        field = HawkSearchVue.getFacetParamName(facet);
 
                         if (facetSelectionsLabels.hasOwnProperty(field)) {
                             facetSelectionsLabels[field] = facet.Name;

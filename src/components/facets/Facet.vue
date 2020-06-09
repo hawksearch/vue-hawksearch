@@ -55,6 +55,7 @@
     import NestedCheckbox from './types/NestedCheckbox';
     import Search from './types/Search';
     import OpenRange from './types/OpenRange';
+    import Swatch from './types/Swatch';
 
     export default {
         name: 'facet',
@@ -66,7 +67,8 @@
             Checkbox,
             NestedCheckbox,
             Search,
-            OpenRange
+            OpenRange,
+            Swatch
         },
         created: function () {
             this.setFilter();
@@ -134,37 +136,17 @@
                         return "nested-checkbox";
                         break;
 
-                    //case "nestedlinklist":
-                    //    return "";
-                    //    break;
-
-                    //case "rating":
-                    //    return "";
-                    //    break;
-
-                    //case "recentsearches":
-                    //return "";
-                    //break;
-
-                    //case "related":
-                    //    return "";
-                    //    break;
-
                     case "search":
                         return "search";
                         break;
-
-                    //case "size":
-                    //    return "";
-                    //    break;
 
                     //case "slider":
                     //    return "slider";
                     //    break;
 
-                    //case "swatch":
-                    //    return "swatch";
-                    //    break;
+                    case "swatch":
+                        return "swatch";
+                        break;
 
                     case "openRange":
                         return "open-range";
