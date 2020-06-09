@@ -116,7 +116,8 @@ var store = new Vuex.Store({
         dashboardUrl: '',
         searchPageUrl: location.pathname,
         indexName: null,
-        indexNameRequired: false
+        indexNameRequired: false,
+        additionalParameters: {}
     }
 
     static configurationApplied = false
@@ -187,7 +188,7 @@ var store = new Vuex.Store({
             searchParams = {};
         }
 
-        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName });
+        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName }, this.config.additionalParameters);
 
         this.cancelSuggestionsRequest();
 
