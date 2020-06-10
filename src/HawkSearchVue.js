@@ -1,6 +1,6 @@
 import { default as VueStore } from './store';
 
-class HawkSearchVue {
+class HawksearchVue {
     static config = {
         clientGuid: '',
         apiUrl: 'https://searchapi-dev.hawksearch.net',
@@ -112,8 +112,8 @@ class HawkSearchVue {
         Vue.http.post(this.getFullAutocompleteUrl(), params, {
             before(request) {
                 // TOOD: Fix scope
-                HawkSearchVue.cancelSuggestionsRequest();
-                HawkSearchVue.suggestionRequest = request;
+                HawksearchVue.cancelSuggestionsRequest();
+                HawksearchVue.suggestionRequest = request;
             }
         }).then(response => {
             if (response.status == '200' && response.data) {
@@ -304,4 +304,4 @@ class HawkSearchVue {
     }
 }
 
-export default HawkSearchVue;
+export default HawksearchVue;

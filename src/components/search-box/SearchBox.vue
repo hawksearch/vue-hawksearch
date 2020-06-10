@@ -9,7 +9,7 @@
 
 <script>
     import { mapState } from 'vuex'
-    import HawkSearchVue from "../../HawkSearchVue";
+    import HawksearchVue from "../../HawksearchVue";
     import SearchSuggestions from "./SearchSuggestions";
 
     export default {
@@ -34,8 +34,8 @@
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
 
-                    if (HawkSearchVue.isGlobal()) {
-                        HawkSearchVue.redirectSearch(keyword);
+                    if (HawksearchVue.isGlobal()) {
+                        HawksearchVue.redirectSearch(keyword);
                     }
                     else {
                         this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
@@ -63,7 +63,7 @@
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);
-                HawkSearchVue.cancelSuggestionsRequest();
+                HawksearchVue.cancelSuggestionsRequest();
                 this.$root.$store.commit('updateLoadingSuggestions', false);
                 this.$root.$store.commit('updateSuggestions', null);
             }

@@ -2,7 +2,7 @@ import Vue$2 from'vue';import VueResource from'vue-resource';import Vuex,{mapSta
 
 var store = new Vuex.Store({
     state: {
-        config: {}, // defaults are set in HawkSearchVue class
+        config: {}, // defaults are set in HawksearchVue class
         searchOutput: null,
         suggestions: null,
         pendingSearch: {
@@ -48,14 +48,14 @@ var store = new Vuex.Store({
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
 
-            HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
+            HawksearchVue.fetchResults(pendingSearch, (searchOutput) => {
                 commit('updateLoadingResults', false);
 
                 if (searchOutput) {
                     commit('setSearchError', false);
                     commit('updateResults', searchOutput);
 
-                    HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                    HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
                     });
                 }
@@ -66,7 +66,7 @@ var store = new Vuex.Store({
             });
         },
         fetchSuggestions({ commit, state }, searchParams) {
-            HawkSearchVue.fetchSuggestions(searchParams, (suggestions) => {
+            HawksearchVue.fetchSuggestions(searchParams, (suggestions) => {
                 if (suggestions) {
                     commit('updateLoadingSuggestions', false);
                     commit('updateSuggestions', suggestions);
@@ -74,7 +74,7 @@ var store = new Vuex.Store({
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {
-            HawkSearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+            HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
                 dispatch('fetchResults', { FacetSelections: facetSelections });
             });
         },
@@ -107,7 +107,7 @@ var store = new Vuex.Store({
             }
         }
     }
-});class HawkSearchVue$1 {
+});class HawksearchVue$1 {
     static config = {
         clientGuid: '',
         apiUrl: 'https://searchapi-dev.hawksearch.net',
@@ -219,8 +219,8 @@ var store = new Vuex.Store({
         Vue.http.post(this.getFullAutocompleteUrl(), params, {
             before(request) {
                 // TOOD: Fix scope
-                HawkSearchVue$1.cancelSuggestionsRequest();
-                HawkSearchVue$1.suggestionRequest = request;
+                HawksearchVue$1.cancelSuggestionsRequest();
+                HawksearchVue$1.suggestionRequest = request;
             }
         }).then(response => {
             if (response.status == '200' && response.data) {
@@ -610,8 +610,8 @@ var script$1 = {
             if (e.key == 'Enter') {
                 this.cancelSuggestions();
 
-                if (HawkSearchVue$1.isGlobal()) {
-                    HawkSearchVue$1.redirectSearch(keyword);
+                if (HawksearchVue$1.isGlobal()) {
+                    HawksearchVue$1.redirectSearch(keyword);
                 }
                 else {
                     this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
@@ -639,7 +639,7 @@ var script$1 = {
         },
         cancelSuggestions: function () {
             clearTimeout(this.suggestionDelay);
-            HawkSearchVue$1.cancelSuggestionsRequest();
+            HawksearchVue$1.cancelSuggestionsRequest();
             this.$root.$store.commit('updateLoadingSuggestions', false);
             this.$root.$store.commit('updateSuggestions', null);
         }
@@ -700,7 +700,7 @@ __vue_render__$1._withStripped = true;
   /* style */
   const __vue_inject_styles__$1 = undefined;
   /* scoped */
-  const __vue_scope_id__$1 = "data-v-a5038df4";
+  const __vue_scope_id__$1 = "data-v-37c2cdb4";
   /* module identifier */
   const __vue_module_identifier__$1 = undefined;
   /* functional template */
@@ -2869,7 +2869,7 @@ const messages = {
 const i18n = new VueI18n({
     locale: 'en', // set locale
     messages, // set locale messages
-});const HawkSearchField = Vue$2.extend({
+});const HawksearchField = Vue$2.extend({
 	data: function () {
 		return {
 
@@ -3120,7 +3120,7 @@ var script$4 = {
                 var type;
 
                 facets.forEach(facet => {
-                    if (HawkSearchVue.getFacetParamName(facet) == field) {
+                    if (HawksearchVue.getFacetParamName(facet) == field) {
                         type = facet.FieldType;
                     }
                 });
@@ -3151,7 +3151,7 @@ var script$4 = {
                 var field;
 
                 facets.forEach(facet => {
-                    field = HawkSearchVue.getFacetParamName(facet);
+                    field = HawksearchVue.getFacetParamName(facet);
 
                     if (facetSelectionsLabels.hasOwnProperty(field)) {
                         facetSelectionsLabels[field] = facet.Name;
@@ -3289,7 +3289,7 @@ __vue_render__$4._withStripped = true;
   /* style */
   const __vue_inject_styles__$4 = undefined;
   /* scoped */
-  const __vue_scope_id__$4 = "data-v-78ab9ab7";
+  const __vue_scope_id__$4 = "data-v-63c41292";
   /* module identifier */
   const __vue_module_identifier__$4 = undefined;
   /* functional template */
@@ -4423,7 +4423,7 @@ __vue_render__$i._withStripped = true;
     undefined,
     undefined,
     undefined
-  );const HawkSearchResults = Vue$2.extend({
+  );const HawksearchResults = Vue$2.extend({
 	data: function () {
 		return {};
 	},
@@ -4434,9 +4434,18 @@ __vue_render__$i._withStripped = true;
     },
 	computed: {
 		...mapState([
-			'searchOutput'
+			'searchOutput',
+			'pendingSearch'
 		])
-	}
+	},
+	watch: {
+		searchOutput: function (n, o) {
+			this.$emit('resultsupdate', n);
+		},
+		pendingSearch: function (n, o) {
+			this.$emit('searchupdate', n);
+		}
+    }
 });var script$j = {
     name: 'questionmark-svg',
     props: ['iconClass'],
@@ -5620,7 +5629,7 @@ var script$u = {
             return 'background: ' + this.item.Color;
         },
         url: function () {
-            return HawkSearchVue.config.dashboardUrl + (!this.item.AssetUrl ? this.item.AssetName : this.item.AssetUrl);
+            return HawksearchVue.config.dashboardUrl + (!this.item.AssetUrl ? this.item.AssetName : this.item.AssetUrl);
         }
     }
 };/* script */
@@ -5671,7 +5680,7 @@ __vue_render__$u._withStripped = true;
   /* style */
   const __vue_inject_styles__$u = undefined;
   /* scoped */
-  const __vue_scope_id__$u = "data-v-75824be5";
+  const __vue_scope_id__$u = "data-v-29d747f6";
   /* module identifier */
   const __vue_module_identifier__$u = undefined;
   /* functional template */
@@ -6289,7 +6298,7 @@ __vue_render__$y._withStripped = true;
     undefined,
     undefined,
     undefined
-  );const HawkSearchFacets = Vue$2.extend({
+  );const HawksearchFacets = Vue$2.extend({
     store,
     i18n,
     components: {
@@ -6401,7 +6410,7 @@ __vue_render__$A._withStripped = true;
   /* style */
   const __vue_inject_styles__$A = undefined;
   /* scoped */
-  const __vue_scope_id__$A = "data-v-4385633d";
+  const __vue_scope_id__$A = "data-v-1836dfe2";
   /* module identifier */
   const __vue_module_identifier__$A = undefined;
   /* functional template */
@@ -6429,4 +6438,4 @@ __vue_render__$A._withStripped = true;
 
 Vue$2.config.devtools = true;
 Vue$2.use(VueResource);
-window.HawkSearchVue = HawkSearchVue$1;export default HawkSearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$w as Facet,__vue_component__$y as FacetList,HawkSearchFacets,HawkSearchField,HawkSearchResults,store as HawkSearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$z as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$A as Slider,__vue_component__$5 as Sorting,__vue_component__$v as Swatch,__vue_component__$u as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};
+window.HawksearchVue = HawksearchVue$1;export default HawksearchVue$1;export{__vue_component__$p as Checkbox,__vue_component__$m as CheckmarkSvg,__vue_component__$o as DashCircleSvg,__vue_component__$w as Facet,__vue_component__$y as FacetList,HawksearchFacets,HawksearchField,HawksearchResults,store as HawksearchStore,__vue_component__$9 as ItemsPerPage,__vue_component__$6 as LeftChevronSvg,__vue_component__$z as Link,__vue_component__$l as MinusSvg,__vue_component__$r as NestedCheckbox,__vue_component__$q as NestedItem,__vue_component__$t as OpenRange,__vue_component__$8 as Pager,__vue_component__$a as Pagination,__vue_component__$n as PlusCircleSvg,__vue_component__$k as PlusSvg,__vue_component__$j as QuestionmarkSvg,__vue_component__$c as ResultImage,__vue_component__$d as ResultItem,__vue_component__$h as ResultListing,__vue_component__$i as Results,__vue_component__$7 as RightChevronSvg,__vue_component__$s as Search,__vue_component__$1 as SearchBox,__vue_component__$2 as SearchResultsLabel,__vue_component__$4 as Selections,__vue_component__$A as Slider,__vue_component__$5 as Sorting,__vue_component__$v as Swatch,__vue_component__$u as SwatchItem,__vue_component__$b as ToolRow,i18n as tConfig};

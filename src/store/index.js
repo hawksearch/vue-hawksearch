@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        config: {}, // defaults are set in HawkSearchVue class
+        config: {}, // defaults are set in HawksearchVue class
         searchOutput: null,
         suggestions: null,
         pendingSearch: {
@@ -51,14 +51,14 @@ export default new Vuex.Store({
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
 
-            HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
+            HawksearchVue.fetchResults(pendingSearch, (searchOutput) => {
                 commit('updateLoadingResults', false);
 
                 if (searchOutput) {
                     commit('setSearchError', false);
                     commit('updateResults', searchOutput);
 
-                    HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                    HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
                     });
                 }
@@ -69,7 +69,7 @@ export default new Vuex.Store({
             });
         },
         fetchSuggestions({ commit, state }, searchParams) {
-            HawkSearchVue.fetchSuggestions(searchParams, (suggestions) => {
+            HawksearchVue.fetchSuggestions(searchParams, (suggestions) => {
                 if (suggestions) {
                     commit('updateLoadingSuggestions', false);
                     commit('updateSuggestions', suggestions);
@@ -77,7 +77,7 @@ export default new Vuex.Store({
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {
-            HawkSearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+            HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
                 dispatch('fetchResults', { FacetSelections: facetSelections });
             });
         },

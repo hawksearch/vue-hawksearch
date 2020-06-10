@@ -3,27 +3,25 @@
 }
 
 .autosuggest-menu__list {
-	.body & {
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		padding: 0;
-		left: auto;
-		top: auto;
-		margin-top: -3px;
-		display: block;
-		overflow-y: scroll;
-		line-height: 35px;
-		border: 1px solid #ccc;
-		position: absolute;
-		width: 100%;
-		z-index: 2;
-		background: white;
-		box-sizing: border-box;
-		cursor: default;
-	}
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 0;
+    left: auto;
+    top: auto;
+    margin-top: -3px;
+    display: block;
+    overflow-y: scroll;
+    line-height: 35px;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    background: white;
+    box-sizing: border-box;
+    cursor: default;
 }
 
-.body .autosuggest-menu__item {
+.autosuggest-menu__item {
 	padding-left: 10px;
 	background-color: $autosuggest-item-bg;
 

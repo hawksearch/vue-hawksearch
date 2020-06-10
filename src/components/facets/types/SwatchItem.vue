@@ -58,7 +58,7 @@
                 return 'background: ' + this.item.Color;
             },
             url: function () {
-                return HawkSearchVue.config.dashboardUrl + (!this.item.AssetUrl ? this.item.AssetName : this.item.AssetUrl);
+                return HawksearchVue.config.dashboardUrl + (!this.item.AssetUrl ? this.item.AssetName : this.item.AssetUrl);
             }
         }
     }

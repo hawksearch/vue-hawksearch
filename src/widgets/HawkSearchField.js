@@ -3,7 +3,7 @@ import store from '../store';
 import SearchBox from '../components/search-box/SearchBox';
 import i18n from '../i18n';
 
-const HawkSearchField = Vue.extend({
+const HawksearchField = Vue.extend({
 	data: function () {
 		return {
 
@@ -16,4 +16,4 @@ const HawkSearchField = Vue.extend({
     }
 });
 
-export default HawkSearchField;
+export default HawksearchField;

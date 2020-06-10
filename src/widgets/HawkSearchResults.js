@@ -4,7 +4,7 @@ import store from '../store';
 import { mapState } from 'vuex';
 import i18n from '../i18n';
 
-const HawkSearchResults = Vue.extend({
+const HawksearchResults = Vue.extend({
 	data: function () {
 		return {};
 	},
@@ -15,9 +15,18 @@ const HawkSearchResults = Vue.extend({
     },
 	computed: {
 		...mapState([
-			'searchOutput'
+			'searchOutput',
+			'pendingSearch'
 		])
-	}
+	},
+	watch: {
+		searchOutput: function (n, o) {
+			this.$emit('resultsupdate', n);
+		},
+		pendingSearch: function (n, o) {
+			this.$emit('searchupdate', n);
+		}
+    }
 });
 
-export default HawkSearchResults;
+export default HawksearchResults;

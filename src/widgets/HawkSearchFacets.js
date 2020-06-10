@@ -3,7 +3,7 @@ import store from '../store';
 import FacetList from '../components/facets/FacetList.vue';
 import i18n from '../i18n';
 
-const HawkSearchFacets = Vue.extend({
+const HawksearchFacets = Vue.extend({
     store,
     i18n,
     components: {
@@ -11,4 +11,4 @@ const HawkSearchFacets = Vue.extend({
     }
 });
 
-export default HawkSearchFacets;
+export default HawksearchFacets;
