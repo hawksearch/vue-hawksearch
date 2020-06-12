@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        config: {}, // defaults are set in HawkSearchVue class
+        config: {}, // defaults are set in HawksearchVue class
         searchOutput: null,
         suggestions: null,
         pendingSearch: {
@@ -15,7 +15,8 @@ export default new Vuex.Store({
         extendedSearchParams: {},
         searchError: false,
         loadingResults: false,
-        loadingSuggestions: false
+        loadingSuggestions: false,
+        waitingForInitialSearch: true
     },
     mutations: {
         updateConfig(state, value) {
@@ -41,6 +42,9 @@ export default new Vuex.Store({
         },
         updateLoadingSuggestions(state, value) {
             state.loadingSuggestions = value;
+        },
+        updateWaitingForInitialSearch(state, value) {
+            state.waitingForInitialSearch = value;
         }
     },
     actions: {
@@ -51,25 +55,28 @@ export default new Vuex.Store({
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
 
-            HawkSearchVue.fetchResults(pendingSearch, (searchOutput) => {
+            HawksearchVue.fetchResults(pendingSearch, (searchOutput, error) => {
                 commit('updateLoadingResults', false);
 
                 if (searchOutput) {
                     commit('setSearchError', false);
                     commit('updateResults', searchOutput);
 
-                    HawkSearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                    HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
                     });
                 }
-                else {
+                else if (error) {
                     commit('updateResults', null);
                     commit('setSearchError', true);
+                }
+                else {
+                    commit('updateResults', null);
                 }
             });
         },
         fetchSuggestions({ commit, state }, searchParams) {
-            HawkSearchVue.fetchSuggestions(searchParams, (suggestions) => {
+            HawksearchVue.fetchSuggestions(searchParams, (suggestions) => {
                 if (suggestions) {
                     commit('updateLoadingSuggestions', false);
                     commit('updateSuggestions', suggestions);
@@ -77,7 +84,7 @@ export default new Vuex.Store({
             });
         },
         applyFacets({ dispatch, commit, state }, facetData) {
-            HawkSearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+            HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
                 dispatch('fetchResults', { FacetSelections: facetSelections });
             });
         },

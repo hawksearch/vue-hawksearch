@@ -1,13 +1,12 @@
 import { default as VueStore } from './store';
 
-class HawkSearchVue {
+class HawksearchVue {
     static config = {
         clientGuid: '',
         apiUrl: 'https://searchapi-dev.hawksearch.net',
         searchUrl: '/api/v2/search',
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
-        searchPageUrl: location.pathname,
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {}
@@ -69,12 +68,13 @@ class HawkSearchVue {
     }
 
     static fetchResults(searchParams, callback) {
-        if (!this.requestConditionsMet()) {
-            return false;
-        }
-
         if (!callback) {
             callback = function () { };
+        }
+
+        if (!this.requestConditionsMet()) {
+            callback(false)
+            return false;
         }
 
         if (!searchParams) {
@@ -85,12 +85,14 @@ class HawkSearchVue {
 
         this.cancelSuggestionsRequest();
 
+        VueStore.commit('updateWaitingForInitialSearch', false);
+
         Vue.http.post(this.getFullSearchUrl(), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
-            callback(false);
+            callback(false, true);
         });
     }
 
@@ -112,8 +114,8 @@ class HawkSearchVue {
         Vue.http.post(this.getFullAutocompleteUrl(), params, {
             before(request) {
                 // TOOD: Fix scope
-                HawkSearchVue.cancelSuggestionsRequest();
-                HawkSearchVue.suggestionRequest = request;
+                HawksearchVue.cancelSuggestionsRequest();
+                HawksearchVue.suggestionRequest = request;
             }
         }).then(response => {
             if (response.status == '200' && response.data) {
@@ -278,17 +280,12 @@ class HawkSearchVue {
         }
     }
 
-    static isGlobal() {
-        if (this.config.searchPageUrl == location.pathname) {
-            return false
-        }
-        else {
-            return true;
-        }
-    }
+    static redirectSearch(keyword, searchPageUrl) {
+        var redirect = searchPageUrl + '?keyword=' + keyword;
 
-    static redirectSearch(keyword) {
-        var redirect = this.config.searchPageUrl + '?keyword=' + keyword;
+        if (this.config.indexName) {
+            redirect += '&indexName=' + this.config.indexName;
+        }
 
         location.assign(redirect);
     }
@@ -304,4 +301,4 @@ class HawkSearchVue {
     }
 }
 
-export default HawkSearchVue;
+export default HawksearchVue;

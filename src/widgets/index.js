@@ -1,3 +1,3 @@
-export { default as HawkSearchField } from './HawkSearchField';
-export { default as HawkSearchResults } from './HawkSearchResults';
-export { default as HawkSearchFacets } from './HawkSearchFacets';
+export { default as HawksearchField } from './HawksearchField';
+export { default as HawksearchResults } from './HawksearchResults';
+export { default as HawksearchFacets } from './HawksearchFacets';

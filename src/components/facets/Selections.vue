@@ -94,7 +94,7 @@
                     var type;
 
                     facets.forEach(facet => {
-                        if (HawkSearchVue.getFacetParamName(facet) == field) {
+                        if (HawksearchVue.getFacetParamName(facet) == field) {
                             type = facet.FieldType
                         }
                     });
@@ -125,7 +125,7 @@
                     var field;
 
                     facets.forEach(facet => {
-                        field = HawkSearchVue.getFacetParamName(facet);
+                        field = HawksearchVue.getFacetParamName(facet);
 
                         if (facetSelectionsLabels.hasOwnProperty(field)) {
                             facetSelectionsLabels[field] = facet.Name;
