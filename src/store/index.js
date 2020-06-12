@@ -15,7 +15,8 @@ export default new Vuex.Store({
         extendedSearchParams: {},
         searchError: false,
         loadingResults: false,
-        loadingSuggestions: false
+        loadingSuggestions: false,
+        waitingForInitialSearch: true
     },
     mutations: {
         updateConfig(state, value) {
@@ -41,6 +42,9 @@ export default new Vuex.Store({
         },
         updateLoadingSuggestions(state, value) {
             state.loadingSuggestions = value;
+        },
+        updateWaitingForInitialSearch(state, value) {
+            state.waitingForInitialSearch = value;
         }
     },
     actions: {
@@ -51,7 +55,7 @@ export default new Vuex.Store({
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
 
-            HawksearchVue.fetchResults(pendingSearch, (searchOutput) => {
+            HawksearchVue.fetchResults(pendingSearch, (searchOutput, error) => {
                 commit('updateLoadingResults', false);
 
                 if (searchOutput) {
@@ -62,9 +66,12 @@ export default new Vuex.Store({
                         commit('updateExtendedSearchParams', extendedSearchParams);
                     });
                 }
-                else {
+                else if (error) {
                     commit('updateResults', null);
                     commit('setSearchError', true);
+                }
+                else {
+                    commit('updateResults', null);
                 }
             });
         },

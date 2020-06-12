@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-facet-rail">
+    <div v-if="!waitingForInitialSearch" class="hawk-facet-rail">
         <div class="hawk-facet-rail__heading">{{ $t('Narrow Results') }}</div>
 
         <div class="hawk-facet-rail__facet-list">
@@ -38,7 +38,8 @@
         },
         computed: {
             ...mapState([
-                'extendedSearchParams'
+                'extendedSearchParams',
+                'waitingForInitialSearch'
             ]),
             facets: function () {
                 return this.extendedSearchParams ? this.extendedSearchParams.Facets : null;

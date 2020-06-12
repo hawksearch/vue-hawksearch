@@ -6,7 +6,7 @@
         <template v-else-if="searchOutput && searchOutput.Results && searchOutput.Results.length == 0">
             <span>{{ $t('No Results') }}</span>
         </template>
-        <template v-else>
+        <template v-else-if="!waitingForInitialSearch">
             <search-results-label />
             <selections />
 
@@ -53,7 +53,8 @@
         computed: {
             ...mapState([
                 'searchOutput',
-                'searchError'
+                'searchError',
+                'waitingForInitialSearch'
             ])
         }
     }

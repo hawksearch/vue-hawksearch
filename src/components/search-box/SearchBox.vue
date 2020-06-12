@@ -9,12 +9,11 @@
 
 <script>
     import { mapState } from 'vuex'
-    import HawksearchVue from "../../HawksearchVue";
     import SearchSuggestions from "./SearchSuggestions";
 
     export default {
         name: 'search-box',
-        props: [],
+        props: ['indexName', 'searchPage'],
         components: {
             SearchSuggestions
         },
@@ -33,9 +32,10 @@
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
+                    this.handleIndexName();
 
-                    if (HawksearchVue.isGlobal()) {
-                        HawksearchVue.redirectSearch(keyword);
+                    if (this.searchPage && this.searchPage != location.pathname) {
+                        HawksearchVue.redirectSearch(this.keyword, this.searchPage);
                     }
                     else {
                         this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
@@ -47,6 +47,7 @@
 
                 if (keyword) {
                     this.$root.$store.commit('updateLoadingSuggestions', true);
+                    this.handleIndexName();
 
                     clearTimeout(this.suggestionDelay);
                     this.suggestionDelay = setTimeout(() => {
@@ -66,6 +67,11 @@
                 HawksearchVue.cancelSuggestionsRequest();
                 this.$root.$store.commit('updateLoadingSuggestions', false);
                 this.$root.$store.commit('updateSuggestions', null);
+            },
+            handleIndexName: function () {
+                if (this.indexName && HawksearchVue.config.indexName != this.indexName) {
+                    HawksearchVue.configure({ indexName: this.indexName });
+                }
             }
         },
         computed: {

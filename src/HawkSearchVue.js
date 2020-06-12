@@ -7,7 +7,6 @@ class HawksearchVue {
         searchUrl: '/api/v2/search',
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
-        searchPageUrl: location.pathname,
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {}
@@ -69,12 +68,13 @@ class HawksearchVue {
     }
 
     static fetchResults(searchParams, callback) {
-        if (!this.requestConditionsMet()) {
-            return false;
-        }
-
         if (!callback) {
             callback = function () { };
+        }
+
+        if (!this.requestConditionsMet()) {
+            callback(false)
+            return false;
         }
 
         if (!searchParams) {
@@ -85,12 +85,14 @@ class HawksearchVue {
 
         this.cancelSuggestionsRequest();
 
+        VueStore.commit('updateWaitingForInitialSearch', false);
+
         Vue.http.post(this.getFullSearchUrl(), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
-            callback(false);
+            callback(false, true);
         });
     }
 
@@ -278,17 +280,12 @@ class HawksearchVue {
         }
     }
 
-    static isGlobal() {
-        if (this.config.searchPageUrl == location.pathname) {
-            return false
-        }
-        else {
-            return true;
-        }
-    }
+    static redirectSearch(keyword, searchPageUrl) {
+        var redirect = searchPageUrl + '?keyword=' + keyword;
 
-    static redirectSearch(keyword) {
-        var redirect = this.config.searchPageUrl + '?keyword=' + keyword;
+        if (this.config.indexName) {
+            redirect += '&indexName=' + this.config.indexName;
+        }
 
         location.assign(redirect);
     }

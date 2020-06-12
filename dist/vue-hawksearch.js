@@ -12,7 +12,8 @@ var store = new Vuex.Store({
         extendedSearchParams: {},
         searchError: false,
         loadingResults: false,
-        loadingSuggestions: false
+        loadingSuggestions: false,
+        waitingForInitialSearch: true
     },
     mutations: {
         updateConfig(state, value) {
@@ -38,6 +39,9 @@ var store = new Vuex.Store({
         },
         updateLoadingSuggestions(state, value) {
             state.loadingSuggestions = value;
+        },
+        updateWaitingForInitialSearch(state, value) {
+            state.waitingForInitialSearch = value;
         }
     },
     actions: {
@@ -48,7 +52,7 @@ var store = new Vuex.Store({
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
 
-            HawksearchVue.fetchResults(pendingSearch, (searchOutput) => {
+            HawksearchVue.fetchResults(pendingSearch, (searchOutput, error) => {
                 commit('updateLoadingResults', false);
 
                 if (searchOutput) {
@@ -59,9 +63,12 @@ var store = new Vuex.Store({
                         commit('updateExtendedSearchParams', extendedSearchParams);
                     });
                 }
-                else {
+                else if (error) {
                     commit('updateResults', null);
                     commit('setSearchError', true);
+                }
+                else {
+                    commit('updateResults', null);
                 }
             });
         },
@@ -114,7 +121,6 @@ var store = new Vuex.Store({
         searchUrl: '/api/v2/search',
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
-        searchPageUrl: location.pathname,
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {}
@@ -176,12 +182,13 @@ var store = new Vuex.Store({
     }
 
     static fetchResults(searchParams, callback) {
-        if (!this.requestConditionsMet()) {
-            return false;
-        }
-
         if (!callback) {
             callback = function () { };
+        }
+
+        if (!this.requestConditionsMet()) {
+            callback(false);
+            return false;
         }
 
         if (!searchParams) {
@@ -192,12 +199,14 @@ var store = new Vuex.Store({
 
         this.cancelSuggestionsRequest();
 
+        store.commit('updateWaitingForInitialSearch', false);
+
         Vue.http.post(this.getFullSearchUrl(), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
-            callback(false);
+            callback(false, true);
         });
     }
 
@@ -385,17 +394,12 @@ var store = new Vuex.Store({
         };
     }
 
-    static isGlobal() {
-        if (this.config.searchPageUrl == location.pathname) {
-            return false
-        }
-        else {
-            return true;
-        }
-    }
+    static redirectSearch(keyword, searchPageUrl) {
+        var redirect = searchPageUrl + '?keyword=' + keyword;
 
-    static redirectSearch(keyword) {
-        var redirect = this.config.searchPageUrl + '?keyword=' + keyword;
+        if (this.config.indexName) {
+            redirect += '&indexName=' + this.config.indexName;
+        }
 
         location.assign(redirect);
     }
@@ -590,7 +594,7 @@ __vue_render__._withStripped = true;
 
 var script$1 = {
     name: 'search-box',
-    props: [],
+    props: ['indexName', 'searchPage'],
     components: {
         SearchSuggestions: __vue_component__
     },
@@ -609,9 +613,10 @@ var script$1 = {
         onKeyDown: function (e) {
             if (e.key == 'Enter') {
                 this.cancelSuggestions();
+                this.handleIndexName();
 
-                if (HawksearchVue$1.isGlobal()) {
-                    HawksearchVue$1.redirectSearch(keyword);
+                if (this.searchPage && this.searchPage != location.pathname) {
+                    HawksearchVue.redirectSearch(this.keyword, this.searchPage);
                 }
                 else {
                     this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
@@ -623,6 +628,7 @@ var script$1 = {
 
             if (keyword) {
                 this.$root.$store.commit('updateLoadingSuggestions', true);
+                this.handleIndexName();
 
                 clearTimeout(this.suggestionDelay);
                 this.suggestionDelay = setTimeout(() => {
@@ -639,9 +645,14 @@ var script$1 = {
         },
         cancelSuggestions: function () {
             clearTimeout(this.suggestionDelay);
-            HawksearchVue$1.cancelSuggestionsRequest();
+            HawksearchVue.cancelSuggestionsRequest();
             this.$root.$store.commit('updateLoadingSuggestions', false);
             this.$root.$store.commit('updateSuggestions', null);
+        },
+        handleIndexName: function () {
+            if (this.indexName && HawksearchVue.config.indexName != this.indexName) {
+                HawksearchVue.configure({ indexName: this.indexName });
+            }
         }
     },
     computed: {
@@ -700,7 +711,7 @@ __vue_render__$1._withStripped = true;
   /* style */
   const __vue_inject_styles__$1 = undefined;
   /* scoped */
-  const __vue_scope_id__$1 = "data-v-37c2cdb4";
+  const __vue_scope_id__$1 = "data-v-0320c9c8";
   /* module identifier */
   const __vue_module_identifier__$1 = undefined;
   /* functional template */
@@ -4348,7 +4359,8 @@ var script$i = {
     computed: {
         ...mapState([
             'searchOutput',
-            'searchError'
+            'searchError',
+            'waitingForInitialSearch'
         ])
     }
 };/* script */
@@ -4368,7 +4380,8 @@ var __vue_render__$i = function() {
           _vm.searchOutput.Results &&
           _vm.searchOutput.Results.length == 0
         ? [_c("span", [_vm._v(_vm._s(_vm.$t("No Results")))])]
-        : [
+        : !_vm.waitingForInitialSearch
+        ? [
             _c("search-results-label"),
             _vm._v(" "),
             _c("selections"),
@@ -4389,6 +4402,7 @@ var __vue_render__$i = function() {
               1
             )
           ]
+        : _vm._e()
     ],
     2
   )
@@ -4399,7 +4413,7 @@ __vue_render__$i._withStripped = true;
   /* style */
   const __vue_inject_styles__$i = undefined;
   /* scoped */
-  const __vue_scope_id__$i = "data-v-20cbd694";
+  const __vue_scope_id__$i = "data-v-484adf7d";
   /* module identifier */
   const __vue_module_identifier__$i = undefined;
   /* functional template */
@@ -6231,7 +6245,8 @@ __vue_render__$x._withStripped = true;
     },
     computed: {
         ...mapState([
-            'extendedSearchParams'
+            'extendedSearchParams',
+            'waitingForInitialSearch'
         ]),
         facets: function () {
             return this.extendedSearchParams ? this.extendedSearchParams.Facets : null;
@@ -6244,29 +6259,31 @@ var __vue_render__$y = function() {
   var _vm = this;
   var _h = _vm.$createElement;
   var _c = _vm._self._c || _h;
-  return _c("div", { staticClass: "hawk-facet-rail" }, [
-    _c("div", { staticClass: "hawk-facet-rail__heading" }, [
-      _vm._v(_vm._s(_vm.$t("Narrow Results")))
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "hawk-facet-rail__facet-list" },
-      [
-        _vm.facets && _vm.facets.length
-          ? _vm._l(_vm.facets, function(facetData) {
-              return _c("facet", {
-                key: facetData.FacetId,
-                attrs: { "facet-data": facetData }
-              })
-            })
-          : _vm._l(4, function(index) {
-              return _c("placeholder-facet", { key: index })
-            })
-      ],
-      2
-    )
-  ])
+  return !_vm.waitingForInitialSearch
+    ? _c("div", { staticClass: "hawk-facet-rail" }, [
+        _c("div", { staticClass: "hawk-facet-rail__heading" }, [
+          _vm._v(_vm._s(_vm.$t("Narrow Results")))
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "hawk-facet-rail__facet-list" },
+          [
+            _vm.facets && _vm.facets.length
+              ? _vm._l(_vm.facets, function(facetData) {
+                  return _c("facet", {
+                    key: facetData.FacetId,
+                    attrs: { "facet-data": facetData }
+                  })
+                })
+              : _vm._l(4, function(index) {
+                  return _c("placeholder-facet", { key: index })
+                })
+          ],
+          2
+        )
+      ])
+    : _vm._e()
 };
 var __vue_staticRenderFns__$y = [];
 __vue_render__$y._withStripped = true;
@@ -6274,7 +6291,7 @@ __vue_render__$y._withStripped = true;
   /* style */
   const __vue_inject_styles__$y = undefined;
   /* scoped */
-  const __vue_scope_id__$y = "data-v-3f7868d9";
+  const __vue_scope_id__$y = "data-v-7e6d340a";
   /* module identifier */
   const __vue_module_identifier__$y = undefined;
   /* functional template */
