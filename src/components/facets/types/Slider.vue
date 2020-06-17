@@ -5,7 +5,7 @@
                 <input v-model="facetValue.RangeStart" class="hawk-numericInput numeric-from" min="0" max="5" type="text" value="2">
                 <input v-model="facetValue.RangeEnd" class="hawk-numericInput numeric-to" min="0" max="5" type="text" value="5">
             </div>
-            <div class="slider" @mouseup="onMouseUp" @mousemove="onMouseMove">
+            <div class="slider" ref="wrapper">
                 <div class="slider-background"></div>
                 <div class="slider-wrapper" ref="wrapper">
                     <button ref="min" type="button" @mousedown="onMouseDown" class="slider-button" :style="minRangeStyle"></button>
@@ -29,8 +29,18 @@
             return {
                 target: null,
                 minTemp: 0,
-                maxTemp: 100
+                maxTemp: 100,
+                minValue: null,
+                maxValue: null
             }
+        },
+        created: function () {
+            window.addEventListener('mouseup', (e) => { this.onMouseUp(e) })
+            window.addEventListener('mousemove', (e) => { this.onMouseMove(e) })
+        },
+        beforeDestroy: function () {
+            window.removeEventListener('mouseup', (e) => { this.onMouseUp(e) })
+            window.removeEventListener('mousemove', (e) => { this.onMouseMove(e) })
         },
         methods: {
             onMouseDown: function (e) {
@@ -44,8 +54,6 @@
                     var wrapperRight = wrapper.right + 26;
 
                     if (left > wrapperLeft && left < wrapperRight) {
-                        //this.target.style.left = (e.clientX - 12) + 'px';
-
                         if (this.target == this.$refs.min) {
                             this.minTemp = left;
                         }
@@ -59,7 +67,17 @@
                 }
             },
             onMouseUp: function (e) {
-                this.target = null;
+                if (this.target) {
+                    this.target = null;
+                    this.handleAction();
+                    this.applyFacet();
+                }
+            },
+            handleAction: function () {
+                this.minValue = Math.round(this.minTemp / this.ratio);
+                this.maxValue = Math.round(this.maxTemp / this.ratio);
+            },
+            applyFacet: function () {
                 //this.facetData.Value = (this.minValue || '') + ',' + (this.maxValue || '');
                 //this.$root.$store.dispatch('applyFacets', this.facetData);
             }

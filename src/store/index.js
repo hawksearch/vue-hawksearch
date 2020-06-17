@@ -3,118 +3,124 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-    state: {
-        config: {}, // defaults are set in HawksearchVue class
-        searchOutput: null,
-        suggestions: null,
-        pendingSearch: {
-            Keyword: "",
-            FacetSelections: {}
+export default () => {
+    return new Vuex.Store({
+        state: {
+            storeId: null,
+            config: {}, // defaults are set in HawksearchVue class
+            searchOutput: null,
+            suggestions: null,
+            pendingSearch: {
+                Keyword: "",
+                FacetSelections: {}
+            },
+            extendedSearchParams: {},
+            searchError: false,
+            loadingResults: false,
+            loadingSuggestions: false,
+            waitingForInitialSearch: true
         },
-        extendedSearchParams: {},
-        searchError: false,
-        loadingResults: false,
-        loadingSuggestions: false,
-        waitingForInitialSearch: true
-    },
-    mutations: {
-        updateConfig(state, value) {
-            state.config = Object.assign({}, state.config, value);
+        mutations: {
+            setStoreId(state, value) {
+                state.storeId = value;
+            },
+            updateConfig(state, value) {
+                state.config = Object.assign({}, state.config, value);
+            },
+            updateResults(state, value) {
+                state.searchOutput = value;
+            },
+            updateSuggestions(state, value) {
+                state.suggestions = value
+            },
+            updatePendingSearch(state, value) {
+                state.pendingSearch = value;
+            },
+            updateExtendedSearchParams(state, value) {
+                state.extendedSearchParams = value;
+            },
+            setSearchError(state, value) {
+                state.searchError = value
+            },
+            updateLoadingResults(state, value) {
+                state.loadingResults = value;
+            },
+            updateLoadingSuggestions(state, value) {
+                state.loadingSuggestions = value;
+            },
+            updateWaitingForInitialSearch(state, value) {
+                state.waitingForInitialSearch = value;
+            }
         },
-        updateResults(state, value) {
-            state.searchOutput = value;
-        },
-        updateSuggestions(state, value) {
-            state.suggestions = value;
-        },
-        updatePendingSearch(state, value) {
-            state.pendingSearch = value;
-        },
-        updateExtendedSearchParams(state, value) {
-            state.extendedSearchParams = value;
-        },
-        setSearchError(state, value) {
-            state.searchError = value
-        },
-        updateLoadingResults(state, value) {
-            state.loadingResults = value;
-        },
-        updateLoadingSuggestions(state, value) {
-            state.loadingSuggestions = value;
-        },
-        updateWaitingForInitialSearch(state, value) {
-            state.waitingForInitialSearch = value;
+        actions: {
+            fetchResults({ commit, state }, searchParams) {
+                var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
+                commit('updatePendingSearch', pendingSearch);
+                commit('updateSuggestions', null);
+                commit('updateLoadingSuggestions', false);
+                commit('updateLoadingResults', true);
+
+                HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
+                    commit('updateLoadingResults', false);
+
+                    if (searchOutput) {
+                        commit('setSearchError', false);
+                        commit('updateResults', searchOutput);
+
+                        HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                            commit('updateExtendedSearchParams', extendedSearchParams);
+                        });
+                    }
+                    else if (error) {
+                        commit('updateResults', null);
+                        commit('setSearchError', true);
+                    }
+                    else {
+                        commit('updateResults', null);
+                    }
+                });
+            },
+            fetchSuggestions({ commit, state }, searchParams) {
+                HawksearchVue.fetchSuggestions(searchParams, this, (suggestions) => {
+                    if (suggestions) {
+                        commit('updateLoadingSuggestions', false);
+                        commit('updateSuggestions', suggestions);
+                    }
+                });
+            },
+            applyFacets({ dispatch, commit, state }, facetData) {
+                HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+                    dispatch('fetchResults', { FacetSelections: facetSelections });
+                });
+            },
+            applyPageNumber({ dispatch, commit, state }, value) {
+                dispatch('fetchResults', { PageNo: value });
+            },
+            applyPageSize({ dispatch, commit, state }, value) {
+                dispatch('fetchResults', { MaxPerPage: value });
+            },
+            applySort({ dispatch, commit, state }, value) {
+                dispatch('fetchResults', { SortBy: value });
+            },
+            applySearchWithin({ dispatch, commit, state }, value) {
+                dispatch('fetchResults', { SearchWithin: value });
+            },
+            clearFacet({ dispatch, commit, state }, facet, notReload) {
+                var pendingSearch = Object.assign({}, state.pendingSearch);
+
+                if (pendingSearch.hasOwnProperty(facet)) {
+                    delete pendingSearch[facet];
+                }
+                else if (pendingSearch.FacetSelections && pendingSearch.FacetSelections.hasOwnProperty(facet)) {
+                    delete pendingSearch.FacetSelections[facet];
+                }
+
+                commit('updatePendingSearch', pendingSearch);
+
+                if (!notReload) {
+                    dispatch('fetchResults', {});
+                }
+            }
         }
-    },
-    actions: {
-        fetchResults({ commit, state }, searchParams) {
-            var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
-            commit('updatePendingSearch', pendingSearch);
-            commit('updateSuggestions', null);
-            commit('updateLoadingSuggestions', false);
-            commit('updateLoadingResults', true);
-
-            HawksearchVue.fetchResults(pendingSearch, (searchOutput, error) => {
-                commit('updateLoadingResults', false);
-
-                if (searchOutput) {
-                    commit('setSearchError', false);
-                    commit('updateResults', searchOutput);
-
-                    HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
-                        commit('updateExtendedSearchParams', extendedSearchParams);
-                    });
-                }
-                else if (error) {
-                    commit('updateResults', null);
-                    commit('setSearchError', true);
-                }
-                else {
-                    commit('updateResults', null);
-                }
-            });
-        },
-        fetchSuggestions({ commit, state }, searchParams) {
-            HawksearchVue.fetchSuggestions(searchParams, (suggestions) => {
-                if (suggestions) {
-                    commit('updateLoadingSuggestions', false);
-                    commit('updateSuggestions', suggestions);
-                }
-            });
-        },
-        applyFacets({ dispatch, commit, state }, facetData) {
-            HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
-                dispatch('fetchResults', { FacetSelections: facetSelections });
-            });
-        },
-        applyPageNumber({ dispatch, commit, state }, value) {
-            dispatch('fetchResults', { PageNo: value });
-        },
-        applyPageSize({ dispatch, commit, state }, value) {
-            dispatch('fetchResults', { MaxPerPage: value });
-        },
-        applySort({ dispatch, commit, state }, value) {
-            dispatch('fetchResults', { SortBy: value });
-        },
-        applySearchWithin({ dispatch, commit, state }, value) {
-            dispatch('fetchResults', { SearchWithin: value });
-        },
-        clearFacet({ dispatch, commit, state }, facet, notReload) {
-            var pendingSearch = Object.assign({}, state.pendingSearch);
-
-            if (pendingSearch.hasOwnProperty(facet)) {
-                delete pendingSearch[facet];
-            }
-            else if (pendingSearch.FacetSelections && pendingSearch.FacetSelections.hasOwnProperty(facet)) {
-                delete pendingSearch.FacetSelections[facet];
-            }
-
-            commit('updatePendingSearch', pendingSearch);
-
-            if (!notReload) {
-                dispatch('fetchResults', {});
-            }
-        }
-    }
-});
+    })
+}

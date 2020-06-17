@@ -26,9 +26,6 @@
 
         },
         computed: {
-            ...mapState([
-                'config'
-            ]),
             imageUrl: function () {
                 return this.imagePath;
             } 

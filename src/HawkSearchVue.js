@@ -1,4 +1,11 @@
-import { default as VueStore } from './store';
+import HawksearchStore from './store';
+import { mapState } from 'vuex';
+import i18n from './i18n';
+import SearchBox from './components/search-box/SearchBox';
+import FacetList from './components/facets/FacetList.vue';
+import Results from './components/results/Results.vue';
+
+var _ = require('lodash');
 
 class HawksearchVue {
     static config = {
@@ -12,67 +19,130 @@ class HawksearchVue {
         additionalParameters: {}
     }
 
-    static configurationApplied = false
-    static suggestionRequest = null
+    static storeInstances = {}
 
-    static configure(config) {
-        if (!config) {
+    static init() {
+        this.addTemplateOverride();
+    }
+
+    static getStoreInstance(config) {
+        var store;
+        var storeInstance;
+        var urlParams = this.getUrlParams();
+
+        Object.keys(this.storeInstances).forEach(storeKey => {
+            storeInstance = this.storeInstances[storeKey];
+
+            if (_.isEqual(storeInstance.state.config, config)) {
+                store = storeInstance;
+            }
+        });
+
+        if (!store) {
+            store = HawksearchStore();
+            var storeId = this.getUniqueIdentifier();
+
+            // apply the index name if it is not initally configured and available from the URL
+            if (!config.indexName && urlParams.indexName) {
+                config.indexName = urlParams.indexName;
+            }
+
+            var appliedConfig = Object.assign({}, this.config, config);
+
+            store.commit('updateConfig', appliedConfig);
+            store.commit('setStoreId', storeId);
+
+            this.storeInstances[storeId] = store;
+        }
+
+        return store;
+    }
+
+    static createWidget(el, config, store) {
+        if (!el || !config) {
             return false;
         }
 
-        this.config = Object.assign({}, this.config, config);
-        VueStore.commit('updateConfig', this.config);
-
-        if (!this.configurationApplied) {
-            this.addTemplateOverride();
+        if (!store) {
+            store = this.getStoreInstance(config);
         }
 
-        this.configurationApplied = true;
+        return new Vue({
+            el,
+            store,
+            i18n,
+            components: {
+                SearchBox,
+                FacetList,
+                Results
+            },
+            computed: {
+                ...mapState([
+                	'searchOutput',
+                	'pendingSearch'
+                ])
+            },
+            watch: {
+                searchOutput: function (n, o) {
+                	this.$emit('resultsupdate', n);
+                },
+                pendingSearch: function (n, o) {
+                	this.$emit('searchupdate', n);
+                }
+            }
+        });
     }
 
-    static initialSearch() {
-        var getUrlParams = function () {
-            var search = location.search.match(/\?(.*)/);
-            var urlParams = {};
+    static getUrlParams() {
+        var search = location.search.match(/\?(.*)/);
+        var urlParams = {};
 
-            if (search && search.length) {
-                var pairs = search[1].split('&');
-                pairs.map(pair => {
-                    let keyValue = pair.split('=');
+        if (search && search.length) {
+            var pairs = search[1].split('&');
+            pairs.map(pair => {
+                let keyValue = pair.split('=');
 
-                    if (keyValue.length > 1) {
-                        let key = keyValue[0];
-                        let value = keyValue[1];
+                if (keyValue.length > 1) {
+                    let key = keyValue[0];
+                    let value = keyValue[1];
 
-                        urlParams[key] = value;
-                    }
-                })
-            }
-
-            return urlParams;
+                    urlParams[key] = value;
+                }
+            })
         }
 
-        var urlParams = getUrlParams();
+        return urlParams;
+    }
+
+    static initialSearch(widget) {
+        if (!widget) {
+            console.error('Widget not supplied');
+            return false;
+        }
+
+        var store = widget.$store;
+
+        if (!store) {
+            console.error("Store instance not supplied");
+            return false
+        }
+
+        var urlParams = this.getUrlParams();
         var initialSearchParams = {};
 
         if (urlParams.keyword) {
             initialSearchParams = { Keyword: urlParams.keyword };
         }
 
-        if (!this.config.indexName && urlParams.indexName) {
-            this.config.indexName = urlParams.indexName;
-            this.configure({});
-        }
-
-        VueStore.dispatch('fetchResults', initialSearchParams);
+        store.dispatch('fetchResults', initialSearchParams);
     }
 
-    static fetchResults(searchParams, callback) {
+    static fetchResults(searchParams, store, callback) {
         if (!callback) {
             callback = function () { };
         }
 
-        if (!this.requestConditionsMet()) {
+        if (!this.requestConditionsMet(store)) {
             callback(false)
             return false;
         }
@@ -81,13 +151,14 @@ class HawksearchVue {
             searchParams = {};
         }
 
-        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName }, this.config.additionalParameters);
+        var config = store.state.config;
+        var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName }, config.additionalParameters);
 
         this.cancelSuggestionsRequest();
 
-        VueStore.commit('updateWaitingForInitialSearch', false);
+        store.commit('updateWaitingForInitialSearch', false);
 
-        Vue.http.post(this.getFullSearchUrl(), params).then(response => {
+        Vue.http.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
@@ -96,8 +167,8 @@ class HawksearchVue {
         });
     }
 
-    static fetchSuggestions(searchParams, callback) {
-        if (!this.requestConditionsMet()) {
+    static fetchSuggestions(searchParams, store, callback) {
+        if (!this.requestConditionsMet(store)) {
             return false;
         }
 
@@ -109,9 +180,10 @@ class HawksearchVue {
             searchParams = {};
         }
 
-        var params = Object.assign({}, searchParams, { ClientGuid: this.config.clientGuid, IndexName: this.config.indexName, DisplayFullResponse: true });
+        var config = store.state.config;
+        var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
 
-        Vue.http.post(this.getFullAutocompleteUrl(), params, {
+        Vue.http.post(this.getFullAutocompleteUrl(store), params, {
             before(request) {
                 // TOOD: Fix scope
                 HawksearchVue.cancelSuggestionsRequest();
@@ -127,22 +199,29 @@ class HawksearchVue {
 
     }
 
+    static suggestionRequest = null
+
     static cancelSuggestionsRequest() {
         if (this.suggestionRequest) {
             this.suggestionRequest.abort();
         }
     }
 
-    static requestConditionsMet() {
+    static requestConditionsMet(store) {
         if (!Vue.http) {
+            console.error("Vue http missing");
             return false;
         }
 
-        if (!this.configurationApplied) {
+        if (!store) {
+            console.error("Store instance not supplied");
             return false;
         }
 
-        if (this.config.indexNameRequired && !this.config.indexName) {
+        var config = store.state.config;
+
+        if (config.indexNameRequired && !config.indexName) {
+            console.error("Index name is required to execute the request");
             return false;
         }
 
@@ -280,24 +359,32 @@ class HawksearchVue {
         }
     }
 
-    static redirectSearch(keyword, searchPageUrl) {
+    static redirectSearch(keyword, store, searchPageUrl) {
         var redirect = searchPageUrl + '?keyword=' + keyword;
 
-        if (this.config.indexName) {
-            redirect += '&indexName=' + this.config.indexName;
+        var config = store.state.config;
+
+        if (config.indexName) {
+            redirect += '&indexName=' + config.indexName;
         }
 
         location.assign(redirect);
     }
 
-    static getFullSearchUrl() {
-        let url = new URL(this.config.searchUrl, this.config.apiUrl);
+    static getFullSearchUrl(store) {
+        var config = store.state.config;
+        let url = new URL(config.searchUrl, config.apiUrl);
         return url.href;
     }
 
-    static getFullAutocompleteUrl() {
-        let url = new URL(this.config.autocompleteUrl, this.config.apiUrl);
+    static getFullAutocompleteUrl(store) {
+        var config = store.state.config;
+        let url = new URL(config.autocompleteUrl, config.apiUrl);
         return url.href;
+    }
+
+    static getUniqueIdentifier() {
+        return _.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
     }
 }
 

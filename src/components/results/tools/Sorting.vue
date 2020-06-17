@@ -34,7 +34,7 @@
                 'searchOutput'
             ]),
             sorting: function () {
-                return this.searchOutput.Sorting;
+                return this.searchOutput ? this.searchOutput.Sorting : [];
             }
         }
     }

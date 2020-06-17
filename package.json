@@ -19,6 +19,7 @@
   "homepage": "https://github.com/GabrielGeorgiev/vue-hawksearch#readme",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
+    "lodash": "^4.17.15",
     "rollup-plugin-scss": "^2.5.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.18.1",

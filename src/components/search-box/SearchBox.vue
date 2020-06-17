@@ -32,10 +32,9 @@
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
-                    this.handleIndexName();
 
-                    if (this.searchPage && this.searchPage != location.pathname) {
-                        HawksearchVue.redirectSearch(this.keyword, this.searchPage);
+                    if (this.searchPage) {
+                        HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
                     }
                     else {
                         this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
@@ -47,7 +46,6 @@
 
                 if (keyword) {
                     this.$root.$store.commit('updateLoadingSuggestions', true);
-                    this.handleIndexName();
 
                     clearTimeout(this.suggestionDelay);
                     this.suggestionDelay = setTimeout(() => {
@@ -67,11 +65,6 @@
                 HawksearchVue.cancelSuggestionsRequest();
                 this.$root.$store.commit('updateLoadingSuggestions', false);
                 this.$root.$store.commit('updateSuggestions', null);
-            },
-            handleIndexName: function () {
-                if (this.indexName && HawksearchVue.config.indexName != this.indexName) {
-                    HawksearchVue.configure({ indexName: this.indexName });
-                }
             }
         },
         computed: {

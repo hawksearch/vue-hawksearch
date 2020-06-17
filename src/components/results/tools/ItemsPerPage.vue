@@ -32,7 +32,7 @@
                 'searchOutput'
             ]),
             pagination: function () {
-                return this.searchOutput.Pagination;
+                return this.searchOutput ? this.searchOutput.Pagination : {};
             }
         }
     }

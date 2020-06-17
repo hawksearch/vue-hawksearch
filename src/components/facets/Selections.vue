@@ -112,13 +112,13 @@
                 'searchOutput'
             ]),
             facetSelections: function () {
-                return this.pendingSearch.FacetSelections;
+                return this.pendingSearch ? this.pendingSearch.FacetSelections : {};
             },
             hasSelections: function () {
                 return Object.keys(this.facetSelections).length != 0;
             },
             facetSelectionsLabels: function () {
-                var facetSelectionsLabels = Object.assign({}, this.pendingSearch.FacetSelections);
+                var facetSelectionsLabels = Object.assign({}, this.facetSelections);
 
                 if (this.searchOutput) {
                     var facets = this.searchOutput.Facets;
