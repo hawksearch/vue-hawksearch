@@ -8,15 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GabrielGeorgiev/vue-hawksearch.git"
+    "url": "https://tfs.americaneagle.com/Hawksearch/vue-hawksearch/_git/vue-hawksearch"
   },
-  "author": "",
+  "author": "Hawksearch",
   "license": "Proprietary",
   "private": true,
-  "bugs": {
-    "url": "https://github.com/GabrielGeorgiev/vue-hawksearch/issues"
-  },
-  "homepage": "https://github.com/GabrielGeorgiev/vue-hawksearch#readme",
+  "homepage": "https://tfs.americaneagle.com/Hawksearch/_git/vue-hawksearch?path=%2FREADME.md&version=GBmaster",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "lodash": "^4.17.15",
