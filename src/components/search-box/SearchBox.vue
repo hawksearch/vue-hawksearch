@@ -33,7 +33,7 @@
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
 
-                    if (this.searchPage) {
+                    if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
                         HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
                     }
                     else {
@@ -57,6 +57,10 @@
                 }
             },
             onBlur: function () {
+                //setTimeout(() => {
+                //    this.keyword = null;
+                //    this.cancelSuggestions();
+                //}, 1);
                 this.keyword = null;
                 this.cancelSuggestions();
             },

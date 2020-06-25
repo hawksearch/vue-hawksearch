@@ -2466,7 +2466,7 @@ var script$1 = {
             if (e.key == 'Enter') {
                 this.cancelSuggestions();
 
-                if (this.searchPage) {
+                if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
                     HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
                 }
                 else {
@@ -2490,6 +2490,10 @@ var script$1 = {
             }
         },
         onBlur: function () {
+            //setTimeout(() => {
+            //    this.keyword = null;
+            //    this.cancelSuggestions();
+            //}, 1);
             this.keyword = null;
             this.cancelSuggestions();
         },
@@ -2556,7 +2560,7 @@ __vue_render__$1._withStripped = true;
   /* style */
   const __vue_inject_styles__$1 = undefined;
   /* scoped */
-  const __vue_scope_id__$1 = "data-v-ae4df10a";
+  const __vue_scope_id__$1 = "data-v-f4f0f7ee";
   /* module identifier */
   const __vue_module_identifier__$1 = undefined;
   /* functional template */
@@ -6228,11 +6232,12 @@ class HawksearchVue$1 {
         var store;
         var storeInstance;
         var urlParams = this.getUrlParams();
+        var appliedConfig = Object.assign({}, this.config, config);
 
         Object.keys(this.storeInstances).forEach(storeKey => {
             storeInstance = this.storeInstances[storeKey];
 
-            if (_.isEqual(storeInstance.state.config, config)) {
+            if (_.isEqual(_.cloneDeep(storeInstance.state.config), _.cloneDeep(appliedConfig))) {
                 store = storeInstance;
             }
         });
@@ -6242,11 +6247,9 @@ class HawksearchVue$1 {
             var storeId = this.getUniqueIdentifier();
 
             // apply the index name if it is not initally configured and available from the URL
-            if (!config.indexName && urlParams.indexName) {
-                config.indexName = urlParams.indexName;
+            if (!appliedConfig.indexName && urlParams.get('indexName')) {
+                appliedConfig.indexName = urlParams.get('indexName');
             }
-
-            var appliedConfig = Object.assign({}, this.config, config);
 
             store.commit('updateConfig', appliedConfig);
             store.commit('setStoreId', storeId);
@@ -6257,8 +6260,8 @@ class HawksearchVue$1 {
         return store;
     }
 
-    static createWidget(el, config, store) {
-        if (!el || !config) {
+    static createWidget(el, { config, store }) {
+        if (!el || (!config && !store)) {
             return false;
         }
 
@@ -6292,25 +6295,16 @@ class HawksearchVue$1 {
         });
     }
 
-    static getUrlParams() {
-        var search = location.search.match(/\?(.*)/);
-        var urlParams = {};
-
-        if (search && search.length) {
-            var pairs = search[1].split('&');
-            pairs.map(pair => {
-                let keyValue = pair.split('=');
-
-                if (keyValue.length > 1) {
-                    let key = keyValue[0];
-                    let value = keyValue[1];
-
-                    urlParams[key] = value;
-                }
-            });
+    static getWidgetStore(widget) {
+        if (widget) {
+            return widget.$store
         }
+    }
 
-        return urlParams;
+    static getUrlParams() {
+        var urlObj = new URL(location.href);
+
+        return urlObj.searchParams;
     }
 
     static initialSearch(widget) {
@@ -6329,8 +6323,22 @@ class HawksearchVue$1 {
         var urlParams = this.getUrlParams();
         var initialSearchParams = {};
 
-        if (urlParams.keyword) {
-            initialSearchParams = { Keyword: urlParams.keyword };
+        if (urlParams.get('keyword')) {
+            initialSearchParams = { Keyword: urlParams.get('keyword') };
+        }
+
+        var additionalParameters = {};
+
+        this.paramWhitelist.forEach(key => {
+            if (urlParams.get(key)) {
+                additionalParameters[key] = urlParams.get(key);
+            }
+        });
+
+        if (Object.keys(additionalParameters).length) {
+            var config = Object.assign({}, store.state.config);
+            config.additionalParameters = Object.assign({}, additionalParameters, config.additionalParameters);
+            store.commit('updateConfig', config);
         }
 
         store.dispatch('fetchResults', initialSearchParams);
@@ -6352,6 +6360,8 @@ class HawksearchVue$1 {
 
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName }, config.additionalParameters);
+
+        //params = this.sanitizeParams(params);
 
         this.cancelSuggestionsRequest();
 
@@ -6404,6 +6414,15 @@ class HawksearchVue$1 {
         if (this.suggestionRequest) {
             this.suggestionRequest.abort();
         }
+    }
+
+    static sanitizeParams(params) {
+        // Check for specific edge cases
+        if (params.hasOwnProperty('Keyword') && params.hasOwnProperty('CustomUrl')) {
+            delete params.CustomUrl;
+        }
+
+        return params
     }
 
     static requestConditionsMet(store) {
@@ -6558,16 +6577,36 @@ class HawksearchVue$1 {
         };
     }
 
+    static redirectToCurrentPage = false;
+
+    static setRedirectToCurrentPage(enable) {
+        this.redirectToCurrentPage = Boolean(enable);
+    }
+
     static redirectSearch(keyword, store, searchPageUrl) {
-        var redirect = searchPageUrl + '?keyword=' + keyword;
+        var redirect = new URL(searchPageUrl, location.href);
+
+        redirect.searchParams.set('keyword', keyword);
 
         var config = store.state.config;
 
         if (config.indexName) {
-            redirect += '&indexName=' + config.indexName;
+            redirect.searchParams.set('indexName', config.indexName);
         }
 
-        location.assign(redirect);
+        for (let [key, value] of Object.entries(config.additionalParameters)) {
+            if (this.isWhitelistedParam(key)) {
+                redirect.searchParams.set(key, value);
+            }
+        }
+
+        location.assign(redirect.href);
+    }
+
+    static paramWhitelist = ['CustomUrl']
+
+    static isWhitelistedParam(key) {
+        return this.paramWhitelist.includes(key);
     }
 
     static getFullSearchUrl(store) {
@@ -6585,6 +6624,7 @@ class HawksearchVue$1 {
     static getUniqueIdentifier() {
         return _.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
     }
+
 }var script$A = {
     name: 'link',
     props: [],
