@@ -1,10 +1,11 @@
 {
-  "name": "vue-hawksearch",
-  "version": "0.9.0",
+  "name": "@hawksearch/vue-hawksearch",
+  "version": "0.9.2",
   "description": "Vue.js SDK for HAWK Search",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
-    "build": "cross-env BUILD_ENV=esm rollup -c"
+    "build": "cross-env BUILD_ENV=esm rollup -c",
+    "refreshVSToken": "vsts-npm-auth -config .npmrc"
   },
   "repository": {
     "type": "git",
@@ -12,7 +13,6 @@
   },
   "author": "Hawksearch",
   "license": "Proprietary",
-  "private": true,
   "homepage": "https://tfs.americaneagle.com/Hawksearch/_git/vue-hawksearch?path=%2FREADME.md&version=GBmaster",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
