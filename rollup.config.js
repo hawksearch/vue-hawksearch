@@ -1,7 +1,9 @@
 import pkg from './package.json';
 import resolve from '@rollup/plugin-node-resolve';
+import babel from 'rollup-plugin-babel';
 import vuePlugin from 'rollup-plugin-vue';
 import scss from 'rollup-plugin-scss'
+import { terser } from 'rollup-plugin-terser';
 
 const extensions = ['.mjs', '.web.js', '.js', '.json', '.vue'];
 
@@ -28,12 +30,21 @@ const config = {
 				moduleDirectory: ['src', 'node_modules'],
 			},
 		}),
+		babel({
+			extensions: ['.js'],
+			runtimeHelpers: true,
+			exclude: 'node_modules/**',
+			plugins: [
+				'@babel/plugin-proposal-class-properties'
+			]
+		}),
 		vuePlugin({
 			css: false
 		}),
 		scss({
 			outputStyle: 'compressed'
-		})
+		}),
+		terser()
 	],
 };
 
