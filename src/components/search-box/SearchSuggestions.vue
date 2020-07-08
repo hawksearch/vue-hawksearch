@@ -7,7 +7,7 @@
                 </template>
                 <template v-else-if="suggestions.Products.length">
                     <li v-for="item in suggestions.Products" class="autosuggest-menu__item">
-                        <a class="autosuggest-menu__item-link" :href="item.Url">{{ item.ProductName }}</a>
+                        <p class="autosuggest-menu__item-link" @click="onClick(item)">{{ item.ProductName }}</p>
                     </li>
                 </template>
                 <template v-else>
@@ -33,7 +33,9 @@
             }
         },
         methods: {
-
+            onClick: function (item) {
+                location.assign(item.Url);
+            }
         },
         computed: {
             ...mapState([
@@ -50,5 +52,6 @@
     .autosuggest-menu__item-link {
         text-decoration: none;
         color: inherit;
+        margin: 0;
     }
 </style>

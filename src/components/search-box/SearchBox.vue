@@ -57,12 +57,12 @@
                 }
             },
             onBlur: function () {
-                //setTimeout(() => {
-                //    this.keyword = null;
-                //    this.cancelSuggestions();
-                //}, 1);
-                this.keyword = null;
-                this.cancelSuggestions();
+                setTimeout(() => {
+                    if (!this.suggestionClick) {
+                        this.keyword = null;
+                        this.cancelSuggestions();
+                    }
+                }, 500);
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);

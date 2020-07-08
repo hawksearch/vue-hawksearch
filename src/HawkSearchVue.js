@@ -288,6 +288,11 @@ class HawksearchVue {
 
                 facet.Values = facet.Values.filter(item => Boolean(item.AssetName));
             }
+            else if (facet.Values && facet.Values.length && facet.Ranges && facet.Ranges.length) {
+                facet.Values = facet.Values.map(facetValue => {
+                    return Object.assign({}, facet.Ranges.find(item => item.Value.toLowerCase() == facetValue.Value.toLowerCase()), facetValue);
+                });
+            }
 
             return facet;
         });

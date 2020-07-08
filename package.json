@@ -1,11 +1,10 @@
 {
   "name": "@hawksearch/vue",
-  "version": "0.9.0",
+  "version": "0.9.12",
   "description": "Vue.js SDK for HAWK Search",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
-    "build": "cross-env BUILD_ENV=esm rollup -c",
-    "refreshVSToken": "vsts-npm-auth -config .npmrc"
+    "build": "cross-env BUILD_ENV=esm rollup -c"
   },
   "repository": {
     "type": "git",

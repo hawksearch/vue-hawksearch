@@ -8,10 +8,10 @@
                             <checkmark-svg v-if="value.Selected" class="hawk-facet-rail__facet-checkbox-icon" />
                         </span>
 
-                        <span v-if="rangeValueAssetUrl" class="hawk-selectionInner">
+                        <span v-if="value.AssetFullUrl" class="hawk-selectionInner">
                             <span class="hawk-range-asset" :title="value.Label" />
 
-                            <img :src="rangeValueAssetUrl" :alt="value.Label" />
+                            <img :src="getAssetUrl(value)" :alt="value.Label" />
                         </span>
 
                         <span :class="value.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
@@ -74,6 +74,11 @@
             },
             applyFacets: function () {
                 this.$root.$store.dispatch('applyFacets', this.facetData);
+            },
+            getAssetUrl: function (value) {
+                if (value && value.AssetFullUrl) {
+                    return this.$root.$store.state.config.dashboardUrl + value.AssetFullUrl;
+                }
             }
         },
         computed: {
