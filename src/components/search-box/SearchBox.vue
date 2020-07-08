@@ -62,7 +62,7 @@
                         this.keyword = null;
                         this.cancelSuggestions();
                     }
-                }, 500);
+                }, 250);
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);
