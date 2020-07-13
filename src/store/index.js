@@ -105,7 +105,7 @@ export default () => {
             applySearchWithin({ dispatch, commit, state }, value) {
                 dispatch('fetchResults', { SearchWithin: value });
             },
-            clearFacet({ dispatch, commit, state }, facet, notReload) {
+            clearFacet({ dispatch, commit, state }, facet) {
                 var pendingSearch = Object.assign({}, state.pendingSearch);
 
                 if (pendingSearch.hasOwnProperty(facet)) {
@@ -116,10 +116,7 @@ export default () => {
                 }
 
                 commit('updatePendingSearch', pendingSearch);
-
-                if (!notReload) {
-                    dispatch('fetchResults', {});
-                }
+                dispatch('fetchResults', {});
             }
         }
     })
