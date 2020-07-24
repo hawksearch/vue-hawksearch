@@ -50,7 +50,6 @@
         },
         methods: {
             onItemSeleted: function (item) {
-                console.log('asdf');
                 location.assign(item.Url);
             }
         },
