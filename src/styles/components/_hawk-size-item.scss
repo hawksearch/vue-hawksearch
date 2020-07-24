@@ -1,0 +1,25 @@
+.hawk-facet-rail__facet-values-size ul {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 250px;
+	flex-direction: row;
+	justify-content: flex-start;
+	li {
+		cursor: pointer;
+		display: flex;
+		min-width: 70px;
+		height: 65px;
+		margin: 5px;
+		border: 1px solid #d9d9d6;
+		align-items: center;
+		justify-content: center;
+		max-width: 70px;
+		div {
+			text-align: center;
+			font-size: 14px;
+		}
+	}
+	li.selected {
+		border: 2px solid #f37624;
+	}
+}

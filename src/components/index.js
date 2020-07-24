@@ -21,6 +21,8 @@ export { default as Pager } from './results/tools/Pager';
 export { default as Pagination } from './results/tools/Pagination';
 export { default as Sorting } from './results/tools/Sorting';
 export { default as SearchBox } from './search-box/SearchBox';
+export { default as SearchSuggestions } from './search-box/SearchSuggestions';
+export { default as SuggestionItem } from './search-box/SuggestionItem';
 export { default as CheckmarkSvg } from './svg/CheckmarkSvg';
 export { default as DashCircleSvg } from './svg/DashCircleSvg';
 export { default as LeftChevronSvg } from './svg/LeftChevronSvg';

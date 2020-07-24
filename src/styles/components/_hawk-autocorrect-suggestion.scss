@@ -1,0 +1,13 @@
+.hawk-autocorrect-suggestion {
+	h3 {
+		color: #f37624;
+	}
+	li {
+		cursor: pointer;
+		margin-left: 25px;
+		&:hover {
+			color: #f37624;
+			text-decoration: underline;
+		}
+	}
+}

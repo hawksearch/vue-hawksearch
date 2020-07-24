@@ -1,14 +1,20 @@
 <template>
     <div class="autosuggest-menu">
         <template v-if="loadingSuggestions || suggestions">
-            <ul class="dropdown-menu autosuggest-menu__list">
+            <ul class="dropdown-menu autosuggest-menu__list autosuggest-outer-list">
                 <template v-if="loadingSuggestions">
                     <li class="autosuggest-menu__item">{{ $t('Loading') }}...</li>
                 </template>
                 <template v-else-if="suggestions.Products.length">
-                    <li v-for="item in suggestions.Products" class="autosuggest-menu__item">
-                        <p class="autosuggest-menu__item-link" @click="onClick(item)">{{ item.ProductName }}</p>
-                    </li>
+                    <ul class="autosuggest-inner-list">
+                        <h3>{{ suggestions.ProductHeading }}</h3>
+                        <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
+                    </ul>
+                    <!--<div class="autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
+                        <categories-container :suggestions="suggestions"></categories-container>
+                        <popular-container :suggestions="suggestions"></popular-container>
+                        <content-container :suggestions="suggestions"></content-container>
+                    </div>-->
                 </template>
                 <template v-else>
                     <li class="autosuggest-menu__item">{{ $t('No Results') }}</li>
@@ -18,12 +24,22 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
+    import SuggestionItem from './SuggestionItem';
+    import CategoriesContainer from './CategoriesContainer';
+    import PopularContainer from './PopularContainer';
+    import ContentContainer from './ContentContainer';
 
     export default {
         name: 'search-suggestions',
         props: [],
+        components: {
+            SuggestionItem,
+            CategoriesContainer,
+            PopularContainer,
+            ContentContainer
+        },
         mounted() {
 
         },
@@ -33,7 +49,7 @@
             }
         },
         methods: {
-            onClick: function (item) {
+            onItemSeleted: function (item) {
                 location.assign(item.Url);
             }
         },
@@ -49,9 +65,4 @@
 </script>
 
 <style scoped lang="scss">
-    .autosuggest-menu__item-link {
-        text-decoration: none;
-        color: inherit;
-        margin: 0;
-    }
 </style>

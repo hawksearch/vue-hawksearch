@@ -1,5 +1,6 @@
 .autosuggest-menu {
 	position: relative;
+	z-index: 110;
 }
 
 .autosuggest-menu__list {
@@ -10,28 +11,36 @@
     top: auto;
     margin-top: -3px;
     display: block;
-    overflow-y: scroll;
+    overflow-y: auto;
     line-height: 35px;
     border: 1px solid #ccc;
     position: absolute;
     width: 100%;
-    z-index: 2;
+    z-index: 5;
     background: white;
     box-sizing: border-box;
     cursor: default;
+    max-height: 500px;
 }
 
 .autosuggest-menu__item {
 	padding-left: 10px;
 	background-color: $autosuggest-item-bg;
-
+	line-height: 24px;
+	font-size: 16px;
 	cursor: pointer;
+
 	&:hover,
 	&:focus,
 	&--highlighted {
 		background-color: $autosuggest-item-hover-bg;
 		color: #fff;
 	}
+}
+
+.hawk-sqItemImage-thumb {
+	width: 100px;
+	height: 100px;
 }
 
 .autosuggest-menu__text--deleted {
@@ -45,10 +54,94 @@
 
 .autosuggest-menu__text--archived {
 	color: $orange;
-
 	.autosuggest-menu__item:hover &,
 	.autosuggest-menu__item:focus & {
 		color: #fff;
+	}
+}
+
+.hawk__searchBox {
+	.autosuggest-menu {
+		h3 {
+			font-size: 20px;
+			font-weight: bold;
+			margin-top: 20px;
+			margin-bottom: 5px;
+		}
+
+		.loading-label {
+			width: 100%;
+		}
+
+		.autosuggest-outer-list {
+			display: flex;
+			flex-direction: row;
+			padding: 15px;
+			flex-wrap: wrap;
+			list-style: none;
+
+			.autosuggest-inner-list {
+				/*width: 66%;*/
+				flex: 2;
+				padding: 0;
+				list-style: none;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				justify-content: flex-start;
+				align-items: flex-start;
+				align-content: flex-start;
+
+				h3 {
+					width: 100%;
+				}
+
+				li {
+					display: flex;
+					flex-direction: column;
+					width: calc(33% - 20px); 
+					padding: 0;
+					margin: 10px;
+					justify-content: center;
+					text-align: center;
+					align-items: center;
+					align-content: center;
+					padding: 10px;
+
+					&:hover {
+						background: transparent !important;
+						color: #212529;
+					}
+
+					&.autosuggest-menu__item--highlighted {
+						background: transparent !important;
+						color: #212529;
+
+						&:hover {
+							background: transparent !important;
+							color: #212529;
+						}
+					}
+
+					.p-name {
+						font-size: 12px;
+					}
+				}
+
+				& > .view-matches {
+					width: 100%;
+					text-align: center;
+					color: #007bff;
+					cursor: pointer;
+				}
+			}
+
+			.autosuggest-inner-container {
+				/*width: 34%;*/
+				flex: 1;
+				padding-left: 15px;
+			}
+		}
 	}
 }
 .hidden-label {
