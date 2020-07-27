@@ -343,6 +343,7 @@ class HawksearchVue {
                 break;
 
             case 'openRange':
+            case 'slider':
                 searchParamFacets[field].push(facet.Value);
                 break;
         }

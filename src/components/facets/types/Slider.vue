@@ -2,16 +2,16 @@
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-link">
             <div class="hawk-sliderNumeric">
-                <input v-model="facetValue.RangeStart" class="hawk-numericInput numeric-from" min="0" max="5" type="text" value="2">
-                <input v-model="facetValue.RangeEnd" class="hawk-numericInput numeric-to" min="0" max="5" type="text" value="5">
+                <input v-model.lazy="minValue" class="hawk-numericInput numeric-from" @change="applyFacet" type="text">
+                <input v-model.lazy="maxValue" class="hawk-numericInput numeric-to" @change="applyFacet" type="text">
             </div>
             <div class="slider" ref="wrapper">
                 <div class="slider-background"></div>
-                <div class="slider-wrapper" ref="wrapper">
-                    <button ref="min" type="button" @mousedown="onMouseDown" class="slider-button" :style="minRangeStyle"></button>
-                    <button ref="max" type="button" @mousedown="onMouseDown" class="slider-button" :style="maxRangeStyle"></button>
+                <div class="slider-wrapper">
+                    <button type="button" @mousedown="onMouseDownMin" class="slider-button" :style="minRangeStyle"></button>
+                    <button type="button" @mousedown="onMouseDownMax" class="slider-button" :style="maxRangeStyle"></button>
                 </div>
-                <div ref="bar" class="slider-progressbar" :style="sliderStyle"></div>
+                <div class="slider-progressbar" :style="sliderStyle"></div>
             </div>
         </div>
     </div>
@@ -23,15 +23,18 @@
         name: 'slider',
         props: ['facetData'],
         mounted() {
-
+            this.wrapper = this.$refs.wrapper.getBoundingClientRect();
         },
         data() {
             return {
                 target: null,
+                wrapper: null,
                 minTemp: 0,
                 maxTemp: 100,
-                minValue: null,
-                maxValue: null
+                minValue: 0,
+                maxValue: 1,
+                parsedData: false,
+                buttonWidth: 23
             }
         },
         created: function () {
@@ -43,26 +46,38 @@
             window.removeEventListener('mousemove', (e) => { this.onMouseMove(e) })
         },
         methods: {
-            onMouseDown: function (e) {
-                this.target = e.target;
+            onMouseDownMin: function (e) {
+                this.target = 'min';
+            },
+            onMouseDownMax: function (e) {
+                this.target = 'max';
             },
             onMouseMove: function (e) {
                 if (this.target) {
-                    var left = (e.clientX - 12);
-                    var wrapper = this.$refs.wrapper.getBoundingClientRect();
-                    var wrapperLeft = wrapper.left + 26;
-                    var wrapperRight = wrapper.right + 26;
+                    var temp = (e.clientX - this.wrapper.left);
+                    var buttonWidth = this.buttonWidth;
 
-                    if (left > wrapperLeft && left < wrapperRight) {
-                        if (this.target == this.$refs.min) {
-                            this.minTemp = left;
+                    if (this.target == 'max') {
+                        if (temp <= this.wrapper.width && temp > (this.minTemp + buttonWidth)) {
+                            this.maxTemp = temp;
                         }
-                        else if (this.target == this.$refs.max) {
-                            this.maxTemp = left;
+                        else if (temp > this.wrapper.width) {
+                            this.maxTemp = this.wrapper.width;
+                        }
+                        else if (temp <= (this.minTemp + buttonWidth)) {
+                            this.maxTemp = (this.minTemp + buttonWidth);
                         }
                     }
-                    else {
-                        this.target = null
+                    else if (this.target == 'min') {
+                        if (temp >= 0 && temp < (this.maxTemp - buttonWidth)) {
+                            this.minTemp = temp;
+                        }
+                        else if (temp < 0) {
+                            this.minTemp = 0;
+                        }
+                        else if (temp >= (this.maxTemp - buttonWidth)) {
+                            this.minTemp = (this.maxTemp - buttonWidth);
+                        }
                     }
                 }
             },
@@ -74,18 +89,30 @@
                 }
             },
             handleAction: function () {
-                this.minValue = Math.round(this.minTemp / this.ratio);
-                this.maxValue = Math.round(this.maxTemp / this.ratio);
+                this.minValue = Math.round(this.minTemp / this.facetValue.ratio);
+                this.maxValue = Math.round(this.maxTemp / this.facetValue.ratio);
             },
             applyFacet: function () {
-                //this.facetData.Value = (this.minValue || '') + ',' + (this.maxValue || '');
-                //this.$root.$store.dispatch('applyFacets', this.facetData);
+                if (parseFloat(this.minValue) < parseFloat(this.maxValue) &&
+                    parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin) &&
+                    parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
+
+                    var facetData = Object.assign({}, this.facetData);
+                    facetData.Value = this.minValue + ',' + this.maxValue;
+                    this.$root.$store.dispatch('applyFacets', facetData);
+                }
             }
         },
         computed: {
             facetValue: function () {
-                if (this.facetData && this.facetData.Values && this.facetData.Values.length) {
-                    return this.facetData.Values[0];
+                if (this.facetData && this.facetData.Values && this.facetData.Values.length && this.wrapper) {
+                    var facetValue = this.facetData.Values[0];
+
+                    var ratio = this.wrapper.width / (parseFloat(facetValue.RangeMax) - parseFloat(facetValue.RangeMin));
+
+                    facetValue.ratio = ratio;
+
+                    return facetValue;
                 }
                 else {
                     return {};
@@ -102,10 +129,27 @@
             sliderStyle: function () {
                 var left = this.minTemp;
                 var width = this.maxTemp - this.minTemp;
+
                 return 'left: ' + left + 'px; width: ' + width + 'px;';
+            }
+        },
+        watch: {
+            facetValue: function (n, o) {
+                if (n.ratio && !this.parsedData) {
+                    this.minValue = parseFloat(n.RangeStart);
+                    this.maxValue = parseFloat(n.RangeEnd);
+                    this.parsedData = true;
+                }
             },
-            ratio: function () {
-                return this.$refs.wrapper.getBoundingClientRect().width / (parseInt(this.facetValue.RangeMax, 10) - parseInt(this.facetValue.RangeMin, 10))
+            minValue: function (n, o) {
+                if (parseFloat(this.maxValue) > parseFloat(n) && parseFloat(n) >= parseFloat(this.facetValue.RangeMin)) {
+                    this.minTemp = Math.round(parseFloat(n) * this.facetValue.ratio);
+                }
+            },
+            maxValue: function (n, o) {
+                if (parseFloat(this.minValue) < parseFloat(n) && parseFloat(n) <= parseFloat(this.facetValue.RangeMax)) {
+                    this.maxTemp = Math.round(parseFloat(n) * this.facetValue.ratio);
+                }
             }
         }
     }
