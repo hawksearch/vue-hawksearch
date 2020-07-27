@@ -142,9 +142,9 @@
                         return "search";
                         break;
 
-                    //case "slider":
-                    //    return "slider";
-                    //    break;
+                    case "slider":
+                        return "slider";
+                        break;
 
                     case "swatch":
                         return "swatch";
