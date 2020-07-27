@@ -1,0 +1,24 @@
+.hawk__compare-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 10px;
+	margin-top: 10px;
+
+	&__list {
+		display: flex;
+	}
+	.hawk__compare-tiles {
+		width: 30px;
+		height: 30px;
+		background: white;
+		border: 1px solid gray;
+		border: 1px solid #b8b8b8;
+		margin: 2px;
+		img {
+			width: 30px;
+			height: 30px;
+			padding: 2px;
+		}
+	}
+}

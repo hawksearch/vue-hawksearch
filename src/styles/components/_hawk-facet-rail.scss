@@ -243,6 +243,10 @@
 		line-height: 1.4;
 	}
 
+	.hawk-facet-rail__facet-name {
+		word-break: break-all;
+	}
+
 	&:focus,
 	&:active {
 		box-shadow: none;
