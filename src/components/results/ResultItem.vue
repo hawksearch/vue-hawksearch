@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-results__item">
+    <div class="hawk-results__item" @click="onClick">
         <result-image :imagePath="getField('image')"></result-image>
 
         <div class="hawk-results__item-name">
@@ -22,6 +22,9 @@
         props: {
             result: {
                 default: null
+            },
+            linkField: {
+                default: 'url'
             }
         },
         methods: {
@@ -32,6 +35,13 @@
                     this.result.Document[fieldName].length) {
 
                     return this.result.Document[fieldName][0];
+                }
+            },
+            onClick: function () {
+                var link = this.getField(this.linkField);
+
+                if (link) {
+                    location.assign(link);
                 }
             }
         }
