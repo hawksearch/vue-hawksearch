@@ -1,6 +1,6 @@
 <template>
     <div class="autosuggest-menu">
-        <template v-if="loadingSuggestions || suggestions">
+        <template v-if="fieldFocused && (loadingSuggestions || suggestions)">
             <ul class="dropdown-menu autosuggest-menu__list autosuggest-outer-list">
                 <template v-if="loadingSuggestions">
                     <li class="autosuggest-menu__item">{{ $t('Loading') }}...</li>
@@ -33,7 +33,7 @@
 
     export default {
         name: 'search-suggestions',
-        props: [],
+        props: ['fieldFocused'],
         components: {
             SuggestionItem,
             CategoriesContainer,

@@ -3,7 +3,7 @@
         <div class="hawk__searchBox__searchInput">
             <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
-        <search-suggestions></search-suggestions>
+        <search-suggestions :field-focused="fieldFocused"></search-suggestions>
     </div>
 </template>
 
@@ -26,7 +26,8 @@
                 keywordEnter: null,
                 placeholder: 'Enter search term',
                 suggestionDelay: null,
-                loadingSuggestions: false
+                loadingSuggestions: false,
+                fieldFocused: false
             }
         },
         methods: {
@@ -47,6 +48,8 @@
                 let keyword = e.target.value;
 
                 if (keyword) {
+                    this.fieldFocused = true;
+
                     this.$root.$store.commit('updateLoadingSuggestions', true);
 
                     clearTimeout(this.suggestionDelay);
@@ -61,6 +64,7 @@
             onBlur: function () {
                 setTimeout(() => {
                     if (!this.suggestionClick) {
+                        this.fieldFocused = false;
                         this.keyword = this.keywordEnter;
                         this.cancelSuggestions();
                     }
