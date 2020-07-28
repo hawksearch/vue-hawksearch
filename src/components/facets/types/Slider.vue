@@ -135,10 +135,21 @@
         },
         watch: {
             facetValue: function (n, o) {
-                if (n.ratio && !this.parsedData) {
-                    this.minValue = parseFloat(n.RangeStart);
-                    this.maxValue = parseFloat(n.RangeEnd);
-                    this.parsedData = true;
+                if (n.ratio) {
+                    if (!this.parsedData) {
+                        this.minValue = parseFloat(n.RangeStart);
+                        this.maxValue = parseFloat(n.RangeEnd);
+                        this.parsedData = true;
+                    }
+                    else {
+                        if (this.maxValue > n.RangeMax) {
+                            this.maxValue = parseFloat(n.RangeMax)
+                        }
+
+                        if (this.minValue > n.RangeMin) {
+                            this.minValue = parseFloat(n.RangeMin)
+                        }
+                    }
                 }
             },
             minValue: function (n, o) {
