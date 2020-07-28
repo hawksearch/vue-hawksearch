@@ -23,6 +23,7 @@
         data() {
             return {
                 keyword: null,
+                keywordEnter: null,
                 placeholder: 'Enter search term',
                 suggestionDelay: null,
                 loadingSuggestions: false
@@ -32,6 +33,7 @@
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
+                    this.keywordEnter = this.keyword;
 
                     if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
                         HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
@@ -59,7 +61,7 @@
             onBlur: function () {
                 setTimeout(() => {
                     if (!this.suggestionClick) {
-                        this.keyword = null;
+                        this.keyword = this.keywordEnter;
                         this.cancelSuggestions();
                     }
                 }, 250);
