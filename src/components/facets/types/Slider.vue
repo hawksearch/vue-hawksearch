@@ -18,6 +18,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex';
 
     export default {
         name: 'slider',
@@ -33,8 +34,10 @@
                 maxTemp: 100,
                 minValue: 0,
                 maxValue: 1,
-                parsedData: false,
-                buttonWidth: 23
+                userInput: false,
+                buttonWidth: 23,
+                cache: [],
+                componentReset: true
             }
         },
         created: function () {
@@ -89,28 +92,90 @@
                 }
             },
             handleAction: function () {
-                this.minValue = Math.round(this.minTemp / this.facetValue.ratio);
-                this.maxValue = Math.round(this.maxTemp / this.facetValue.ratio);
+                this.minValue = this.valueConvert(this.minTemp);
+                this.maxValue = this.valueConvert(this.maxTemp);
+
+                this.updateMinTemp();
+                this.updateMaxTemp();
             },
             applyFacet: function () {
                 if (parseFloat(this.minValue) < parseFloat(this.maxValue) &&
                     parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin) &&
                     parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
 
+                    this.userInput = true;
+
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
                     this.$root.$store.dispatch('applyFacets', facetData);
                 }
+            },
+            valueConvert: function (temp) {
+                return (Math.round(temp / this.facetValue.ratio) + this.facetValue.offset);
+            },
+            tempConvert: function (value) {
+                return Math.round((parseFloat(value) - this.facetValue.offset) * this.facetValue.ratio);
+            },
+            fetchCache: function () {
+                var cache;
+
+                this.cache.forEach(item => {
+                    if (item.RangeMax == this.facetValue.RangeMax &&
+                        item.RangeMin == this.facetValue.RangeMin &&
+                        item.RangeStart == this.facetValue.RangeStart &&
+                        item.RangeEnd == this.facetValue.RangeEnd) {
+
+                        cache = item;
+                    }
+                });
+
+                return cache;
+            },
+            cacheData: function () {
+                var newCache = Object.assign({ minValue: this.minValue, maxValue: this.maxValue }, this.facetValue);
+                var existingCache = this.fetchCache();
+
+                if (!existingCache) {
+                    this.cache.push(newCache);
+                }
+                else {
+                    this.cache = this.cache.map(item => _.isEqual(item, existingCache) ? newCache : existingCache);
+                }
+            },
+            decimalRound: function (value) {
+                return (Math.round(parseFloat(value) * 100) / 100);
+            },
+            updateMinTemp: function () {
+                if (parseFloat(this.maxValue) > parseFloat(this.minValue) && parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin)) {
+                    this.minTemp = this.tempConvert(this.minValue);
+                }
+            },
+            updateMaxTemp: function () {
+                if (parseFloat(this.minValue) < parseFloat(this.maxValue) && parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
+                    this.maxTemp = this.tempConvert(this.maxValue);
+                }
+            },
+            reset: function () {
+                this.cache = [];
+                this.componentReset = true;
             }
         },
         computed: {
+            ...mapState([
+                'pendingSearch'
+            ]),
             facetValue: function () {
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length && this.wrapper) {
+                    if (!this.pendingSearch.FacetSelections.hasOwnProperty(HawksearchVue.getFacetParamName(this.facetData))) {
+                        this.reset();
+                    }
+
                     var facetValue = this.facetData.Values[0];
 
                     var ratio = this.wrapper.width / (parseFloat(facetValue.RangeMax) - parseFloat(facetValue.RangeMin));
 
                     facetValue.ratio = ratio;
+                    facetValue.offset = this.decimalRound(facetValue.RangeMin);
 
                     return facetValue;
                 }
@@ -135,32 +200,32 @@
         },
         watch: {
             facetValue: function (n, o) {
-                if (n.ratio) {
-                    if (!this.parsedData) {
-                        this.minValue = parseFloat(n.RangeStart);
-                        this.maxValue = parseFloat(n.RangeEnd);
-                        this.parsedData = true;
+                if (this.userInput) {
+                    this.userInput = false;
+                    this.cacheData();
+                }
+                else if (this.componentReset || o.RangeMax != n.RangeMax || o.RangeMin != n.RangeMin) {
+                    this.componentReset = false;
+                    var cache = this.fetchCache();
+
+                    if (cache) {
+                        this.minValue = cache.minValue;
+                        this.maxValue = cache.maxValue;
                     }
                     else {
-                        if (this.maxValue > n.RangeMax) {
-                            this.maxValue = parseFloat(n.RangeMax)
-                        }
-
-                        if (this.minValue > n.RangeMin) {
-                            this.minValue = parseFloat(n.RangeMin)
-                        }
+                        this.minValue = this.decimalRound(n.RangeStart);
+                        this.maxValue = this.decimalRound(n.RangeEnd);
                     }
+
+                    this.updateMinTemp();
+                    this.updateMaxTemp();
                 }
             },
             minValue: function (n, o) {
-                if (parseFloat(this.maxValue) > parseFloat(n) && parseFloat(n) >= parseFloat(this.facetValue.RangeMin)) {
-                    this.minTemp = Math.round(parseFloat(n) * this.facetValue.ratio);
-                }
+                this.updateMinTemp();
             },
             maxValue: function (n, o) {
-                if (parseFloat(this.minValue) < parseFloat(n) && parseFloat(n) <= parseFloat(this.facetValue.RangeMax)) {
-                    this.maxTemp = Math.round(parseFloat(n) * this.facetValue.ratio);
-                }
+                this.updateMaxTemp();
             }
         }
     }
