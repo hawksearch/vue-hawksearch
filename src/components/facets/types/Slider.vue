@@ -37,7 +37,9 @@
                 userInput: false,
                 buttonWidth: 23,
                 cache: [],
-                componentReset: true
+                componentReset: true,
+                rangePrecesion: 2,
+                sliderPrecision: 0
             }
         },
         created: function () {
@@ -56,52 +58,83 @@
                 this.target = 'max';
             },
             onMouseMove: function (e) {
-                if (this.target) {
+                if (this.target && !this.lockCondition()) {
                     var temp = (e.clientX - this.wrapper.left);
                     var buttonWidth = this.buttonWidth;
+                    var minButtonPosition = (this.minTemp + buttonWidth);
+                    var maxButtonPosition = (this.maxTemp - buttonWidth);
 
                     if (this.target == 'max') {
-                        if (temp <= this.wrapper.width && temp > (this.minTemp + buttonWidth)) {
+                        if (temp <= this.wrapper.width && temp > minButtonPosition) {
                             this.maxTemp = temp;
                         }
                         else if (temp > this.wrapper.width) {
                             this.maxTemp = this.wrapper.width;
                         }
-                        else if (temp <= (this.minTemp + buttonWidth)) {
-                            this.maxTemp = (this.minTemp + buttonWidth);
+                        else if (temp <= minButtonPosition && minButtonPosition < this.wrapper.width) {
+                            this.maxTemp = minButtonPosition;
                         }
                     }
                     else if (this.target == 'min') {
-                        if (temp >= 0 && temp < (this.maxTemp - buttonWidth)) {
+                        if (temp >= 0 && temp < maxButtonPosition) {
                             this.minTemp = temp;
                         }
                         else if (temp < 0) {
                             this.minTemp = 0;
                         }
-                        else if (temp >= (this.maxTemp - buttonWidth)) {
-                            this.minTemp = (this.maxTemp - buttonWidth);
+                        else if (temp >= maxButtonPosition && maxButtonPosition > 0) {
+                            this.minTemp = maxButtonPosition;
                         }
                     }
                 }
             },
             onMouseUp: function (e) {
                 if (this.target) {
+                    if (this.handleAction(this.target)) {
+                        this.applyFacet();
+                    }
+
                     this.target = null;
-                    this.handleAction();
-                    this.applyFacet();
                 }
             },
-            handleAction: function () {
-                this.minValue = this.valueConvert(this.minTemp);
-                this.maxValue = this.valueConvert(this.maxTemp);
+            lockCondition: function () {
+                if (parseFloat(this.facetValue.RangeMax) - parseFloat(this.facetValue.RangeMin) > 1) {
+                    return false;
+                }
 
-                this.updateMinTemp();
-                this.updateMaxTemp();
+                return true
+            },
+            handleAction: function (target) {
+                var minValue = this.valueConvert(this.minTemp);
+                var maxValue = this.valueConvert(this.maxTemp);
+                var updated = false;
+
+                if (minValue < maxValue &&
+                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
+                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
+
+                    if (minValue != this.minValue && target == 'min') {
+                        this.minValue = minValue;
+                        this.updateMinTemp();
+                        updated = true;
+                    }
+
+                    if (maxValue != this.maxValue && target == 'max') {
+                        this.maxValue = maxValue;
+                        this.updateMaxTemp();
+                        updated = true;
+                    }
+                }
+
+                return updated;
             },
             applyFacet: function () {
-                if (parseFloat(this.minValue) < parseFloat(this.maxValue) &&
-                    parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin) &&
-                    parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
+                var minValue = this.valueRound(this.minValue, this.rangePrecesion);
+                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion);
+
+                if (minValue < maxValue &&
+                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
+                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
 
                     this.userInput = true;
 
@@ -111,10 +144,30 @@
                 }
             },
             valueConvert: function (temp) {
-                return (Math.round(temp / this.facetValue.ratio) + this.facetValue.offset);
+                var x = temp;
+                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecesion);
+                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecesion);
+                var n = this.wrapper.width;
+                var precision = this.sliderPrecision;
+
+                if (temp == 0 || temp == n) {
+                    precision = this.rangePrecesion;
+                }
+
+                return this.valueRound(((m - k) * x + n * k) / n, precision);
             },
             tempConvert: function (value) {
-                return Math.round((parseFloat(value) - this.facetValue.offset) * this.facetValue.ratio);
+                var y = this.valueRound(value, this.rangePrecesion);
+                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecesion);
+                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecesion);
+                var n = this.wrapper.width;
+                var precision = this.sliderPrecision;
+
+                if (value == k || value == m) {
+                    precision = this.rangePrecesion;
+                }
+
+                return this.valueRound((n * (y - k)) / (m - k), precision);
             },
             fetchCache: function () {
                 var cache;
@@ -142,8 +195,8 @@
                     this.cache = this.cache.map(item => _.isEqual(item, existingCache) ? newCache : existingCache);
                 }
             },
-            decimalRound: function (value) {
-                return (Math.round(parseFloat(value) * 100) / 100);
+            valueRound: function (value, precision) {
+                return _.round(parseFloat(value), precision);
             },
             updateMinTemp: function () {
                 if (parseFloat(this.maxValue) > parseFloat(this.minValue) && parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin)) {
@@ -171,11 +224,6 @@
                     }
 
                     var facetValue = this.facetData.Values[0];
-
-                    var ratio = this.wrapper.width / (parseFloat(facetValue.RangeMax) - parseFloat(facetValue.RangeMin));
-
-                    facetValue.ratio = ratio;
-                    facetValue.offset = this.decimalRound(facetValue.RangeMin);
 
                     return facetValue;
                 }
@@ -213,8 +261,8 @@
                         this.maxValue = cache.maxValue;
                     }
                     else {
-                        this.minValue = this.decimalRound(n.RangeStart);
-                        this.maxValue = this.decimalRound(n.RangeEnd);
+                        this.minValue = this.valueRound(n.RangeStart, this.rangePrecesion);
+                        this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecesion);
                     }
 
                     this.updateMinTemp();
