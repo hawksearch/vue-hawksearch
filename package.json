@@ -1,6 +1,6 @@
 {
   "name": "@hawksearch/vue",
-  "version": "0.9.18",
+  "version": "0.9.19",
   "description": "Vue.js SDK for HAWK Search",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
