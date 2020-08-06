@@ -1,12 +1,7 @@
 <template>
-    <div class="hawk-facet-rail__results-label">
+    <div v-if="keyword" class="hawk-facet-rail__results-label">
         <h3>
-            <template v-if="keyword">
-                {{ $t('Search Results for') }} {{ keyword }}
-            </template>
-            <template v-else>
-                {{ $t('Search Results') }}
-            </template>
+            {{ $t('Search Results for') }} {{ keyword }}
         </h3>
     </div>
 </template>
@@ -41,5 +36,4 @@
 </script>
 
 <style scoped lang="scss">
-
 </style>

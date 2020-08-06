@@ -1,5 +1,9 @@
 <template>
     <div class="hawk-results">
+        <search-results-label />
+
+        <banner></banner>
+
         <template v-if="searchError">
             <span>{{ $t('response_error_generic') }}</span>
         </template>
@@ -7,7 +11,6 @@
             <span>{{ $t('No Results') }}</span>
         </template>
         <template v-else-if="!waitingForInitialSearch">
-            <search-results-label />
             <selections />
 
             <div class="hawk-results__top-tool-row">
@@ -29,6 +32,7 @@
     import Selections from '../facets/Selections'
     import ToolRow from './ToolRow'
     import ResultListing from './ResultListing'
+    import Banner from './Banner'
 
     export default {
         name: 'results',
@@ -37,7 +41,8 @@
             SearchResultsLabel,
             Selections,
             ToolRow,
-            ResultListing
+            ResultListing,
+            Banner
         },
         mounted() {
 
