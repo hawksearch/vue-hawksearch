@@ -58,7 +58,7 @@
                 this.target = 'max';
             },
             onMouseMove: function (e) {
-                if (this.target && !this.lockCondition()) {
+                if (this.target) {
                     var temp = (e.clientX - this.wrapper.left);
                     var buttonWidth = this.buttonWidth;
                     var minButtonPosition = (this.minTemp + buttonWidth);
@@ -90,36 +90,35 @@
             },
             onMouseUp: function (e) {
                 if (this.target) {
-                    if (this.handleAction(this.target)) {
+                    if (this.handleAction()) {
                         this.applyFacet();
                     }
 
                     this.target = null;
                 }
             },
-            lockCondition: function () {
-                if (parseFloat(this.facetValue.RangeMax) - parseFloat(this.facetValue.RangeMin) > 1) {
-                    return false;
-                }
-
-                return true
-            },
-            handleAction: function (target) {
+            handleAction: function () {
                 var minValue = this.valueConvert(this.minTemp);
                 var maxValue = this.valueConvert(this.maxTemp);
                 var updated = false;
 
-                if (minValue < maxValue &&
-                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
-                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
+                if (this.minTemp == (this.maxTemp - this.buttonWidth)) {
+                    if (this.target == 'min') {
+                        minValue = maxValue
+                    }
+                    else {
+                        maxValue = minValue
+                    }
+                }
 
-                    if (minValue != this.minValue && target == 'min') {
+                if (this.validSelection({ minValue, maxValue })) {
+                    if (minValue != this.minValue && this.target == 'min') {
                         this.minValue = minValue;
                         this.updateMinTemp();
                         updated = true;
                     }
 
-                    if (maxValue != this.maxValue && target == 'max') {
+                    if (maxValue != this.maxValue && this.target == 'max') {
                         this.maxValue = maxValue;
                         this.updateMaxTemp();
                         updated = true;
@@ -132,16 +131,22 @@
                 var minValue = this.valueRound(this.minValue, this.rangePrecesion);
                 var maxValue = this.valueRound(this.maxValue, this.rangePrecesion);
 
-                if (minValue < maxValue &&
-                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
-                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
-
+                if (this.validSelection({ minValue, maxValue })) {
                     this.userInput = true;
-
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
                     this.$root.$store.dispatch('applyFacets', facetData);
                 }
+            },
+            validSelection: function ({ minValue, maxValue }) {
+                if (minValue <= maxValue &&
+                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
+                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
+
+                    return true;
+                }
+
+                return false;
             },
             valueConvert: function (temp) {
                 var x = temp;
@@ -165,6 +170,10 @@
 
                 if (value == k || value == m) {
                     precision = this.rangePrecesion;
+                }
+
+                if (m == k) {
+                    return k == 0 ? 0 : n;
                 }
 
                 return this.valueRound((n * (y - k)) / (m - k), precision);
@@ -199,13 +208,25 @@
                 return _.round(parseFloat(value), precision);
             },
             updateMinTemp: function () {
-                if (parseFloat(this.maxValue) > parseFloat(this.minValue) && parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin)) {
-                    this.minTemp = this.tempConvert(this.minValue);
+                if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin)) {
+                    var temp = this.tempConvert(this.minValue);
+
+                    if (this.maxValue == this.minValue && temp >= this.buttonWidth) {
+                        temp -= this.buttonWidth
+                    }
+
+                    this.minTemp = temp;
                 }
             },
             updateMaxTemp: function () {
-                if (parseFloat(this.minValue) < parseFloat(this.maxValue) && parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
-                    this.maxTemp = this.tempConvert(this.maxValue);
+                if (parseFloat(this.minValue) <= parseFloat(this.maxValue) && parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
+                    var temp = this.tempConvert(this.maxValue);
+
+                    if (this.maxValue == this.minValue && temp <= (this.wrapper.width - this.buttonWidth)) {
+                        temp += this.buttonWidth
+                    }
+
+                    this.maxTemp = temp;
                 }
             },
             reset: function () {
@@ -232,12 +253,26 @@
                 }
             },
             minRangeStyle: function () {
-                var aggrValue = this.minTemp;
-                return 'left: ' + aggrValue + 'px;';
+                var left = this.minTemp;
+                var diff = this.maxTemp - this.minTemp;
+                var offset = _.ceil((this.buttonWidth - diff) / 2);
+
+                if (diff < this.buttonWidth && this.minTemp >= offset) {
+                    left -= offset;
+                }
+
+                return 'left: ' + left + 'px;';
             },
             maxRangeStyle: function () {
-                var aggrValue = this.maxTemp;
-                return 'left: ' + aggrValue + 'px;';
+                var left = this.maxTemp;
+                var diff = this.maxTemp - this.minTemp;
+                var offset = _.ceil((this.buttonWidth - diff) / 2);
+
+                if (diff < this.buttonWidth && this.maxTemp <= (this.wrapper.width - offset)) {
+                    left += offset;
+                }
+
+                return 'left: ' + left + 'px;';
             },
             sliderStyle: function () {
                 var left = this.minTemp;
