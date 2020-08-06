@@ -6,8 +6,11 @@
             <template v-if="facets && facets.length">
                 <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData"></facet>
             </template>
-            <template v-else>
+            <template v-else-if="loadingResults">
                 <placeholder-facet v-for="index in 4" :key="index"></placeholder-facet>
+            </template>
+            <template v-else>
+                <div class="hawk-facet-rail_empty"></div>
             </template>
         </div>
     </div>
@@ -39,7 +42,8 @@
         computed: {
             ...mapState([
                 'extendedSearchParams',
-                'waitingForInitialSearch'
+                'waitingForInitialSearch',
+                'loadingResults'
             ]),
             facets: function () {
                 return this.extendedSearchParams ? this.extendedSearchParams.Facets : null;
