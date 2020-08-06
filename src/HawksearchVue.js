@@ -14,6 +14,7 @@ class HawksearchVue {
         searchUrl: '/api/v2/search',
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
+        websiteUrl: location.origin,
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {}
@@ -426,6 +427,12 @@ class HawksearchVue {
 
     static getUniqueIdentifier() {
         return _.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
+    }
+
+    static getAbsoluteUrl(path, store) {
+        var config = store.state.config;
+        var url = new URL(path, config.websiteUrl);
+        return url.href;
     }
 
 }
