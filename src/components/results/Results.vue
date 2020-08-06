@@ -13,6 +13,8 @@
         <template v-else-if="!waitingForInitialSearch">
             <selections />
 
+            <tabs></tabs>
+
             <div class="hawk-results__top-tool-row">
                 <tool-row />
             </div>
@@ -33,6 +35,7 @@
     import ToolRow from './ToolRow'
     import ResultListing from './ResultListing'
     import Banner from './Banner'
+    import Tabs from './Tabs'
 
     export default {
         name: 'results',
@@ -42,7 +45,8 @@
             Selections,
             ToolRow,
             ResultListing,
-            Banner
+            Banner,
+            Tabs
         },
         mounted() {
 
