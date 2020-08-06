@@ -100,7 +100,17 @@
                 this.refreshResults({});
             },
             refreshResults: function (facetSelections) {
-                this.$root.$store.dispatch('fetchResults', { FacetSelections: facetSelections });
+                var headers = {};
+                var facetHeaders = Object.assign({}, facetSelections);
+
+                if (facetHeaders.hasOwnProperty('searchWithin')) {
+                    headers.SearchWithin = facetHeaders.searchWithin[0];
+                    delete facetHeaders.searchWithin;
+                }
+
+                headers.FacetSelections = facetHeaders;
+
+                this.$root.$store.dispatch('fetchResults', headers);
             },
             getFacetType: function (field) {
                 if (this.searchOutput) {
