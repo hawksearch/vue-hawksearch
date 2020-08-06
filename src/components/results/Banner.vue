@@ -2,11 +2,7 @@
     <div class="hawk-preview__bannerTop">
         <div class="hawk-preview__banner-container">
             <template v-for="banner in bannerList">
-                <div>
-                    <a :href="absoluteUrl(banner.ForwardUrl)">
-                        <img :src="absoluteUrl(banner.ImageUrl)" />
-                    </a>
-                </div>
+                <component :is="getBannerType(banner)" :banner="banner"></component>
             </template>
         </div>
     </div>
@@ -14,6 +10,10 @@
 
 <script>
     import { mapState } from 'vuex';
+    import BannerImage from './banner-items/BannerImage';
+    import BannerCustom from './banner-items/BannerCustom';
+    import BannerFeatured from './banner-items/BannerFeatured';
+    import BannerWidget from './banner-items/BannerWidget';
 
     export default {
         name: 'banner',
@@ -31,9 +31,23 @@
             }
         },
         methods: {
-            absoluteUrl: function (url) {
-                var store = this.$root.$store;
-                return HawksearchVue.getAbsoluteUrl(url, store);
+            getBannerType: function (banner) {
+                switch (banner.ContentType) {
+                    case 'image':
+                        return BannerImage;
+
+                    case 'widget':
+                        return BannerWidget;
+
+                    //case 'featured':
+                    //    return BannerFeatured;
+
+                    case 'custom':
+                        return BannerCustom;
+
+                    default:
+                        return null;
+                }
             }
         },
         computed: {
