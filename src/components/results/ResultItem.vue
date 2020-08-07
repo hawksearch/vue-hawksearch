@@ -1,10 +1,20 @@
 <template>
-    <div class="hawk-results__item" @click="onClick">
-        <result-image :imagePath="getField('image')"></result-image>
+    <div :class="getField('type') == 'Content' ? 'hawk-results__contentItem' : 'hawk-results__item'" @click="onClick">
+        <template v-if="getField('type') == 'Content'">
+            <h4 class="hawk-results__hawk-contentTitle">
+                <a :href="absoluteUrl(getField(linkField))">{{ getField('itemname') }}</a>
+            </h4>
+            <template v-if="getField('description_short')">
+                <div>{{ getField('description_short') }}</div>
+            </template>
+        </template>
+        <template v-else>
+            <result-image :imagePath="getField('image')"></result-image>
 
-        <div class="hawk-results__item-name">
-            <span>{{ this.getField('itemname') }}</span>
-        </div>
+            <div class="hawk-results__item-name">
+                <span>{{ getField('itemname') }}</span>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -38,11 +48,15 @@
                 }
             },
             onClick: function () {
-                var link = this.getField(this.linkField);
+                var link = this.absoluteUrl(this.getField(this.linkField));
 
                 if (link) {
                     location.assign(link);
                 }
+            },
+            absoluteUrl: function (url) {
+                var store = this.$root.$store;
+                return HawksearchVue.getAbsoluteUrl(url, store);
             }
         }
     };
