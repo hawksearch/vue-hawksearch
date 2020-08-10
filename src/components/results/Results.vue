@@ -4,6 +4,8 @@
 
         <banner></banner>
 
+        <selections />
+
         <template v-if="searchError">
             <span>{{ $t('response_error_generic') }}</span>
         </template>
@@ -11,8 +13,6 @@
             <span>{{ $t('No Results') }}</span>
         </template>
         <template v-else-if="!waitingForInitialSearch">
-            <selections />
-
             <tabs></tabs>
 
             <div class="hawk-results__top-tool-row">

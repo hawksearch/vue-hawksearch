@@ -2,20 +2,20 @@
     <div v-if="hasSelections" class="hawk-facet-rail__selections">
         <h4>{{ $t("You've Selected") }}</h4>
         <ul class="hawk-selections">
-            <li v-for="(facetValues, field) in facetSelections" :key="field" class="hawk-selections__category">
+            <li v-for="(data, field) in selections" :key="field" class="hawk-selections__category">
                 <div class="hawk-selections__category-wrapper">
-                    <span class="hawk-selections__category-name">{{ facetSelectionsLabels[field] }}:</span>
+                    <span class="hawk-selections__category-name">{{ data.Label }}:</span>
                     <ul class="hawk-selections__item-list">
-                        <li v-for="item in facetValues" :key="item" class="hawk-selections__item">
+                        <li v-for="item in data.Items" :key="item" class="hawk-selections__item">
                             <button @click="clearSelectionItem(field, item)" class="hawk-selections__item-remove">
                                 <x-circle-svg></x-circle-svg>
                             </button>
                             <span :class="itemClass(item)">
                                 <template v-if="getFacetType(field) == 'range'">
-                                    {{ rangeLabel(item) }}
+                                    {{ rangeLabel(item.Label) }}
                                 </template>
                                 <template v-else>
-                                    {{ getFacetLabel(field, item) }}
+                                    {{ item.Label }}
                                 </template>
                             </span>
                         </li>
@@ -46,7 +46,9 @@
         },
         data() {
             return {
-
+                selections: [],
+                facetType: {},
+                searchWithinLabel: null
             }
         },
         components: {
@@ -54,25 +56,11 @@
         },
         methods: {
             itemClass: function (item) {
-                if (item.startsWith('-')) {
+                if (item.Value.startsWith('-')) {
                     return 'hawk-selections__item-name hawk-selections__item-name--negated';
                 }
                 else {
                     return 'hawk-selections__item-name';
-                }
-            },
-            clearSelectionField: function (field) {
-                if (field != 'searchWithin') {
-                    var selections = Object.assign({}, this.facetSelections);
-
-                    if (selections.hasOwnProperty(field)) {
-                        delete selections[field];
-                        this.refreshResults(selections);
-                    }
-                }
-                else {
-                    this.clearSearchWithin();
-                    this.$root.$store.dispatch('fetchResults', {});
                 }
             },
             clearSearchWithin: function () {
@@ -82,38 +70,53 @@
                     this.$root.$store.commit('updatePendingSearch', pendingSearch);
                 }
             },
+            clearSelectionField: function (field) {
+                if (field != 'searchWithin') {
+                    if (this.selections.hasOwnProperty(field)) {
+                        delete this.selections[field];
+                        this.refreshResults();
+                    }
+                }
+                else {
+                    this.clearSearchWithin();
+                    this.$root.$store.dispatch('fetchResults', {});
+                }
+            },
             clearSelectionItem: function (field, item) {
-                var selections = Object.assign({}, this.facetSelections);
+                if (this.selections.hasOwnProperty(field)) {
+                    this.selections[field].Items = this.selections[field].Items.filter(v => v != item);
 
-                if (selections.hasOwnProperty(field)) {
-                    selections[field] = selections[field].filter(v => v != item);
-
-                    if (selections[field].length == 0) {
-                        delete selections[field];
+                    if (this.selections[field].Items.length == 0) {
+                        delete this.selections[field];
                     }
 
-                    this.refreshResults(selections);
+                    this.refreshResults();
                 }
             },
             clearAll: function () {
+                this.selections = [];
                 this.clearSearchWithin();
-                this.refreshResults({});
+                this.refreshResults();
             },
-            refreshResults: function (facetSelections) {
+            refreshResults: function () {
                 var headers = {};
-                var facetHeaders = Object.assign({}, facetSelections);
+                var facetHeaders = Object.assign({}, this.selections);
 
                 if (facetHeaders.hasOwnProperty('searchWithin')) {
                     headers.SearchWithin = facetHeaders.searchWithin[0];
                     delete facetHeaders.searchWithin;
                 }
 
+                Object.keys(facetHeaders).forEach(key => {
+                    facetHeaders[key] = facetHeaders[key].Items.map(item => item.Value);
+                });
+
                 headers.FacetSelections = facetHeaders;
 
                 this.$root.$store.dispatch('fetchResults', headers);
             },
             getFacetType: function (field) {
-                if (this.searchOutput) {
+                if (this.searchOutput && this.searchOutput.Facets.length) {
                     var facets = this.searchOutput.Facets;
                     var type;
 
@@ -123,32 +126,29 @@
                         }
                     });
 
+                    if (type) {
+                        this.facetType[field] = type;
+                    }
+                    else {
+                        type = this.facetType[field];
+                    }
+
                     return type;
+                }
+                else if (this.facetTypes.hasOwnProperty(field)) {
+                    return this.facetType[field];
                 }
             },
             rangeLabel: function (item) {
                 return item.split(',').join(' - ');
             },
-            getFacetLabel: function (field, item) {
-                if (this.searchOutput) {
-                    var facets = this.searchOutput.Facets;
-                    var label = item;
+            setSearchWithinLabel: function () {
+                if (this.searchOutput && this.searchOutput.Facets.length && !this.searchWithinLabel) {
+                    var searchWithin = this.searchOutput.Facets.find(facet => facet.Field == 'searchWithin');
 
-                    if (field != 'searchWithin') {
-                        facets.forEach(facet => {
-                            if (HawksearchVue.getFacetParamName(facet) == field) {
-                                if (facet.Values) {
-                                    facet.Values.forEach(value => {
-                                        if (value.Value == item) {
-                                            label = value.Label;
-                                        }
-                                    })
-                                }
-                            }
-                        });
+                    if (searchWithin) {
+                        this.searchWithinLabel = searchWithin.Name;
                     }
-
-                    return label;
                 }
             }
         },
@@ -157,43 +157,31 @@
                 'pendingSearch',
                 'searchOutput'
             ]),
-            facetSelections: function () {
-                if (this.pendingSearch) {
+            hasSelections: function () {
+                return Object.keys(this.selections).length != 0;
+            }
+        },
+        watch: {
+            searchOutput: function (n, o) {
+                if (n) {
                     var selections = {};
-                    var facets = this.pendingSearch.FacetSelections;
+                    var facets = n.Selections;
                     var search = this.pendingSearch.SearchWithin;
+
+                    this.setSearchWithinLabel();
 
                     if (Object.keys(facets).length) {
                         selections = Object.assign({}, facets);
                     }
 
                     if (search) {
-                        selections = Object.assign({}, selections, { 'searchWithin': [search]});
+                        selections = Object.assign({}, selections, { 'searchWithin': { Items: [{ Value: search, Label: search }], Label: this.searchWithinLabel } });
                     }
+
+                    this.selections = selections
 
                     return selections;
                 }
-            },
-            hasSelections: function () {
-                return Object.keys(this.facetSelections).length != 0;
-            },
-            facetSelectionsLabels: function () {
-                var facetSelectionsLabels = Object.assign({}, this.facetSelections);
-
-                if (this.searchOutput) {
-                    var facets = this.searchOutput.Facets;
-                    var field;
-
-                    facets.forEach(facet => {
-                        field = HawksearchVue.getFacetParamName(facet);
-
-                        if (facetSelectionsLabels.hasOwnProperty(field)) {
-                            facetSelectionsLabels[field] = facet.Name;
-                        }
-                    });
-                }
-
-                return facetSelectionsLabels
             }
         }
     }
@@ -202,5 +190,4 @@
 </script>
 
 <style scoped lang="scss">
-
 </style>
