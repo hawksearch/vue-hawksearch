@@ -135,7 +135,7 @@
 
                     return type;
                 }
-                else if (this.facetTypes.hasOwnProperty(field)) {
+                else if (this.facetType.hasOwnProperty(field)) {
                     return this.facetType[field];
                 }
             },
