@@ -59,8 +59,10 @@
         },
         watch: {
             facet: function (n, o) {
-                var tabs = n.Values;
-                this.tabs = tabs;
+                if (n) {
+                    var tabs = n.Values;
+                    this.tabs = tabs;
+                }
             }
         }
     }
