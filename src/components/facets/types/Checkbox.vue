@@ -57,6 +57,8 @@
         },
         methods: {
             selectFacet: function (value) {
+                this.clearSelections(value);
+
                 if (value.Negated) {
                     value.Selected = true;
                     value.Negated = false;
@@ -68,12 +70,37 @@
                 this.applyFacets();
             },
             negateFacet: function (value) {
+                this.clearSelections(value);
+
                 value.Negated = !value.Negated;
                 value.Selected = value.Negated;
                 this.applyFacets();
             },
             applyFacets: function () {
                 this.$root.$store.dispatch('applyFacets', this.facetData);
+            },
+            clearSelections: function (exception) {
+                if (this.getCheckboxType() == 'single') {
+                    this.items = this.items.map(item => {
+                        if (_.isEqual(item, exception)) {
+                            return item;
+                        }
+                        else {
+                            item.Negated = false;
+                            item.Selected = false;
+                        }
+                    });
+                }
+            },
+            getCheckboxType: function () {
+                var field = HawksearchVue.getFacetParamName(this.facetData);
+
+                if (this.$root.$store.state.config.facetConfig.hasOwnProperty(field)) {
+                    return this.$root.$store.state.config.facetConfig[field];
+                }
+                else {
+                    return 'multiple';
+                }
             },
             getAssetUrl: function (value) {
                 if (value && value.AssetFullUrl) {

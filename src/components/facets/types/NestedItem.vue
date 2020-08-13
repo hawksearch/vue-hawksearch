@@ -56,6 +56,8 @@
                 this.isExpanded = !this.isExpanded;
             },
             selectFacet: function (value) {
+                this.$parent.clearSelections(value);
+
                 if (value.Negated) {
                     value.Selected = true;
                     value.Negated = false;
@@ -67,9 +69,14 @@
                 this.applyFacets();
             },
             negateFacet: function (value) {
+                this.$parent.clearSelections(value);
+
                 value.Negated = !value.Negated;
                 value.Selected = value.Negated;
                 this.applyFacets();
+            },
+            clearSelections: function (value) {
+                this.$parent.clearSelections(value);
             },
             applyFacets: function () {
                 this.$root.$store.dispatch('applyFacets', this.facetData);

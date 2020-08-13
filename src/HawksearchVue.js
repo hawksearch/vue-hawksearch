@@ -17,7 +17,8 @@ class HawksearchVue {
         websiteUrl: location.origin,
         indexName: null,
         indexNameRequired: false,
-        additionalParameters: {}
+        additionalParameters: {},
+        facetConfig: {}
     }
 
     static storeInstances = {}
