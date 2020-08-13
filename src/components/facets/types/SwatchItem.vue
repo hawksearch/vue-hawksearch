@@ -31,6 +31,8 @@
         },
         methods: {
             selectFacet: function () {
+                this.$parent.clearSelections(this.item);
+
                 if (this.item.Negated) {
                     this.item.Selected = true;
                     this.item.Negated = false;
@@ -42,6 +44,8 @@
                 this.applyFacets();
             },
             negateFacet: function () {
+                this.$parent.clearSelections(this.item);
+
                 this.item.Negated = !this.item.Negated;
                 this.item.Selected = this.item.Negated;
                 this.applyFacets();

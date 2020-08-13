@@ -27,7 +27,29 @@
             }
         },
         methods: {
+            clearSelections: function (exception) {
+                if (this.getCheckboxType() == 'single') {
+                    this.items = this.items.map(item => {
+                        if (_.isEqual(item, exception)) {
+                            return item;
+                        }
+                        else {
+                            item.Negated = false;
+                            item.Selected = false;
+                        }
+                    });
+                }
+            },
+            getCheckboxType: function () {
+                var field = HawksearchVue.getFacetParamName(this.facetData);
 
+                if (this.$root.$store.state.config.facetConfig.hasOwnProperty(field)) {
+                    return this.$root.$store.state.config.facetConfig[field];
+                }
+                else {
+                    return 'multiple';
+                }
+            }
         },
         computed: {
             items: function () {

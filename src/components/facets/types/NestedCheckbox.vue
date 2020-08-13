@@ -27,7 +27,35 @@
             }
         },
         methods: {
+            clearSelections: function (exception) {
+                var clearValues = function (items) {
+                    items = items.map(item => {
+                        if (item.Children) {
+                            clearValues(item.Children);
+                        }
 
+                        if (!_.isEqual(item, exception)) {
+                            item.Negated = false;
+                            item.Selected = false;
+                        }
+
+                        return item;
+                    });
+                }
+                if (this.getCheckboxType() == 'single') {
+                    clearValues(this.items);
+                }
+            },
+            getCheckboxType: function () {
+                var field = HawksearchVue.getFacetParamName(this.facetData);
+
+                if (this.$root.$store.state.config.facetConfig.hasOwnProperty(field)) {
+                    return this.$root.$store.state.config.facetConfig[field];
+                }
+                else {
+                    return 'multiple';
+                }
+            }
         },
         computed: {
             items: function () {
