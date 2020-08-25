@@ -18,7 +18,10 @@ class HawksearchVue {
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {},
-        facetConfig: {}
+        facetConfig: {},
+        tabConfig: {
+            alwaysOn: true
+        }
     }
 
     static storeInstances = {}
@@ -168,11 +171,31 @@ class HawksearchVue {
 
         Vue.http.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
-                callback(response.data);
+                this.searchResponseDataHandler(response.data, store, callback);
             }
         }, response => {
             callback(false, true);
         });
+    }
+
+    static searchResponseDataHandler(data, store, callback) {
+        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
+            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
+
+            if (!tabs.Values.find(value => value.Selected == true) && store.state.config.tabConfig.alwaysOn) {
+                var facetData = Object.assign({}, tabs);
+
+                facetData.Values[0].Selected = true;
+
+                store.dispatch('applyFacets', facetData);
+            }
+            else {
+                callback(data);
+            }
+        }
+        else {
+            callback(data);
+        }
     }
 
     static fetchSuggestions(searchParams, store, callback) {

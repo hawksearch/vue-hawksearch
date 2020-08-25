@@ -33,20 +33,22 @@
                 return tabClass;
             },
             onClick: function (tab) {
-                var facetData = Object.assign({}, this.facet);
+                if (!tab.Selected) {
+                    var facetData = Object.assign({}, this.facet);
 
-                facetData.Values = facetData.Values.map(item => {
-                    if (item.Value == tab.Value) {
-                        item.Selected = true;
-                    }
-                    else {
-                        item.Selected = false;
-                    }
+                    facetData.Values = facetData.Values.map(item => {
+                        if (item.Value == tab.Value) {
+                            item.Selected = true;
+                        }
+                        else {
+                            item.Selected = false;
+                        }
 
-                    return item;
-                });
+                        return item;
+                    });
 
-                this.$root.$store.dispatch('applyFacets', facetData);
+                    this.$root.$store.dispatch('applyFacets', facetData);
+                }
             }
         },
         computed: {

@@ -46,7 +46,7 @@
                 'loadingResults'
             ]),
             facets: function () {
-                return this.extendedSearchParams ? this.extendedSearchParams.Facets : null;
+                return (this.extendedSearchParams && this.extendedSearchParams.Facets) ? this.extendedSearchParams.Facets.filter(facet => facet.FieldType != 'tab') : null;
             }
         }
     }
