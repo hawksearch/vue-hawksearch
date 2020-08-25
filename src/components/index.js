@@ -15,6 +15,7 @@ export { default as ResultImage } from './results/ResultImage';
 export { default as ResultItem } from './results/ResultItem';
 export { default as ResultListing } from './results/ResultListing';
 export { default as Results } from './results/Results';
+export { default as Tabs } from './results/Tabs';
 export { default as ToolRow } from './results/ToolRow';
 export { default as ItemsPerPage } from './results/tools/ItemsPerPage';
 export { default as Pager } from './results/tools/Pager';
