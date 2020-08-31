@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
 
     export default {
         name: 'tabs',
@@ -54,6 +54,9 @@
         computed: {
             ...mapState([
                 'searchOutput'
+            ]),
+            ...mapGetters([
+                'tabSelection'
             ]),
             facet: function () {
                 return this.searchOutput ? this.searchOutput.Facets.find(facet => facet.FieldType == 'tab') : null;

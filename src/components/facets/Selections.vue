@@ -35,7 +35,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
     import XCircleSvg from '../svg/XCircleSvg';
 
     export default {
@@ -156,6 +156,9 @@
             ...mapState([
                 'pendingSearch',
                 'searchOutput'
+            ]),
+            ...mapGetters([
+                'tabSelection'
             ]),
             hasSelections: function () {
                 return Object.keys(this.selections).length != 0;

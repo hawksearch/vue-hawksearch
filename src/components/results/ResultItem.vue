@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
     import ResultImage from './ResultImage';
 
     export default {
@@ -41,6 +41,9 @@
         computed: {
             ...mapState([
                 'searchOutput'
+            ]),
+            ...mapGetters([
+                'getResponseField'
             ])
         },
         methods: {
@@ -51,23 +54,6 @@
                     this.result.Document[fieldName].length) {
 
                     return this.result.Document[fieldName][0];
-                }
-            },
-            getResponseField: function (fieldName) {
-                var responseFields = fieldName.split('.');
-                responseFields.reverse();
-
-                var getResponseProperty = (value, subfield) => {
-                    if (subfield && value.hasOwnProperty(subfield)) {
-                        return getResponseProperty(value[subfield], responseFields.pop());
-                    }
-                    else {
-                        return value;
-                    }
-                }
-
-                if (this.searchOutput) {
-                    return getResponseProperty(this.searchOutput, responseFields.pop());
                 }
             },
             onClick: function () {
