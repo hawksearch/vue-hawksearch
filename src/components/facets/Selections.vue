@@ -83,14 +83,20 @@
                 }
             },
             clearSelectionItem: function (field, item) {
-                if (this.selections.hasOwnProperty(field)) {
-                    this.selections[field].Items = this.selections[field].Items.filter(v => v != item);
+                if (field != 'searchWithin') {
+                    if (this.selections.hasOwnProperty(field)) {
+                        this.selections[field].Items = this.selections[field].Items.filter(v => v != item);
 
-                    if (this.selections[field].Items.length == 0) {
-                        delete this.selections[field];
+                        if (this.selections[field].Items.length == 0) {
+                            delete this.selections[field];
+                        }
+
+                        this.refreshResults();
                     }
-
-                    this.refreshResults();
+                }
+                else {
+                    this.clearSearchWithin();
+                    this.$root.$store.dispatch('fetchResults', {});
                 }
             },
             clearAll: function () {
