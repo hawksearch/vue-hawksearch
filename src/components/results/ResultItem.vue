@@ -56,6 +56,14 @@
                     return this.result.Document[fieldName][0];
                 }
             },
+            getJsonData: function (fieldName) {
+                if(!this.getField(fieldName)) return;
+                
+                try {
+                    return JSON.parse(his.getField(fieldName));
+                } catch (error) {
+                }
+            },
             onClick: function () {
                 var link = this.absoluteUrl(this.getField(this.linkField));
 
