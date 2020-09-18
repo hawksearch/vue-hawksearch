@@ -42,6 +42,9 @@
                     else {
                         this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
                     }
+
+                    e.stopPropagation();
+                    e.preventDefault();
                 }
             },
             onInput: function (e) {
