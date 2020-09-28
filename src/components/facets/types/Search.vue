@@ -2,7 +2,7 @@
     <div>
         <div class="hawk-facet-rail__facet-values">
             <div class="hawk-facet-rail__facet-values__search">
-                <input :value="searchString" @change="search" />
+                <input :value="searchString" @keydown="onKeyDown" />
             </div>
         </div>
         <div v-if="searchString" class="hawk-facet-rail__facet-values__search-clear">
@@ -28,11 +28,13 @@
             }
         },
         methods: {
-            search: function (event) {
-                var value = event.target.value;
+            onKeyDown: function (event) {
+                if (event.key == 'Enter') {
+                    var value = event.target.value;
 
-                if (value) {
-                    this.$root.$store.dispatch('applySearchWithin', value);
+                    if (value) {
+                        this.$root.$store.dispatch('applySearchWithin', value);
+                    }
                 }
             },
             clearFacet: function () {

@@ -268,7 +268,11 @@ class HawksearchVue {
         return true;
     }
 
-    static extendSearchData(searchOutput, pendingSearch, callback) {
+    static extendSearchData(searchOutput, pendingSearch, searchParams, callback) {
+        if (searchParams.hasOwnProperty('SearchWithin')) {
+            return false;
+        }
+
         if (!callback) {
             callback = function () { };
         }

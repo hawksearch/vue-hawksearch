@@ -67,7 +67,7 @@ export default () => {
                         commit('setSearchError', false);
                         commit('updateResults', searchOutput);
 
-                        HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, (extendedSearchParams) => {
+                        HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);
                         });
                     }

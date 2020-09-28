@@ -59,7 +59,6 @@
         methods: {
             onClick: function (e) {
                 e.stopPropagation();
-                e.preventDefault();
             },
         },
         computed: {

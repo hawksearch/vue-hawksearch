@@ -44,7 +44,7 @@
                     }
 
                     e.stopPropagation();
-                    e.preventDefault();
+                    //e.preventDefault();
                 }
             },
             onInput: function (e) {
@@ -74,8 +74,7 @@
                 }, 250);
             },
             onClick: function (e) {
-                e.stopPropagation();
-                e.preventDefault();
+                //e.stopPropagation();
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);
