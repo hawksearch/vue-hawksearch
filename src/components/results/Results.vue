@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-results">
+    <div class="hawk-results" @click="onClick">
         <search-results-label />
 
         <banner></banner>
@@ -57,7 +57,10 @@
             }
         },
         methods: {
-
+            onClick: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            },
         },
         computed: {
             ...mapState([

@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk__searchBox">
+    <div class="hawk__searchBox" @click="onClick">
         <div class="hawk__searchBox__searchInput">
             <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
@@ -42,6 +42,9 @@
                     else {
                         this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
                     }
+
+                    e.stopPropagation();
+                    e.preventDefault();
                 }
             },
             onInput: function (e) {
@@ -69,6 +72,10 @@
                         this.cancelSuggestions();
                     }
                 }, 250);
+            },
+            onClick: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);
