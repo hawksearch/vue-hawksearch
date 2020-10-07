@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { updateUrl } from '../QueryString';
 
 Vue.use(Vuex);
 
@@ -59,6 +60,7 @@ export default () => {
                 commit('updateSuggestions', null);
                 commit('updateLoadingSuggestions', false);
                 commit('updateLoadingResults', true);
+                updateUrl(state);
 
                 HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
                     commit('updateLoadingResults', false);
