@@ -144,6 +144,7 @@ class HawksearchVue {
         }
 
         store.dispatch('fetchResults', initialSearchParams);
+        store.commit('checkUrlForFacetSelection');
     }
 
     static fetchResults(searchParams, store, callback) {

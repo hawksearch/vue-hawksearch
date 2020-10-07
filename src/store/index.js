@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { createBrowserHistory } from 'History';
-import { parseSearchQueryString, getSearchQueryString } from '../QueryString';
+import { parseSearchQueryString, updateUrl } from '../QueryString';
 
 Vue.use(Vuex);
 
@@ -53,27 +52,18 @@ export default () => {
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
             },
-            updateUrl(state) {
-                const history = createBrowserHistory();
-                if(!state.waitingForInitialSearch){
-                    history.push({
-                        search: getSearchQueryString(state.pendingSearch),
-                    });
-                }
-            },
             checkUrlForFacetSelection(state) {
                 state.pendingSearch = parseSearchQueryString(location.search);
             }
         },
         actions: {
             fetchResults({ commit, state }, searchParams) {
-                commit('checkUrlForFacetSelection');
                 var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
                 commit('updatePendingSearch', pendingSearch);
                 commit('updateSuggestions', null);
                 commit('updateLoadingSuggestions', false);
                 commit('updateLoadingResults', true);
-                commit('updateUrl');
+                updateUrl(state);
 
                 HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
                     commit('updateLoadingResults', false);

@@ -1,3 +1,37 @@
+import { createBrowserHistory } from 'History';
+
+export function parseSearchQueryString(search) {
+	const queryObj = parseQueryStringToObject(search);
+
+	// extract out components, including facet selections
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, ...facetSelections } = queryObj;
+
+	// ignore landing pages if keyword is passed
+	const pageId = lp || PageId;
+	return {
+		Keyword: lpurl || pageId ? '' : keyword,
+
+		SortBy: sort,
+		PageNo: pg ? Number(pg) : undefined,
+		MaxPerPage: mpp ? Number(mpp) : undefined,
+		PageId: pageId ? Number(pageId) : undefined,
+		CustomUrl: lpurl,
+		SearchWithin: searchWithin,
+		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
+		FacetSelections: facetSelections,
+		IndexName: indexName
+	};
+}
+
+export function updateUrl(state) {
+	const history = createBrowserHistory();
+	if(!state.waitingForInitialSearch){
+		history.push({
+			search: getSearchQueryString(state.pendingSearch),
+		});
+	}
+}
+
 function parseQueryStringToObject(search) {
 	const params = new URLSearchParams(search);
 
@@ -39,29 +73,6 @@ function parseQueryStringToObject(search) {
 	});
 
 	return parsed;
-}
-
-export function parseSearchQueryString(search) {
-	const queryObj = parseQueryStringToObject(search);
-
-	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, ...facetSelections } = queryObj;
-
-	// ignore landing pages if keyword is passed
-	const pageId = lp || PageId;
-	return {
-		Keyword: lpurl || pageId ? '' : keyword,
-
-		SortBy: sort,
-		PageNo: pg ? Number(pg) : undefined,
-		MaxPerPage: mpp ? Number(mpp) : undefined,
-		PageId: pageId ? Number(pageId) : undefined,
-		CustomUrl: lpurl,
-		SearchWithin: searchWithin,
-		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-		FacetSelections: facetSelections,
-		IndexName: indexName
-	};
 }
 
 function convertObjectToQueryString(queryObj) {
@@ -110,7 +121,7 @@ function convertObjectToQueryString(queryObj) {
 	return '?' + queryStringValues.join('&');
 }
 
-export function getSearchQueryString(searchRequest) {
+function getSearchQueryString(searchRequest) {
 	const searchQuery = {
 		keyword: searchRequest.Keyword,
 
