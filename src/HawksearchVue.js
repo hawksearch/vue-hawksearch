@@ -1,6 +1,7 @@
 import HawksearchStore from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
+import { parseSearchQueryString } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
@@ -82,16 +83,16 @@ class HawksearchVue {
             },
             computed: {
                 ...mapState([
-                	'searchOutput',
-                	'pendingSearch'
+                    'searchOutput',
+                    'pendingSearch'
                 ])
             },
             watch: {
                 searchOutput: function (n, o) {
-                	this.$emit('resultsupdate', n);
+                    this.$emit('resultsupdate', n);
                 },
                 pendingSearch: function (n, o) {
-                	this.$emit('searchupdate', n);
+                    this.$emit('searchupdate', n);
                 }
             }
         });
@@ -123,12 +124,6 @@ class HawksearchVue {
         }
 
         var urlParams = this.getUrlParams();
-        var initialSearchParams = {};
-
-        if (urlParams.get('keyword')) {
-            initialSearchParams = { Keyword: urlParams.get('keyword') };
-        }
-
         var additionalParameters = {};
 
         this.paramWhitelist.forEach(key => {
@@ -143,8 +138,7 @@ class HawksearchVue {
             store.commit('updateConfig', config);
         }
 
-        store.commit('checkUrlForFacetSelection');
-        store.dispatch('fetchResults', initialSearchParams);
+        store.dispatch('fetchResults', parseSearchQueryString(location.search));
     }
 
     static fetchResults(searchParams, store, callback) {
@@ -163,8 +157,6 @@ class HawksearchVue {
 
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName }, config.additionalParameters);
-
-        //params = this.sanitizeParams(params);
 
         this.cancelSuggestionsRequest();
 

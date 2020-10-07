@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { parseSearchQueryString, updateUrl } from '../QueryString';
+import { updateUrl } from '../QueryString';
 
 Vue.use(Vuex);
 
@@ -51,9 +51,6 @@ export default () => {
             },
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
-            },
-            checkUrlForFacetSelection(state) {
-                state.pendingSearch = parseSearchQueryString(location.search);
             }
         },
         actions: {

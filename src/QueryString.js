@@ -1,5 +1,7 @@
 import { createBrowserHistory } from 'History';
 
+const allowedParams = ["keyword", "sort", "pg", "lp", "PageId", "lpurl", "mpp", "searchWithin", "is100Coverage", "indexName"];
+
 export function parseSearchQueryString(search) {
 	const queryObj = parseQueryStringToObject(search);
 
@@ -25,7 +27,7 @@ export function parseSearchQueryString(search) {
 
 export function updateUrl(state) {
 	const history = createBrowserHistory();
-	if(!state.waitingForInitialSearch){
+	if (!state.waitingForInitialSearch) {
 		history.push({
 			search: getSearchQueryString(state.pendingSearch),
 		});
@@ -38,18 +40,7 @@ function parseQueryStringToObject(search) {
 	const parsed = {};
 
 	params.forEach((value, key) => {
-		if (
-			key === 'keyword' ||
-			key === 'sort' ||
-			key === 'pg' ||
-			key === 'lp' ||
-			key === 'PageId' ||
-			key === 'lpurl' ||
-			key === 'mpp' ||
-			key === 'searchWithin' ||
-			key === 'is100Coverage' ||
-			key === 'indexName'
-		) {
+		if (allowedParams.includes(key)) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = value;
 		} else {
@@ -80,15 +71,7 @@ function convertObjectToQueryString(queryObj) {
 
 	for (const key in queryObj) {
 		if (queryObj.hasOwnProperty(key)) {
-			if (
-				key === 'keyword' ||
-				key === 'sort' ||
-				key === 'pg' ||
-				key === 'mpp' ||
-				key === 'searchWithin' ||
-				key === 'is100Coverage' ||
-				key === 'indexName'
-			) {
+			if (allowedParams.includes(key)) {
 				const value = queryObj[key];
 
 				if (value === undefined || value === null) {
