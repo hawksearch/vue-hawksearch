@@ -56,6 +56,15 @@
                     return this.result.Document[fieldName][0];
                 }
             },
+            getJsonData: function (fieldName) {
+                if(!this.getField(fieldName)) return;
+                
+                try {
+                    return JSON.parse(this.getField(fieldName));
+                } catch (error) {
+                    console.log('Property parsing to JSON failed');
+                }
+            },
             onClick: function () {
                 var link = this.absoluteUrl(this.getField(this.linkField));
 
