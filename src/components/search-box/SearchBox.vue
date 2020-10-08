@@ -34,17 +34,20 @@
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
                     this.cancelSuggestions();
-                    this.keywordEnter = this.keyword;
 
-                    if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
-                        HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
-                    }
-                    else {
-                        this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
-                    }
+                    if (this.keyword) {
+                        this.keywordEnter = this.keyword;
 
-                    e.stopPropagation();
-                    e.preventDefault();
+                        if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
+                            HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
+                        }
+                        else {
+                            this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
+                        }
+
+                        e.stopPropagation();
+                        //e.preventDefault();
+                    }
                 }
             },
             onInput: function (e) {
@@ -74,8 +77,7 @@
                 }, 250);
             },
             onClick: function (e) {
-                e.stopPropagation();
-                e.preventDefault();
+                //e.stopPropagation();
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);

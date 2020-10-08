@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
     import SearchResultsLabel from '../facets/SearchResultsLabel'
     import Selections from '../facets/Selections'
     import ToolRow from './ToolRow'
@@ -59,7 +59,6 @@
         methods: {
             onClick: function (e) {
                 e.stopPropagation();
-                e.preventDefault();
             },
         },
         computed: {
@@ -67,6 +66,9 @@
                 'searchOutput',
                 'searchError',
                 'waitingForInitialSearch'
+            ]),
+            ...mapGetters([
+                'tabSelection'
             ])
         }
     }
