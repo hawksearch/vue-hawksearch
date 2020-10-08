@@ -29,10 +29,10 @@
 </script>
 
 <style scoped lang="scss">
-    .autosuggest-menu__item-link {
+    /*.autosuggest-menu__item-link {
         text-decoration: none;
         color: inherit;
         margin: 0;
-    }
+    }*/
 </style>
 

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="searchOutput" class="hawk-tool-row">
+    <div v-if="searchOutput" class="hawk-tool-row" @click="onClick">
         <div class="hawk-tool-row__item">
             <sorting />
         </div>
@@ -20,6 +20,12 @@
         components: {
             Sorting,
             Pagination
+        },
+        methods: {
+            onClick: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
         },
         computed: {
             ...mapState([

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="hasSelections" class="hawk-facet-rail__selections">
+    <div v-if="hasSelections" class="hawk-facet-rail__selections" @click="onClick">
         <h4>{{ $t("You've Selected") }}</h4>
         <ul class="hawk-selections">
             <li v-for="(data, field) in selections" :key="field" class="hawk-selections__category">
@@ -55,6 +55,10 @@
             XCircleSvg
         },
         methods: {
+            onClick: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            },
             itemClass: function (item) {
                 if (item.Value.startsWith('-')) {
                     return 'hawk-selections__item-name hawk-selections__item-name--negated';

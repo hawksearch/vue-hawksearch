@@ -57,8 +57,8 @@
                 }
             },
             getJsonData: function (fieldName) {
-                if(!this.getField(fieldName)) return;
-                
+                if (!this.getField(fieldName)) return;
+
                 try {
                     return JSON.parse(this.getField(fieldName));
                 } catch (error) {

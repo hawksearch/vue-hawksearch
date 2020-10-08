@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="componentName">
-            <div class="hawk-facet-rail__facet" @click="onClick" >
+            <div class="hawk-facet-rail__facet" @click="onClick" @keydown="onKeyDown">
                 <div class="hawk-facet-rail__facet-heading" @click="toggleCollapse">
                     <h4>{{ facetData.Name }}</h4>
                     <div v-if="facetData.Tooltip" class="custom-tooltip">
@@ -86,11 +86,12 @@
         methods: {
             onClick: function (e) {
                 e.stopPropagation();
-                //e.preventDefault();
+                e.preventDefault();
             },
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
                     e.stopPropagation();
+                    e.preventDefault();
                 }
             },
             toggleCollapse: function () {

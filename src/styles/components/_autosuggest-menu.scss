@@ -1,29 +1,29 @@
-.autosuggest-menu {
+.hawk-autosuggest-menu {
 	position: relative;
 	z-index: 110;
 }
 
-.autosuggest-menu__list {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    padding: 0;
-    left: auto;
-    top: auto;
-    margin-top: -3px;
-    display: block;
-    overflow-y: auto;
-    line-height: 35px;
-    border: 1px solid #ccc;
-    position: absolute;
-    width: 100%;
-    z-index: 5;
-    background: white;
-    box-sizing: border-box;
-    cursor: default;
-    max-height: 500px;
+.hawk-autosuggest-menu__list {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	padding: 0;
+	left: auto;
+	top: auto;
+	margin-top: -3px;
+	display: block;
+	overflow-y: auto;
+	line-height: 35px;
+	border: 1px solid #ccc;
+	position: absolute;
+	width: 100%;
+	z-index: 5;
+	background: white;
+	box-sizing: border-box;
+	cursor: default;
+	max-height: 500px;
 }
 
-.autosuggest-menu__item {
+.hawk-autosuggest-menu__item {
 	padding-left: 10px;
 	background-color: $autosuggest-item-bg;
 	line-height: 24px;
@@ -43,7 +43,7 @@
 	height: 100px;
 }
 
-.autosuggest-menu__text--deleted {
+.hawk-autosuggest-menu__text--deleted {
 	color: $red;
 
 	.autosuggest-menu__item:hover &,
@@ -52,35 +52,34 @@
 	}
 }
 
-.autosuggest-menu__text--archived {
+.hawk-autosuggest-menu__text--archived {
 	color: $orange;
-	.autosuggest-menu__item:hover &,
-	.autosuggest-menu__item:focus & {
+
+	.hawk-autosuggest-menu__item:hover &,
+	.hawk-autosuggest-menu__item:focus & {
 		color: #fff;
 	}
 }
 
 .hawk__searchBox {
-	.autosuggest-menu {
+	.hawk-autosuggest-menu {
 		h3 {
 			font-size: 20px;
 			font-weight: bold;
 			margin-top: 20px;
 			margin-bottom: 5px;
 		}
-
-		.loading-label {
+		/*.loading-label {
 			width: 100%;
-		}
-
-		.autosuggest-outer-list {
+		}*/
+		.hawk-autosuggest-outer-list {
 			display: flex;
 			flex-direction: row;
 			padding: 15px;
 			flex-wrap: wrap;
 			list-style: none;
 
-			.autosuggest-inner-list {
+			.hawk-autosuggest-inner-list {
 				/*width: 66%;*/
 				flex: 2;
 				padding: 0;
@@ -99,7 +98,7 @@
 				li {
 					display: flex;
 					flex-direction: column;
-					width: calc(33% - 20px); 
+					width: calc(33% - 20px);
 					padding: 0;
 					margin: 10px;
 					justify-content: center;
@@ -136,7 +135,7 @@
 				}
 			}
 
-			.autosuggest-inner-container {
+			.hawk-autosuggest-inner-container {
 				/*width: 34%;*/
 				flex: 1;
 				padding-left: 15px;

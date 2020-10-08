@@ -46,7 +46,7 @@
                         }
 
                         e.stopPropagation();
-                        //e.preventDefault();
+                        e.preventDefault();
                     }
                 }
             },
@@ -77,7 +77,8 @@
                 }, 250);
             },
             onClick: function (e) {
-                //e.stopPropagation();
+                e.stopPropagation();
+                e.preventDefault();
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);

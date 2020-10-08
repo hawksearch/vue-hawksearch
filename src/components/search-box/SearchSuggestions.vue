@@ -1,12 +1,12 @@
 <template>
-    <div class="autosuggest-menu">
+    <div class="hawk-autosuggest-menu">
         <template v-if="fieldFocused && (loadingSuggestions || suggestions)">
-            <ul class="dropdown-menu autosuggest-menu__list autosuggest-outer-list">
+            <ul class="hawk-dropdown-menu hawk-autosuggest-menu__list hawk-autosuggest-outer-list">
                 <template v-if="loadingSuggestions">
-                    <li class="autosuggest-menu__item">{{ $t('Loading') }}...</li>
+                    <li class="hawk-autosuggest-menu__item">{{ $t('Loading') }}...</li>
                 </template>
                 <template v-else-if="suggestions.Products.length">
-                    <ul class="autosuggest-inner-list">
+                    <ul class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
                         <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
                     </ul>
@@ -17,7 +17,7 @@
                     </div>-->
                 </template>
                 <template v-else>
-                    <li class="autosuggest-menu__item">{{ $t('No Results') }}</li>
+                    <li class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</li>
                 </template>
             </ul>
         </template>

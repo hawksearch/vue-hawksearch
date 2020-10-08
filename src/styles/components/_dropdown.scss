@@ -1,28 +1,28 @@
-.dropdown-toggle {
+.hawk-dropdown-toggle {
 	display: flex;
 	align-items: center;
 }
 
-.dropdown-toggle::after {
+.hawk-dropdown-toggle::after {
 	vertical-align: 0.155em;
 }
 
-.dropdown-toggle:not(:disabled):not(.disabled):active:focus,
-.dropdown-toggle:not(:disabled):not(.disabled).active:focus,
-.show > .dropdown-toggle.dropdown-toggle:focus .hawk-btn-outline-secondary {
+.hawk-dropdown-toggle:not(:disabled):not(.disabled):active:focus,
+.hawk-dropdown-toggle:not(:disabled):not(.disabled).active:focus,
+.show > .hawk-dropdown-toggle.dropdown-toggle:focus .hawk-hawk-btn-outline-secondary {
 	color: $dropdown-toggle;
 }
 
-.dropdown-toggle__text {
+.hawk-dropdown-toggle__text {
 	width: 100%;
 }
 
-.dropdown-item:not(:disabled) {
+.hawk-dropdown-item:not(:disabled) {
 	cursor: pointer;
 }
 
 // Need importants to override styles from js.
-.dropdown--right .dropdown-menu {
+.hawk-dropdown--right .dropdown-menu {
 	transform: none !important;
 	top: 100% !important;
 	left: auto !important;
@@ -30,7 +30,7 @@
 }
 
 // Need importants to override styles from js.
-.dropdown--left .dropdown-menu {
+.hawk-dropdown--left .dropdown-menu {
 	transform: none !important;
 	top: 100% !important;
 	left: 0 !important;
