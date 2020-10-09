@@ -26,7 +26,7 @@ export default () => {
                 state.storeId = value;
             },
             updateConfig(state, value) {
-                state.config = Object.assign({}, state.config, value);
+                state.config = _.merge({}, state.config, value);
             },
             updateResults(state, value) {
                 state.searchOutput = value;

@@ -19,6 +19,11 @@ class HawksearchVue {
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {},
+        searchBoxConfig: {
+            reloadOnEmpty: false,
+            redirectOnEmpty: false,
+            redirectToCurrentPage: false
+        },
         facetConfig: {},
         tabConfig: {
             alwaysOn: true
@@ -262,10 +267,6 @@ class HawksearchVue {
     }
 
     static extendSearchData(searchOutput, pendingSearch, searchParams, callback) {
-        if (searchParams.hasOwnProperty('SearchWithin')) {
-            return false;
-        }
-
         if (!callback) {
             callback = function () { };
         }
@@ -402,18 +403,13 @@ class HawksearchVue {
         }
     }
 
-    static redirectToCurrentPage = false;
-
-    static setRedirectToCurrentPage(enable) {
-        this.redirectToCurrentPage = Boolean(enable);
-    }
-
     static redirectSearch(keyword, store, searchPageUrl) {
         var redirect = new URL(searchPageUrl, location.href);
-
-        redirect.searchParams.set('keyword', keyword);
-
         var config = store.state.config;
+
+        if (keyword) {
+            redirect.searchParams.set('keyword', keyword);
+        }
 
         if (config.indexName) {
             redirect.searchParams.set('indexName', config.indexName);
@@ -425,7 +421,9 @@ class HawksearchVue {
             }
         }
 
-        location.assign(redirect.href);
+        if (keyword || config.searchBoxConfig.redirectOnEmpty) {
+            location.assign(redirect.href);
+        }
     }
 
     static paramWhitelist = ['CustomUrl']

@@ -31,23 +31,24 @@
             }
         },
         methods: {
+            search: function () {
+                this.cancelSuggestions();
+
+                var searchBoxConfig = this.$root.$store.state.config.searchBoxConfig;
+
+                if (this.searchPage && (this.searchPage != location.pathname || searchBoxConfig.redirectToCurrentPage)) {
+                    HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
+                }
+                else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
+                    this.keywordEnter = this.keyword;
+                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
+                }
+            },
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
-                    this.cancelSuggestions();
-
-                    if (this.keyword) {
-                        this.keywordEnter = this.keyword;
-
-                        if (this.searchPage && (this.searchPage != location.pathname || HawksearchVue.redirectToCurrentPage)) {
-                            HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
-                        }
-                        else {
-                            this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword, FacetSelections: {} });
-                        }
-
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
+                    this.search();
+                    e.stopPropagation();
+                    e.preventDefault();
                 }
             },
             onInput: function (e) {
