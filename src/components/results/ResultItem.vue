@@ -43,7 +43,8 @@
                 'searchOutput'
             ]),
             ...mapGetters([
-                'getResponseField'
+                'getResponseField',
+                'getConfig'
             ])
         },
         methods: {
@@ -52,6 +53,10 @@
                     this.result.Document &&
                     this.result.Document[fieldName] &&
                     this.result.Document[fieldName].length) {
+
+                    if(this.getConfig && this.getConfig.language) {
+                        fieldName += `_${this.getConfig.language}`;
+                    }
 
                     return this.result.Document[fieldName][0];
                 }
