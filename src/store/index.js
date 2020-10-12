@@ -19,7 +19,8 @@ export default () => {
             searchError: false,
             loadingResults: false,
             loadingSuggestions: false,
-            waitingForInitialSearch: true
+            waitingForInitialSearch: true,
+            trackEvent: null
         },
         mutations: {
             setStoreId(state, value) {
@@ -51,6 +52,9 @@ export default () => {
             },
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
+            },
+            setTrackEvent(state, value) {
+                state.trackEvent = value;
             }
         },
         actions: {
@@ -67,7 +71,17 @@ export default () => {
 
                     if (searchOutput) {
                         commit('setSearchError', false);
+
+                        var prevResults = _.clone(state.searchOutput);
+
                         commit('updateResults', searchOutput);
+
+                        if (state.trackEvent) {
+                            state.trackEvent.track('searchtracking', {
+                                trackingId: searchOutput.TrackingId,
+                                typeId: state.trackEvent.getSearchType(pendingSearch, prevResults)
+                            });
+                        }
 
                         HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);

@@ -50,6 +50,17 @@
         },
         methods: {
             onItemSeleted: function (item) {
+                var trackEvent = HawksearchVue.getTrackEvent(this);
+
+                if (trackEvent) {
+                    trackEvent.track('autocompleteclick', {
+                        keyword: this.$parent.keyword,
+                        suggestType: 3,
+                        name: item.ProductName,
+                        url: item.Url,
+                    });
+                }
+
                 location.assign(item.Url);
             }
         },

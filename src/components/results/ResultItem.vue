@@ -65,8 +65,18 @@
                     console.log('Property parsing to JSON failed');
                 }
             },
-            onClick: function () {
+            onClick: function (e) {
                 var link = this.absoluteUrl(this.getField(this.linkField));
+
+                var trackEvent = HawksearchVue.getTrackEvent(this);
+
+                if (trackEvent) {
+                    trackEvent.track('click', {
+                        event: e,
+                        uniqueId: this.result.DocId,
+                        trackingId: this.getResponseField('TrackingId')
+                    });
+                }
 
                 if (link) {
                     location.assign(link);
