@@ -1,12 +1,24 @@
 import { createBrowserHistory } from 'History';
 
-const allowedParams = ["keyword", "sort", "pg", "lp", "PageId", "lpurl", "mpp", "searchWithin", "is100Coverage", "indexName"];
+const allowedParams = [
+	"keyword",
+	"sort",
+	"pg",
+	"lp",
+	"PageId",
+	"lpurl",
+	"mpp",
+	"searchWithin",
+	"is100Coverage",
+	"indexName",
+	"language"
+];
 
 export function parseSearchQueryString(search) {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language, ...facetSelections } = queryObj;
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
@@ -21,7 +33,8 @@ export function parseSearchQueryString(search) {
 		SearchWithin: searchWithin,
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,
-		IndexName: indexName
+		IndexName: indexName,
+		Language: language
 	};
 }
 
