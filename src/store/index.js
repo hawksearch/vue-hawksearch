@@ -136,6 +136,9 @@ export default () => {
             }
         },
         getters: {
+            getConfig(state){
+                return state.config;
+            },
             getResponseField: (state) => (fieldName) => {
                 var responseFields = fieldName.split('.');
                 responseFields.reverse();

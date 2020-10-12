@@ -43,11 +43,16 @@
                 'searchOutput'
             ]),
             ...mapGetters([
-                'getResponseField'
+                'getResponseField',
+                'getConfig'
             ])
         },
         methods: {
             getField: function (fieldName) {
+                if (this.getConfig && this.getConfig.language) {
+                    fieldName += `_${this.getConfig.language}`;
+                }
+                
                 if (this.result &&
                     this.result.Document &&
                     this.result.Document[fieldName] &&

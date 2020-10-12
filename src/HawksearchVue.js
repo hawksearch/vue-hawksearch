@@ -29,7 +29,8 @@ class HawksearchVue {
         facetConfig: {},
         tabConfig: {
             alwaysOn: true
-        }
+        },
+        language: null
     }
 
     static storeInstances = {}
@@ -146,7 +147,16 @@ class HawksearchVue {
             store.commit('updateConfig', config);
         }
 
-        store.dispatch('fetchResults', parseSearchQueryString(location.search));
+        var searchParams = parseSearchQueryString(location.search);
+        var language = searchParams['Language'];
+        delete searchParams['Language'];
+        if (language) {
+            var config = Object.assign({}, store.state.config);
+            config.language = language;
+            store.commit('updateConfig', config);
+        }
+        
+        store.dispatch('fetchResults', searchParams);
     }
 
     static fetchResults(searchParams, store, callback) {
