@@ -1,7 +1,7 @@
 <template>
     <div v-if="facet" class="hawk-preview__results_tabs">
         <ul class="nav nav-tabs">
-            <li v-for="tab in tabs" :class="tabClasses(tab)" @click="onClick(tab)">
+            <li v-for="tab in tabs" :key="tab.Value" :class="tabClasses(tab)" @click="onClick(tab)">
                 <a class="nav-link">{{ tab.Label }}</a>
             </li>
         </ul>
