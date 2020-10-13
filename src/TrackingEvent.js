@@ -303,8 +303,6 @@ class TrackingEvent {
                 ClientGuid: this.clientGUID,
                 VisitId: visitId,
                 VisitorId: visitorId,
-                // TrackingProperties: hs.Context,
-                // CustomDictionary: hs.Context.Custom,
             },
             data
         );
@@ -314,12 +312,9 @@ class TrackingEvent {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(pl),
         })
-            .then(resp => {
-                //console.log('Success:', resp.status);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        .catch(error => {
+            console.error('Error:', error);
+        }); 
     }
 
     track(eventName, args) {
@@ -329,39 +324,38 @@ class TrackingEvent {
 
         switch (eventName.toLowerCase()) {
             case 'pageload':
-                // HawkSearch.Context.add("uniqueid", "123456789");
                 return this.writePageLoad(args.pageType);
+
             case 'searchtracking':
-                // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
-                // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Refinement});
-                return this.writeSearchTracking(args.trackingId, args.typeId); // CHANGED
+                return this.writeSearchTracking(args.trackingId, args.typeId);
+
             case 'click':
-                // HawkSearch.Tracking.track('click',{event: e, uniqueId: "33333", trackingId: "75a0801a-a93c-4bcb-81f1-f4b011f616e3"});
-                return this.writeClick(args.event, args.uniqueId, args.trackingId, ''); // CHANGED
+                return this.writeClick(args.event, args.uniqueId, args.trackingId, '');
+
             case 'bannerclick':
-                // HawkSearch.Tracking.track('bannerclick',{bannerId: 1, campaignId: 2, trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
-                return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId); // CHANGED
+                return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId);
+
             case 'bannerimpression':
-                // HawkSearch.Tracking.track('bannerimpression',{bannerId: "2", campaignId: "2", trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
-                return this.writeBannerImpression(args.bannerId, args.campaignId, args.trackingId); // CHANGED
+                return this.writeBannerImpression(args.bannerId, args.campaignId, args.trackingId);
+
             case 'sale':
-                // HawkSearch.Tracking.track('sale', {orderNo: 'order_123',itemList: [{uniqueid: '123456789', itemPrice: 12.99, quantity: 2}], total: 25.98, subTotal: 22, tax: 3.98, currency: 'USD'});
                 return this.writeSale(args.orderNo, args.itemList, args.total, args.subTotal, args.tax, args.currency);
+
             case 'add2cart':
-                // HawkSearch.Tracking.track('add2cart',{uniqueId: '123456789', price: 19.99, quantity: 3, currency: 'USD'});
                 return this.writeAdd2Cart(args.uniqueId, args.price, args.quantity, args.currency);
+
             case 'add2cartmultiple':
-                // HawkSearch.Tracking.track('add2cartmultiple', [{uniqueId: '123456789',price: 15.97,quantity: 1,currency: 'USD'},{uniqueId: '987465321', price: 18.00, quantity: 1, currency: 'USD'}]);
                 return this.writeAdd2CartMultiple(args);
+
             case 'rate':
-                // HawkSearch.Tracking.track('rate', {uniqueId: '123456789',value: 3.00});
                 return this.writeRate(args.uniqueId, args.value);
+
             case 'recommendationclick':
-                // HawkSearch.Tracking.track('recommendationclick',{uniqueId: "223222", itemIndex: "222", widgetGuid:"2d652a1e-2e05-4414-9d76-51979109f724", requestId:"2d652a1e-2e05-4414-9d76-51979109f724"});
                 return this.writeRecommendationClick(args.widgetGuid, args.uniqueId, args.itemIndex, args.requestId);
+
             case 'autocompleteclick':
-                // HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
-                return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url); // CHANGED
+                return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
+
         }
     }
 }
