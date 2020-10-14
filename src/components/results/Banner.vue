@@ -2,7 +2,9 @@
     <div class="hawk-preview__bannerTop">
         <div class="hawk-preview__banner-container">
             <template v-for="banner in bannerList">
-                <component :is="getBannerType(banner)" :banner="banner"></component>
+                <div @click="clickHandler(banner)">
+                    <component :is="getBannerType(banner)" :banner="banner"></component>
+                </div>
             </template>
         </div>
     </div>
@@ -31,6 +33,24 @@
             }
         },
         methods: {
+            clickHandler: function (banner) {
+                if (this.trackEvent) {
+                    this.trackEvent.track('bannerclick', {
+                        bannerId: banner.BannerId,
+                        campaignId: banner.CampaignId,
+                        trackingId: this.searchOutput.TrackingId,
+                    });
+                }
+            },
+            loadHandler: function (banner) {
+                if (this.trackEvent) {
+                    this.trackEvent.track('bannerimpression', {
+                        bannerId: banner.BannerId,
+                        campaignId: banner.CampaignId,
+                        trackingId: this.searchOutput.TrackingId,
+                    });
+                }
+            },
             getBannerType: function (banner) {
                 switch (banner.ContentType) {
                     case 'image':
@@ -52,7 +72,8 @@
         },
         computed: {
             ...mapState([
-                'searchOutput'
+                'searchOutput',
+                'trackEvent'
             ]),
             bannerList: function () {
                 var items = [];

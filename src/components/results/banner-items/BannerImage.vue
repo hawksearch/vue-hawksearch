@@ -12,7 +12,7 @@
         name: 'banner-image',
         props: ['banner'],
         mounted() {
-
+            this.$parent.loadHandler(this.banner);
         },
         data() {
             return {

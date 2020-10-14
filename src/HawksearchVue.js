@@ -90,6 +90,14 @@ class HawksearchVue {
                 FacetList,
                 Results
             },
+            mounted() {
+                try {
+                    if (store.state.trackEvent) {
+                        store.state.trackEvent.track('pageload', { pageType: config.additionalParameters.CustomUrl ? 'landing' : 'custom' });
+                    }
+                }
+                catch (e) { }
+            },
             computed: {
                 ...mapState([
                     'searchOutput',

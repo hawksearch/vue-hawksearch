@@ -32,6 +32,34 @@ const SearchType = {
     Refinement: 2
 }
 
+const TrackEventNameMapping = {
+    'Click': 'click',
+    'Cart': '',
+    'CopyRequestTracking': '',
+    'RequestTracking': '',
+    'Search': 'searchtracking',
+    'Sale': 'sale',
+    'RecommendationImpression': '',
+    'RecommendationClick': 'recommendationclick',
+    'Rate': 'rate',
+    'PageLoad': 'pageload',
+    'Identify': '',
+    'BannerImpression': 'bannerimpression',
+    'BannerClick': 'bannerclick',
+    'AutocompleteClick': 'autocompleteclick',
+    'Add2CartMultiple': 'add2cartmultiple',
+    'Add2Cart': 'add2cart'
+}
+
+const AvailableEvents = [
+    'click',
+    'pageload',
+    'searchtracking',
+    'autocompleteclick',
+    'bannerclick',
+    'bannerimpression'
+]
+
 class TrackingEvent {
     trackingURL;
     clientGUID;
@@ -39,6 +67,7 @@ class TrackingEvent {
     constructor(config) {
         this.trackingURL = config.trackEventUrl;
         this.clientGUID = config.clientGuid;
+        this.trackConfig = config.trackConfig;
     }
 
     getVisitorExpiry() {
@@ -318,7 +347,7 @@ class TrackingEvent {
     }
 
     track(eventName, args) {
-        if (!this.trackingURL || !this.clientGUID) {
+        if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
             return;
         }
 
@@ -357,6 +386,10 @@ class TrackingEvent {
                 return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
 
         }
+    }
+
+    isEnabled(eventName) {
+        return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(e => TrackEventNameMapping[e] == eventName)));
     }
 }
 
