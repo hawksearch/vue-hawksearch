@@ -24,7 +24,7 @@
         name: 'banner-featured',
         props: ['banner'],
         mounted() {
-
+            this.$parent.loadHandler(this.banner);
         },
         data() {
             return {

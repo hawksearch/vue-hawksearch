@@ -5,6 +5,7 @@ import { parseSearchQueryString } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
+import TrackingEvent from './TrackingEvent';
 
 var _ = require('lodash');
 
@@ -16,6 +17,7 @@ class HawksearchVue {
         autocompleteUrl: '/api/autocomplete',
         dashboardUrl: '',
         websiteUrl: location.origin,
+        trackEventUrl: null,
         indexName: null,
         indexNameRequired: false,
         additionalParameters: {},
@@ -62,6 +64,7 @@ class HawksearchVue {
 
             store.commit('updateConfig', appliedConfig);
             store.commit('setStoreId', storeId);
+            store.commit('setTrackEvent', this.createTrackEvent(appliedConfig));
 
             this.storeInstances[storeId] = store;
         }
@@ -86,6 +89,14 @@ class HawksearchVue {
                 SearchBox,
                 FacetList,
                 Results
+            },
+            mounted() {
+                try {
+                    if (store.state.trackEvent) {
+                        store.state.trackEvent.track('pageload', { pageType: config.additionalParameters.CustomUrl ? 'landing' : 'custom' });
+                    }
+                }
+                catch (e) { }
             },
             computed: {
                 ...mapState([
@@ -462,6 +473,22 @@ class HawksearchVue {
         var config = store.state.config;
         var url = new URL(path, config.websiteUrl);
         return url.href;
+    }
+
+    static createTrackEvent(config) {
+        var trackEvent;
+
+        if (config.trackEventUrl) {
+            trackEvent = new TrackingEvent(config);
+        }
+
+        return trackEvent;
+    }
+
+    static getTrackEvent(component) {
+        if (component && component.$root && component.$root.$store) {
+            return component.$root.$store.state.trackEvent;
+        }
     }
 
 }

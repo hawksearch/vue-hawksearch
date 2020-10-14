@@ -40,17 +40,18 @@
         },
         computed: {
             ...mapState([
-                'searchOutput'
+                'searchOutput',
+                'config',
+                'trackEvent'
             ]),
             ...mapGetters([
-                'getResponseField',
-                'getConfig'
+                'getResponseField'
             ])
         },
         methods: {
             getField: function (fieldName) {
-                if (this.getConfig && this.getConfig.language) {
-                    fieldName += `_${this.getConfig.language}`;
+                if (this.config && this.config.language) {
+                    fieldName += `_${this.config.language}`;
                 }
                 
                 if (this.result &&
@@ -70,8 +71,16 @@
                     console.log('Property parsing to JSON failed');
                 }
             },
-            onClick: function () {
+            onClick: function (e) {
                 var link = this.absoluteUrl(this.getField(this.linkField));
+
+                if (this.trackEvent) {
+                    this.trackEvent.track('click', {
+                        event: e,
+                        uniqueId: this.result.DocId,
+                        trackingId: this.getResponseField('TrackingId')
+                    });
+                }
 
                 if (link) {
                     location.assign(link);
