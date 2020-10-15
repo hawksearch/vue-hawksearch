@@ -19,8 +19,9 @@
         },
         mounted() {
             this.$root.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
-                this.selectAutocorrectSuggestion(selectedSuggestion)
-            });
+                this.keyword = selectedSuggestion;
+                this.search();
+            })
         },
         data() {
             return {
@@ -88,10 +89,6 @@
                 HawksearchVue.cancelSuggestionsRequest();
                 this.$root.$store.commit('updateLoadingSuggestions', false);
                 this.$root.$store.commit('updateSuggestions', null);
-            },
-            selectAutocorrectSuggestion: function (selectedSuggestion) {
-                this.keyword = selectedSuggestion;
-                this.search();
             }
         },
         computed: {
