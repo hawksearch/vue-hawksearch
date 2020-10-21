@@ -18,7 +18,10 @@
             SearchSuggestions
         },
         mounted() {
-
+            this.$root.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
+                this.keyword = selectedSuggestion;
+                this.search();
+            })
         },
         data() {
             return {
