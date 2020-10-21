@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-autocorrect-suggestion-container">
+    <div class="hawk-autocorrect-suggestion-container" v-if="searchOutput && searchOutput.DidYouMean && searchOutput.DidYouMean.length !== 0">
         <ul class="hawk-autocorrect-suggestion">
             <h3>Did you mean?</h3>
             <li v-for="autocorrectSuggestion in autocorrectSuggestions" :key="autocorrectSuggestion.key"

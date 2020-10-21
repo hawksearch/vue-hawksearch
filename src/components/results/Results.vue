@@ -1,6 +1,6 @@
 <template>
     <div class="hawk-results" @click="onClick">
-        <autocorrect-suggestions v-if="searchOutput && searchOutput.DidYouMean && searchOutput.DidYouMean.length !== 0" />
+        <autocorrect-suggestions />
 
         <search-results-label />
 
