@@ -26,7 +26,6 @@
         },
         methods: {
             selectSuggestion: function(selectedSuggestion) {
-                console.log("autocorrectSuggestion: ", selectedSuggestion)
                 this.$root.$emit('selectAutocorrectSuggestion', selectedSuggestion)
             }
         },
