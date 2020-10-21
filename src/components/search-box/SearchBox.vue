@@ -91,8 +91,16 @@
         computed: {
             ...mapState([
                 'loadingResults',
-                'loadingSuggestions'
+                'loadingSuggestions',
+                'searchOutput'
             ])
+        },
+        watch: {
+            searchOutput (newValue, oldValue) {
+                if (newValue.Keyword && newValue.Keyword.length) {
+                    this.keyword = newValue.Keyword;
+                }
+            }
         }
     }
 
