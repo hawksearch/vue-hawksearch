@@ -1,5 +1,7 @@
 <template>
     <div class="hawk-results" @click="onClick">
+        <autocorrect-suggestions />
+
         <search-results-label />
 
         <banner></banner>
@@ -36,6 +38,7 @@
     import ResultListing from './ResultListing'
     import Banner from './Banner'
     import Tabs from './Tabs'
+    import AutocorrectSuggestions from './AutocorrectSuggestions'
 
     export default {
         name: 'results',
@@ -46,7 +49,8 @@
             ToolRow,
             ResultListing,
             Banner,
-            Tabs
+            Tabs,
+            AutocorrectSuggestions
         },
         mounted() {
 
