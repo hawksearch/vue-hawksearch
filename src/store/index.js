@@ -16,7 +16,6 @@ export default () => {
                 FacetSelections: {}
             },
             extendedSearchParams: {},
-            keywordUrlParam: null,
             searchError: false,
             loadingResults: false,
             loadingSuggestions: false,
@@ -41,9 +40,6 @@ export default () => {
             },
             updateExtendedSearchParams(state, value) {
                 state.extendedSearchParams = value;
-            },
-            updateKeywordUrlParam(state, value) {
-                state.keywordUrlParam = value;
             },
             setSearchError(state, value) {
                 state.searchError = value

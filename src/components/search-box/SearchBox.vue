@@ -92,12 +92,14 @@
             ...mapState([
                 'loadingResults',
                 'loadingSuggestions',
-                'keywordUrlParam'
+                'searchOutput'
             ])
         },
         watch: {
-            keywordUrlParam (newValue, oldValue) {
-                this.keyword = newValue;
+            searchOutput (newValue, oldValue) {
+                if (newValue.Keyword && newValue.Keyword.length) {
+                    this.keyword = newValue.Keyword;
+                }
             }
         }
     }

@@ -190,9 +190,6 @@ class HawksearchVue {
 
         Vue.http.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
-                if (searchParams.Keyword) {
-                    store.commit('updateKeywordUrlParam', searchParams.Keyword);
-                }
                 this.searchResponseDataHandler(response.data, store, callback);
             }
         }, response => {
