@@ -93,7 +93,7 @@ class HawksearchVue {
             mounted() {
                 try {
                     if (store.state.trackEvent) {
-                        store.state.trackEvent.track('pageload', { pageType: config.additionalParameters.CustomUrl ? 'landing' : 'custom' });
+                        store.state.trackEvent.track('pageload', { pageType: (config.additionalParameters && config.additionalParameters.CustomUrl) ? 'landing' : 'custom' });
                     }
                 }
                 catch (e) { }
@@ -488,6 +488,28 @@ class HawksearchVue {
     static getTrackEvent(component) {
         if (component && component.$root && component.$root.$store) {
             return component.$root.$store.state.trackEvent;
+        }
+    }
+
+    static handleLegacyBrowsers(storeState) {
+        if (storeState.searchOutput && this.isIE()) {
+            location.assign(location.href);
+        }
+    }
+
+    static isIE() {
+        var ua = window.navigator.userAgent;
+        var old_ie = ua.indexOf('MSIE ');
+        var new_ie = ua.indexOf('Trident/');
+
+        return ((old_ie > -1) || (new_ie > -1))
+    }
+
+    static loadPolyfills() {
+        if (this.isIE()) {
+            var polyfillElement = document.createElement('script');
+            polyfillElement.setAttribute('src', 'https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch');
+            document.head.appendChild(polyfillElement);
         }
     }
 

@@ -72,8 +72,6 @@
                 }
             },
             onClick: function (e) {
-                var link = this.absoluteUrl(this.getField(this.linkField));
-
                 if (this.trackEvent) {
                     this.trackEvent.track('click', {
                         event: e,
@@ -82,9 +80,14 @@
                     });
                 }
 
-                if (link) {
-                    location.assign(link);
+                try {
+                    var link = this.absoluteUrl(this.getField(this.linkField));
+
+                    if (link) {
+                        location.assign(link);
+                    }
                 }
+                catch (error) { }
             },
             absoluteUrl: function (url) {
                 var store = this.$root.$store;

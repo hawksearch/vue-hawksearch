@@ -65,6 +65,7 @@ export default () => {
                 commit('updateLoadingSuggestions', false);
                 commit('updateLoadingResults', true);
                 updateUrl(state);
+                HawksearchVue.handleLegacyBrowsers(state);
 
                 HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
                     commit('updateLoadingResults', false);
