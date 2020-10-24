@@ -30,6 +30,10 @@ class HawksearchVue {
         tabConfig: {
             alwaysOn: true
         },
+        urlUpdate: { 
+            enabled: true, 
+            parameters: null 
+        },
         language: null
     }
 
