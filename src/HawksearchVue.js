@@ -228,7 +228,7 @@ class HawksearchVue {
             return false;
         }
 
-        if (autocompleteCancelation != undefined) {
+        if (autocompleteCancelation) {
             autocompleteCancelation();
         }
 
@@ -249,7 +249,6 @@ class HawksearchVue {
         .catch(function (thrown) {
             if (axios.isCancel(thrown)) {
                 autocompleteCancelation = null;
-                console.log('Autocomplete request canceled');
             }
         })
         .then(response => {
