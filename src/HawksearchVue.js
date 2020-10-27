@@ -9,6 +9,8 @@ import TrackingEvent from './TrackingEvent';
 
 var _ = require('lodash');
 var axios = require('axios').default;
+var autocompleteCancelation;
+const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
     static config = {
@@ -226,6 +228,10 @@ class HawksearchVue {
             return false;
         }
 
+        if (autocompleteCancelation != undefined) {
+            autocompleteCancelation();
+        }
+
         if (!callback) {
             callback = function () { };
         }
@@ -233,17 +239,21 @@ class HawksearchVue {
         if (!searchParams) {
             searchParams = {};
         }
-
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
         axios.post(this.getFullAutocompleteUrl(store), params, {
-            before(request) {
-                // TOOD: Fix scope
-                HawksearchVue.cancelSuggestionsRequest();
-                HawksearchVue.suggestionRequest = request;
+            cancelToken: new CancelToken(function executor(c) {
+                autocompleteCancelation = c;
+            }),
+        })
+        .catch(function (thrown) {
+            if (axios.isCancel(thrown)) {
+                autocompleteCancelation = null;
+                console.log('Autocomplete request canceled');
             }
-        }).then(response => {
-            if (response.status == '200' && response.data) {
+        })
+        .then(response => {
+            if (response && response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
@@ -258,15 +268,6 @@ class HawksearchVue {
         if (this.suggestionRequest) {
             this.suggestionRequest.abort();
         }
-    }
-
-    static sanitizeParams(params) {
-        // Check for specific edge cases
-        if (params.hasOwnProperty('Keyword') && params.hasOwnProperty('CustomUrl')) {
-            delete params.CustomUrl;
-        }
-
-        return params
     }
 
     static requestConditionsMet(store) {
