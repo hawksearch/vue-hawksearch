@@ -30,6 +30,10 @@ class HawksearchVue {
         tabConfig: {
             alwaysOn: true
         },
+        urlUpdate: { 
+            enabled: true, 
+            parameters: null 
+        },
         language: null
     }
 
@@ -488,12 +492,6 @@ class HawksearchVue {
     static getTrackEvent(component) {
         if (component && component.$root && component.$root.$store) {
             return component.$root.$store.state.trackEvent;
-        }
-    }
-
-    static handleLegacyBrowsers(storeState) {
-        if (storeState.searchOutput && this.isIE()) {
-            location.assign(location.href);
         }
     }
 

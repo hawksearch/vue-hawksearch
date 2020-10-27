@@ -40,7 +40,7 @@ export function parseSearchQueryString(search) {
 
 export function updateUrl(state) {
 	const history = createBrowserHistory();
-	if (!state.waitingForInitialSearch) {
+	if (state.config.urlUpdate.enabled && !state.waitingForInitialSearch) {
 		history.push({
 			search: getSearchQueryString(state.pendingSearch),
 		});
