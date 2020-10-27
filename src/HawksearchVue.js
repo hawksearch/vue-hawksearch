@@ -495,12 +495,6 @@ class HawksearchVue {
         }
     }
 
-    static handleLegacyBrowsers(storeState) {
-        if (storeState.searchOutput && this.isIE()) {
-            location.assign(location.href);
-        }
-    }
-
     static isIE() {
         var ua = window.navigator.userAgent;
         var old_ie = ua.indexOf('MSIE ');
