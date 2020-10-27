@@ -8,6 +8,7 @@ import Results from './components/results/Results.vue';
 import TrackingEvent from './TrackingEvent';
 
 var _ = require('lodash');
+var axios = require('axios').default;
 
 class HawksearchVue {
     static config = {
@@ -191,8 +192,7 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
-
-        Vue.http.post(this.getFullSearchUrl(store), params).then(response => {
+        axios.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
                 this.searchResponseDataHandler(response.data, store, callback);
             }
@@ -236,8 +236,7 @@ class HawksearchVue {
 
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
-
-        Vue.http.post(this.getFullAutocompleteUrl(store), params, {
+        axios.post(this.getFullAutocompleteUrl(store), params, {
             before(request) {
                 // TOOD: Fix scope
                 HawksearchVue.cancelSuggestionsRequest();
@@ -271,11 +270,6 @@ class HawksearchVue {
     }
 
     static requestConditionsMet(store) {
-        if (!Vue.http) {
-            console.error("Vue http missing");
-            return false;
-        }
-
         if (!store) {
             console.error("Store instance not supplied");
             return false;
