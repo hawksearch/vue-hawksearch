@@ -141,6 +141,12 @@ export default () => {
 
                 commit('updatePendingSearch', pendingSearch);
                 dispatch('fetchResults', {});
+            },
+            updateStore({ commit, state }, attachedConfig) {
+                if (attachedConfig && state.trackEvent) {
+                    var mergedConfig = HawksearchVue.mergeConfig(attachedConfig, state.config);
+                    commit('setTrackEvent', HawksearchVue.createTrackEvent(mergedConfig));
+                }
             }
         },
         getters: {

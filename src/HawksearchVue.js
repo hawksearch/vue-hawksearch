@@ -52,8 +52,9 @@ class HawksearchVue {
         store.commit('updateConfig', appliedConfig);
         store.commit('setStoreId', storeId);
 
-        // TODO: Refactor track events
-        //store.commit('setTrackEvent', this.createTrackEvent(appliedConfig));
+        // Create a tracking event dedicated to the store
+        // It is used only for request specific tracking (i.e. 'Search')
+        store.commit('setTrackEvent', this.createTrackEvent(appliedConfig));
 
         this.storeInstances[storeId] = store;
 
@@ -69,6 +70,10 @@ class HawksearchVue {
         // This is the base create sequence
         if (!store) {
             store = this.generateStoreInstance(config);
+        }
+        // If store instance is avalable, update partially it with the new config
+        else if (config) {
+            store.dispatch('updateStore', config);
         }
 
         // If the store is passed as a create argument the config is anyway attached to the widget
@@ -537,6 +542,21 @@ class HawksearchVue {
                 store.dispatch('applyFacets', facetData);
             }
         }
+    }
+
+    static mergeConfig(configA, configB) {
+        var a = _.cloneDeep(configA);
+        var b = _.cloneDeep(configB);
+
+        var mergedConfig = _.merge({}, a, b);
+
+        Object.keys(mergedConfig).forEach((key) => {
+            if (_.isArray(mergedConfig[key]) && a[key] && _.isArray(a[key]) && b[key] && _.isArray(b[key])) {
+                mergedConfig[key] = _.union(a[key], b[key]);
+            }
+        });
+
+        return mergedConfig
     }
 
 }
