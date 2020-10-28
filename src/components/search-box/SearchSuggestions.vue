@@ -50,10 +50,8 @@
         },
         methods: {
             onItemSeleted: function (item) {
-                var trackEvent = HawksearchVue.getTrackEvent(this);
-
-                if (trackEvent) {
-                    trackEvent.track('autocompleteclick', {
+                if (this.trackEvent) {
+                    this.trackEvent.track('autocompleteclick', {
                         keyword: this.$parent.keyword,
                         suggestType: 3,
                         name: item.ProductName,
@@ -68,7 +66,10 @@
             ...mapState([
                 'suggestions',
                 'loadingSuggestions'
-            ])
+            ]),
+            trackEvent: function () {
+                return this.$root.trackEvent;
+            }
         }
     }
 

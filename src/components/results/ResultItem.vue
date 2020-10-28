@@ -40,12 +40,14 @@
         },
         computed: {
             ...mapState([
-                'searchOutput',
-                'trackEvent'
+                'searchOutput'
             ]),
             ...mapGetters([
                 'getResponseField'
-            ])
+            ]),
+            trackEvent: function () {
+                return this.$root.trackEvent;
+            }
         },
         methods: {
             getField: function (fieldName) {

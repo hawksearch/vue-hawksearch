@@ -66,34 +66,42 @@ export default () => {
                 commit('updateLoadingResults', true);
                 updateUrl(state);
 
-                HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
-                    commit('updateLoadingResults', false);
+                return new Promise((resolve, reject) => {
+                    HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
+                        commit('updateLoadingResults', false);
 
-                    if (searchOutput) {
-                        commit('setSearchError', false);
+                        if (searchOutput) {
+                            commit('setSearchError', false);
 
-                        var prevResults = _.clone(state.searchOutput);
+                            var prevResults = _.clone(state.searchOutput);
 
-                        commit('updateResults', searchOutput);
+                            commit('updateResults', searchOutput);
 
-                        if (state.trackEvent) {
-                            state.trackEvent.track('searchtracking', {
-                                trackingId: searchOutput.TrackingId,
-                                typeId: state.trackEvent.getSearchType(pendingSearch, prevResults)
+                            //if (state.trackEvent) {
+                            //    state.trackEvent.track('searchtracking', {
+                            //        trackingId: searchOutput.TrackingId,
+                            //        typeId: state.trackEvent.getSearchType(pendingSearch, prevResults)
+                            //    });
+                            //}
+
+                            HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
+                                commit('updateExtendedSearchParams', extendedSearchParams);
+
+                                resolve()
                             });
                         }
+                        else if (error) {
+                            commit('updateResults', null);
+                            commit('setSearchError', true);
 
-                        HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
-                            commit('updateExtendedSearchParams', extendedSearchParams);
-                        });
-                    }
-                    else if (error) {
-                        commit('updateResults', null);
-                        commit('setSearchError', true);
-                    }
-                    else {
-                        commit('updateResults', null);
-                    }
+                            reject()
+                        }
+                        else {
+                            commit('updateResults', null);
+
+                            reject()
+                        }
+                    });
                 });
             },
             fetchSuggestions({ commit, state }, searchParams) {
