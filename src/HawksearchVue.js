@@ -230,6 +230,7 @@ class HawksearchVue {
 
         if (autocompleteCancelation) {
             autocompleteCancelation();
+            autocompleteCancelation = null;
         }
 
         if (!callback) {
@@ -239,26 +240,21 @@ class HawksearchVue {
         if (!searchParams) {
             searchParams = {};
         }
+
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
         axios.post(this.getFullAutocompleteUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
                 autocompleteCancelation = c;
             }),
-        })
-        .catch(function (thrown) {
-            if (axios.isCancel(thrown)) {
-                autocompleteCancelation = null;
-            }
-        })
-        .then(response => {
+        }).catch(function (thrown) {
+        }).then(response => {
             if (response && response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
             callback(false);
         });
-
     }
 
     static suggestionRequest = null
