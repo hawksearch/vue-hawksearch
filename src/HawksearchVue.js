@@ -30,9 +30,9 @@ class HawksearchVue {
         tabConfig: {
             alwaysOn: true
         },
-        urlUpdate: { 
-            enabled: true, 
-            parameters: null 
+        urlUpdate: {
+            enabled: true,
+            parameters: null
         },
         language: null
     }
@@ -85,6 +85,10 @@ class HawksearchVue {
             store = this.getStoreInstance(config);
         }
 
+        if (!config) {
+            config = _.cloneDeep(this.config);
+        }
+
         return new Vue({
             el,
             store,
@@ -110,13 +114,8 @@ class HawksearchVue {
                     'searchOutput',
                     'pendingSearch'
                 ]),
-                configIsStoreSynced: function () {
-                    if (this.appliedConfig && this.$store && this.$store.state.config) {
-                        return _.isEqual(this.appliedConfig, this.$store.state.config);
-                    }
-                },
                 config: function () {
-                    return this.configIsStoreSynced() ? this.$store.state.config : this.appliedConfig;
+                    return _.merge({}, this.$store.state.config, this.appliedConfig)
                 }
             },
             watch: {
@@ -178,7 +177,7 @@ class HawksearchVue {
             config.language = language;
             store.commit('updateConfig', config);
         }
-        
+
         store.dispatch('fetchResults', searchParams);
     }
 
