@@ -113,7 +113,7 @@ export default () => {
                 dispatch('fetchResults', { PageNo: value });
             },
             applyPageSize({ dispatch, commit, state }, value) {
-                dispatch('fetchResults', { MaxPerPage: value });
+                dispatch('fetchResults', { MaxPerPage: value, PageNo: 1 });
             },
             applySort({ dispatch, commit, state }, value) {
                 dispatch('fetchResults', { SortBy: value });
