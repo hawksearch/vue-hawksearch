@@ -102,11 +102,22 @@ class HawksearchVue {
                 }
                 catch (e) { }
             },
+            data: {
+                appliedConfig: config
+            },
             computed: {
                 ...mapState([
                     'searchOutput',
                     'pendingSearch'
-                ])
+                ]),
+                configIsStoreSynced: function () {
+                    if (this.appliedConfig && this.$store && this.$store.state.config) {
+                        return _.isEqual(this.appliedConfig, this.$store.state.config);
+                    }
+                },
+                config: function () {
+                    return this.configIsStoreSynced() ? this.$store.state.config : this.appliedConfig;
+                }
             },
             watch: {
                 searchOutput: function (n, o) {

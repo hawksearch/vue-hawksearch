@@ -37,7 +37,7 @@
             search: function () {
                 this.cancelSuggestions();
 
-                var searchBoxConfig = this.$root.$store.state.config.searchBoxConfig;
+                var searchBoxConfig = this.$root.config.searchBoxConfig;
 
                 if (this.searchPage && (this.searchPage != location.pathname || searchBoxConfig.redirectToCurrentPage)) {
                     HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
