@@ -247,7 +247,6 @@ class HawksearchVue {
             cancelToken: new CancelToken(function executor(c) {
                 autocompleteCancelation = c;
             }),
-        }).catch(function (thrown) {
         }).then(response => {
             if (response && response.status == '200' && response.data) {
                 callback(response.data);
