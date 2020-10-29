@@ -8,6 +8,9 @@ import Results from './components/results/Results.vue';
 import TrackingEvent from './TrackingEvent';
 
 var _ = require('lodash');
+var axios = require('axios').default;
+var autocompleteCancelation;
+const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
     static config = {
@@ -191,8 +194,7 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
-
-        Vue.http.post(this.getFullSearchUrl(store), params).then(response => {
+        axios.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
                 this.searchResponseDataHandler(response.data, store, callback);
             }
@@ -226,6 +228,11 @@ class HawksearchVue {
             return false;
         }
 
+        if (autocompleteCancelation) {
+            autocompleteCancelation();
+            autocompleteCancelation = null;
+        }
+
         if (!callback) {
             callback = function () { };
         }
@@ -236,21 +243,17 @@ class HawksearchVue {
 
         var config = store.state.config;
         var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
-
-        Vue.http.post(this.getFullAutocompleteUrl(store), params, {
-            before(request) {
-                // TOOD: Fix scope
-                HawksearchVue.cancelSuggestionsRequest();
-                HawksearchVue.suggestionRequest = request;
-            }
+        axios.post(this.getFullAutocompleteUrl(store), params, {
+            cancelToken: new CancelToken(function executor(c) {
+                autocompleteCancelation = c;
+            }),
         }).then(response => {
-            if (response.status == '200' && response.data) {
+            if (response && response.status == '200' && response.data) {
                 callback(response.data);
             }
         }, response => {
             callback(false);
         });
-
     }
 
     static suggestionRequest = null
@@ -261,21 +264,7 @@ class HawksearchVue {
         }
     }
 
-    static sanitizeParams(params) {
-        // Check for specific edge cases
-        if (params.hasOwnProperty('Keyword') && params.hasOwnProperty('CustomUrl')) {
-            delete params.CustomUrl;
-        }
-
-        return params
-    }
-
     static requestConditionsMet(store) {
-        if (!Vue.http) {
-            console.error("Vue http missing");
-            return false;
-        }
-
         if (!store) {
             console.error("Store instance not supplied");
             return false;

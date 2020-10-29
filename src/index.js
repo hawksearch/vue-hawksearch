@@ -3,9 +3,6 @@ window.Vue = Vue;
 
 Vue.config.devtools = true;
 
-import VueResource from 'vue-resource';
-Vue.use(VueResource);
-
 import HawksearchVue from "./HawksearchVue";
 window.HawksearchVue = HawksearchVue;
 
