@@ -83,7 +83,7 @@
                 }
                 else {
                     this.clearSearchWithin();
-                    this.$root.$store.dispatch('fetchResults', {});
+                    this.$root.dispatchToStore('fetchResults', {});
                 }
             },
             clearSelectionItem: function (field, item) {
@@ -100,7 +100,7 @@
                 }
                 else {
                     this.clearSearchWithin();
-                    this.$root.$store.dispatch('fetchResults', {});
+                    this.$root.dispatchToStore('fetchResults', {});
                 }
             },
             clearAll: function () {
@@ -123,7 +123,7 @@
 
                 headers.FacetSelections = facetHeaders;
 
-                this.$root.$store.dispatch('fetchResults', headers);
+                this.$root.dispatchToStore('fetchResults', headers);
             },
             getFacetType: function (field) {
                 if (this.searchOutput && this.searchOutput.Facets.length) {

@@ -44,7 +44,7 @@
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
-                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
+                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
                 }
             },
             onKeyDown: function (e) {
@@ -64,7 +64,7 @@
 
                     clearTimeout(this.suggestionDelay);
                     this.suggestionDelay = setTimeout(() => {
-                        this.$root.$store.dispatch('fetchSuggestions', { Keyword: keyword });
+                        this.$root.dispatchToStore('fetchSuggestions', { Keyword: keyword });
                     }, 250);
                 }
                 else {

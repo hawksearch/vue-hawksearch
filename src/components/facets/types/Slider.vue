@@ -135,7 +135,7 @@
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
-                    this.$root.$store.dispatch('applyFacets', facetData);
+                    this.$root.dispatchToStore('applyFacets', facetData);
                 }
             },
             validSelection: function ({ minValue, maxValue }) {

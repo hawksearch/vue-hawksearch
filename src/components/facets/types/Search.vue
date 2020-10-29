@@ -33,13 +33,13 @@
                     var value = event.target.value;
 
                     if (value) {
-                        this.$root.$store.dispatch('applySearchWithin', value);
+                        this.$root.dispatchToStore('applySearchWithin', value);
                     }
                 }
             },
             clearFacet: function () {
                 if (this.searchString) {
-                    this.$root.$store.dispatch('clearFacet', 'SearchWithin');
+                    this.$root.dispatchToStore('clearFacet', 'SearchWithin');
                 }
             }
         },

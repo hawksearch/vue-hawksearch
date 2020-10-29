@@ -77,7 +77,7 @@
                 this.applyFacets();
             },
             applyFacets: function () {
-                this.$root.$store.dispatch('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData);
             },
             clearSelections: function (exception) {
                 if (this.getCheckboxType() == 'single') {

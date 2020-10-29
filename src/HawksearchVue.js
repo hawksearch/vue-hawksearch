@@ -1,7 +1,7 @@
 import HawksearchStore from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
-import { parseSearchQueryString } from './QueryString';
+import { parseSearchQueryString, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
@@ -74,9 +74,9 @@ class HawksearchVue {
         if (!store) {
             store = this.generateStoreInstance(config);
         }
-        // If store instance is avalable, update partially it with the new config
+        // If store instance is avalable, update it with the new config
         else if (config) {
-            store.dispatch('updateStore', config);
+            store.dispatch('updateConfig', config);
         }
 
         // If the store is passed as a create argument the config is anyway attached to the widget
@@ -126,6 +126,34 @@ class HawksearchVue {
                 },
                 pendingSearch: function (n, o) {
                     this.$emit('searchupdate', n);
+                }
+            },
+            methods: {
+                dispatchToStore: function (action, params) {
+                    this.$store.dispatch(action, params).then(() => {
+                        var trackingActions = [
+                            'fetchResults',
+                            'applyFacets',
+                            'applyPageNumber',
+                            'applyPageSize',
+                            'applySort',
+                            'applySearchWithin',
+                            'clearFacet',
+                        ];
+
+                        if (trackingActions.includes(action)) {
+                            var storeState = this.$store.state;
+
+                            updateUrl(storeState, this);
+
+                            if (this.trackEvent) {
+                                this.trackEvent.track('searchtracking', {
+                                    trackingId: storeState.searchOutput.TrackingId,
+                                    typeId: this.trackEvent.getSearchType(storeState.pendingSearch, storeState.prevSearchOutput)
+                                });
+                            }
+                        }
+                    });
                 }
             }
         });

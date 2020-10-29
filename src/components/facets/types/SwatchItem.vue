@@ -51,7 +51,7 @@
                 this.applyFacets();
             },
             applyFacets: function () {
-                this.$root.$store.dispatch('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData);
             }
         },
         computed: {

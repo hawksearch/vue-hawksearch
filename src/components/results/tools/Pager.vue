@@ -47,7 +47,7 @@
             },
             goToPage: function (page) {
                 if (page >= 1 && page <= this.totalPages) {
-                    this.$root.$store.dispatch('applyPageNumber', page);
+                    this.$root.dispatchToStore('applyPageNumber', page);
                 }
             }
         },
