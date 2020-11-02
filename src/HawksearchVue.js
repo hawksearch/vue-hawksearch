@@ -55,37 +55,59 @@ class HawksearchVue {
         store.commit('updateConfig', appliedConfig);
         store.commit('setStoreId', storeId);
 
-        // Create a tracking event dedicated to the store
-        // It is used only for request specific tracking (i.e. 'Search')
-        store.commit('setTrackEvent', this.createTrackEvent(appliedConfig));
-
         this.storeInstances[storeId] = store;
+
+        console.info("Created store, id: " + storeId);
 
         return store;
     }
 
+    /**
+     * Creates the widget instance
+     * This widget is the wrapping entity that holds all the structural logic
+     * @param {HTMLElement} / @param {String} el The target element on which the widget is rendered
+     * @param {Object} param1 Object containing the config object or/and Vuex store instance
+     *      
+     *      Examples:
+     *          1. HawksearchVue.createWidget(el, { config }): The most basic instance initialization.
+     *          It creates a Vue widget based on the passed config object. The config object is initially enriched with
+     *          the default values if they are missing. A store instance is created to manage the data handling.
+     *          
+     *          2. HawksearchVue.createWidget(el, { config, store }): This construct also creates a widget instance, but 
+     *          instead of creating a store instance, attaches the one provided. The provided store instance is retrivied
+     *          from another widget. This way the two or more widgets are using the same data layer and all data driven
+     *          actions are performed on all of them. The provided config object ensures that all widget specific 
+     *          handling is managed separetely from other synchronized widges.
+     *          
+     *          3. HawksearchVue.createWidget(el, { store }): An edge case of Ex. 2. The created widget is fully synchronized
+     *          with the provided data layer. It doesn't have specific context and behavior.
+     */
     static createWidget(el, { config, store }) {
         if (!el || (!config && !store)) {
             return false;
         }
 
+        var widgetId = this.getUniqueIdentifier();
+
         // Generate a store instance to attach to widget
         // This is the base create sequence
         if (!store) {
+            console.info("Create widget, id: " + widgetId + ", single initialization");
+            // Fill in the default values for the config
+            config = this.mergeConfig(this.defaultConfig, config);
+
             store = this.generateStoreInstance(config);
         }
-        // If store instance is avalable, update it with the new config
+        // If store instance is avalable, update it with the new config, if provided
         else if (config) {
-            store.dispatch('updateConfig', config);
+            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
+            store.commit('updateConfig', config);
         }
-
-        // If the store is passed as a create argument the config is anyway attached to the widget
-        // The default one is used if not provided
-        if (!config) {
-            config = _.cloneDeep(this.defaultConfig);
+        // If the store instance is available, but the config is not, create a default config to keep things consistent
+        else {
+            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
+            config = this.mergeConfig(this.defaultConfig, store.state.config);
         }
-
-        var widgetId = this.getUniqueIdentifier();
 
         var widget = new Vue({
             el,
@@ -99,7 +121,7 @@ class HawksearchVue {
             mounted() {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
-        
+
                     if (this.trackEvent) {
                         this.trackEvent.track('pageload', { pageType: (this.config.additionalParameters && this.config.additionalParameters.CustomUrl) ? 'landing' : 'custom' });
                     }
@@ -117,7 +139,7 @@ class HawksearchVue {
                     'pendingSearch'
                 ]),
                 config: function () {
-                    return _.merge({}, _.cloneDeep(this.$store.state.config), this.appliedConfig)
+                    return _.cloneDeep(this.appliedConfig);
                 }
             },
             watch: {

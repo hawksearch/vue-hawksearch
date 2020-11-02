@@ -41,7 +41,7 @@ export function parseSearchQueryString(search) {
 export function updateUrl(storeState, widget) {
 	const history = createBrowserHistory();
 
-	if (this.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
+	if (widget.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
 		history.push({
 			search: getSearchQueryString(storeState.pendingSearch),
 		});
