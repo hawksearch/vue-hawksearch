@@ -23,6 +23,7 @@ class HawksearchVue {
         trackEventUrl: null,
         indexName: null,
         indexNameRequired: false,
+        language: null,
         additionalParameters: {},
         searchBoxConfig: {
             reloadOnEmpty: false,
@@ -37,7 +38,9 @@ class HawksearchVue {
             enabled: true,
             parameters: null
         },
-        language: null
+        searchConfig: {
+            scrollUpOnRefresh: true
+        }
     }
 
     static widgetInstances = {}
@@ -144,6 +147,7 @@ class HawksearchVue {
             },
             watch: {
                 searchOutput: function (n, o) {
+                    HawksearchVue.scrollToBeginning(this);
                     this.$emit('resultsupdate', n);
                 },
                 pendingSearch: function (n, o) {
@@ -596,6 +600,12 @@ class HawksearchVue {
         });
 
         return mergedConfig
+    }
+
+    static scrollToBeginning(widget) {
+        if (widget.config.searchConfig.scrollUpOnRefresh) {
+            window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
+        }
     }
 
 }
