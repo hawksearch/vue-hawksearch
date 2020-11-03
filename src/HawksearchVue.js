@@ -1,7 +1,7 @@
 import HawksearchStore from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
-import { parseSearchQueryString } from './QueryString';
+import { parseSearchQueryString, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
@@ -13,7 +13,7 @@ var autocompleteCancelation;
 const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
-    static config = {
+    static defaultConfig = {
         clientGuid: '',
         apiUrl: 'https://searchapi-dev.hawksearch.net',
         searchUrl: '/api/v2/search',
@@ -33,12 +33,14 @@ class HawksearchVue {
         tabConfig: {
             alwaysOn: true
         },
-        urlUpdate: { 
-            enabled: true, 
-            parameters: null 
+        urlUpdate: {
+            enabled: true,
+            parameters: null
         },
         language: null
     }
+
+    static widgetInstances = {}
 
     static storeInstances = {}
 
@@ -46,49 +48,68 @@ class HawksearchVue {
         this.addTemplateOverride();
     }
 
-    static getStoreInstance(config) {
-        var store;
-        var storeInstance;
-        var urlParams = this.getUrlParams();
-        var appliedConfig = Object.assign({}, this.config, config);
+    static generateStoreInstance(appliedConfig) {
+        var store = HawksearchStore();
+        var storeId = this.getUniqueIdentifier();
 
-        Object.keys(this.storeInstances).forEach(storeKey => {
-            storeInstance = this.storeInstances[storeKey];
+        store.commit('updateConfig', appliedConfig);
+        store.commit('setStoreId', storeId);
 
-            if (_.isEqual(_.cloneDeep(storeInstance.state.config), _.cloneDeep(appliedConfig))) {
-                store = storeInstance;
-            }
-        });
+        this.storeInstances[storeId] = store;
 
-        if (!store) {
-            store = HawksearchStore();
-            var storeId = this.getUniqueIdentifier();
-
-            // apply the index name if it is not initally configured and available from the URL
-            if (!appliedConfig.indexName && urlParams.get('indexName')) {
-                appliedConfig.indexName = urlParams.get('indexName');
-            }
-
-            store.commit('updateConfig', appliedConfig);
-            store.commit('setStoreId', storeId);
-            store.commit('setTrackEvent', this.createTrackEvent(appliedConfig));
-
-            this.storeInstances[storeId] = store;
-        }
+        console.info("Created store, id: " + storeId);
 
         return store;
     }
 
+    /**
+     * Creates the widget instance
+     * This widget is the wrapping entity that holds all the structural logic
+     * @param {HTMLElement} / @param {String} el The target element on which the widget is rendered
+     * @param {Object} param1 Object containing the config object or/and Vuex store instance
+     *      
+     *      Examples:
+     *          1. HawksearchVue.createWidget(el, { config }): The most basic instance initialization.
+     *          It creates a Vue widget based on the passed config object. The config object is initially enriched with
+     *          the default values if they are missing. A store instance is created to manage the data handling.
+     *          
+     *          2. HawksearchVue.createWidget(el, { config, store }): This construct also creates a widget instance, but 
+     *          instead of creating a store instance, attaches the one provided. The provided store instance is retrivied
+     *          from another widget. This way the two or more widgets are using the same data layer and all data driven
+     *          actions are performed on all of them. The provided config object ensures that all widget specific 
+     *          handling is managed separetely from other synchronized widges.
+     *          
+     *          3. HawksearchVue.createWidget(el, { store }): An edge case of Ex. 2. The created widget is fully synchronized
+     *          with the provided data layer. It doesn't have specific context and behavior.
+     */
     static createWidget(el, { config, store }) {
         if (!el || (!config && !store)) {
             return false;
         }
 
+        var widgetId = this.getUniqueIdentifier();
+
+        // Generate a store instance to attach to widget
+        // This is the base create sequence
         if (!store) {
-            store = this.getStoreInstance(config);
+            console.info("Create widget, id: " + widgetId + ", single initialization");
+            // Fill in the default values for the config
+            config = this.mergeConfig(this.defaultConfig, config);
+
+            store = this.generateStoreInstance(config);
+        }
+        // If store instance is avalable, update it with the new config, if provided
+        else if (config) {
+            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
+            store.commit('updateConfig', config);
+        }
+        // If the store instance is available, but the config is not, create a default config to keep things consistent
+        else {
+            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
+            config = this.mergeConfig(this.defaultConfig, store.state.config);
         }
 
-        return new Vue({
+        var widget = new Vue({
             el,
             store,
             i18n,
@@ -99,17 +120,27 @@ class HawksearchVue {
             },
             mounted() {
                 try {
-                    if (store.state.trackEvent) {
-                        store.state.trackEvent.track('pageload', { pageType: (config.additionalParameters && config.additionalParameters.CustomUrl) ? 'landing' : 'custom' });
+                    this.trackEvent = HawksearchVue.createTrackEvent(this.config);
+
+                    if (this.trackEvent) {
+                        this.trackEvent.track('pageload', { pageType: (this.config.additionalParameters && this.config.additionalParameters.CustomUrl) ? 'landing' : 'custom' });
                     }
                 }
                 catch (e) { }
+            },
+            data: {
+                widgetId,
+                appliedConfig: config,
+                trackEvent: null
             },
             computed: {
                 ...mapState([
                     'searchOutput',
                     'pendingSearch'
-                ])
+                ]),
+                config: function () {
+                    return _.cloneDeep(this.appliedConfig);
+                }
             },
             watch: {
                 searchOutput: function (n, o) {
@@ -118,8 +149,40 @@ class HawksearchVue {
                 pendingSearch: function (n, o) {
                     this.$emit('searchupdate', n);
                 }
+            },
+            methods: {
+                dispatchToStore: function (action, params) {
+                    this.$store.dispatch(action, params).then(() => {
+                        var trackingActions = [
+                            'fetchResults',
+                            'applyFacets',
+                            'applyPageNumber',
+                            'applyPageSize',
+                            'applySort',
+                            'applySearchWithin',
+                            'clearFacet',
+                        ];
+
+                        if (trackingActions.includes(action)) {
+                            var storeState = this.$store.state;
+
+                            updateUrl(storeState, this);
+
+                            if (this.trackEvent) {
+                                this.trackEvent.track('searchtracking', {
+                                    trackingId: storeState.searchOutput.TrackingId,
+                                    typeId: this.trackEvent.getSearchType(storeState.pendingSearch, storeState.prevSearchOutput)
+                                });
+                            }
+                        }
+                    });
+                }
             }
         });
+
+        this.widgetInstances[widgetId] = widget;
+
+        return widget;
     }
 
     static getWidgetStore(widget) {
@@ -140,38 +203,22 @@ class HawksearchVue {
             return false;
         }
 
-        var store = widget.$store;
+        var store = this.getWidgetStore(widget);
 
         if (!store) {
             console.error("Store instance not supplied");
             return false
         }
 
-        var urlParams = this.getUrlParams();
-        var additionalParameters = {};
-
-        this.paramWhitelist.forEach(key => {
-            if (urlParams.get(key)) {
-                additionalParameters[key] = urlParams.get(key);
-            }
-        });
-
-        if (Object.keys(additionalParameters).length) {
-            var config = Object.assign({}, store.state.config);
-            config.additionalParameters = Object.assign({}, additionalParameters, config.additionalParameters);
-            store.commit('updateConfig', config);
-        }
+        this.handleAdditionalParameters(widget);
 
         var searchParams = parseSearchQueryString(location.search);
-        var language = searchParams['Language'];
-        delete searchParams['Language'];
-        if (language) {
-            var config = Object.assign({}, store.state.config);
-            config.language = language;
-            store.commit('updateConfig', config);
-        }
-        
-        store.dispatch('fetchResults', searchParams);
+
+        this.handleLanguageParameters(widget, searchParams);
+
+        store.dispatch('fetchResults', searchParams).then(() => {
+            this.applyTabSelection(widget);
+        });
     }
 
     static fetchResults(searchParams, store, callback) {
@@ -196,31 +243,11 @@ class HawksearchVue {
         store.commit('updateWaitingForInitialSearch', false);
         axios.post(this.getFullSearchUrl(store), params).then(response => {
             if (response.status == '200' && response.data) {
-                this.searchResponseDataHandler(response.data, store, callback);
+                callback(response.data);
             }
         }, response => {
             callback(false, true);
         });
-    }
-
-    static searchResponseDataHandler(data, store, callback) {
-        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
-            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
-
-            if (!tabs.Values.find(value => value.Selected == true) && store.state.config.tabConfig.alwaysOn) {
-                var facetData = Object.assign({}, tabs);
-
-                facetData.Values[0].Selected = true;
-
-                store.dispatch('applyFacets', facetData);
-            }
-            else {
-                callback(data);
-            }
-        }
-        else {
-            callback(data);
-        }
     }
 
     static fetchSuggestions(searchParams, store, callback) {
@@ -417,9 +444,9 @@ class HawksearchVue {
         }
     }
 
-    static redirectSearch(keyword, store, searchPageUrl) {
+    static redirectSearch(keyword, widget, searchPageUrl) {
         var redirect = new URL(searchPageUrl, location.href);
-        var config = store.state.config;
+        var config = widget.config;
 
         if (keyword) {
             redirect.searchParams.set('keyword', keyword);
@@ -446,6 +473,18 @@ class HawksearchVue {
         return this.paramWhitelist.includes(key);
     }
 
+    static addWhitelistParams(params) {
+        if (params) {
+            if (typeof params == 'string') {
+                params = [params];
+            }
+
+            if (_.isArray(params)) {
+                this.paramWhitelist = _.union(this.paramWhitelist, params);
+            }
+        }
+    }
+
     static getFullSearchUrl(store) {
         var config = store.state.config;
         let url = new URL(config.searchUrl, config.apiUrl);
@@ -463,9 +502,11 @@ class HawksearchVue {
     }
 
     static getAbsoluteUrl(path, store) {
-        var config = store.state.config;
-        var url = new URL(path, config.websiteUrl);
-        return url.href;
+        if (path) {
+            var config = store.state.config;
+            var url = new URL(path, config.websiteUrl);
+            return url.href;
+        }
     }
 
     static createTrackEvent(config) {
@@ -476,12 +517,6 @@ class HawksearchVue {
         }
 
         return trackEvent;
-    }
-
-    static getTrackEvent(component) {
-        if (component && component.$root && component.$root.$store) {
-            return component.$root.$store.state.trackEvent;
-        }
     }
 
     static isIE() {
@@ -498,6 +533,69 @@ class HawksearchVue {
             polyfillElement.setAttribute('src', 'https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch');
             document.head.appendChild(polyfillElement);
         }
+    }
+
+    static handleAdditionalParameters(widget) {
+        var store = this.getWidgetStore(widget);
+        var urlParams = this.getUrlParams();
+        var additionalParameters = {};
+
+        this.paramWhitelist.forEach(key => {
+            if (urlParams.get(key)) {
+                additionalParameters[key] = urlParams.get(key);
+            }
+        });
+
+        if (Object.keys(additionalParameters).length) {
+            var config = _.cloneDeep(widget.config);
+            config.additionalParameters = _.merge({}, config.additionalParameters, additionalParameters);
+            store.commit('updateConfig', config);
+        }
+    }
+
+    static handleLanguageParameters(widget, searchParams) {
+        var store = this.getWidgetStore(widget);
+        var language = searchParams['Language'];
+
+        delete searchParams['Language'];
+
+        if (language) {
+            var config = _.cloneDeep(widget.config);
+            config.language = language;
+            store.commit('updateConfig', config);
+        }
+    }
+
+    static applyTabSelection(widget) {
+        var store = this.getWidgetStore(widget);
+        var data = store.state.searchOutput;
+
+        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
+            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
+
+            if (!tabs.Values.find(value => value.Selected == true) && widget.config.tabConfig.alwaysOn) {
+                var facetData = Object.assign({}, tabs);
+
+                facetData.Values[0].Selected = true;
+
+                store.dispatch('applyFacets', facetData);
+            }
+        }
+    }
+
+    static mergeConfig(configA, configB) {
+        var a = _.cloneDeep(configA);
+        var b = _.cloneDeep(configB);
+
+        var mergedConfig = _.merge({}, a, b);
+
+        Object.keys(mergedConfig).forEach((key) => {
+            if (_.isArray(mergedConfig[key]) && a[key] && _.isArray(a[key]) && b[key] && _.isArray(b[key])) {
+                mergedConfig[key] = _.union(a[key], b[key]);
+            }
+        });
+
+        return mergedConfig
     }
 
 }

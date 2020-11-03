@@ -77,7 +77,7 @@
                 this.applyFacets();
             },
             applyFacets: function () {
-                this.$root.$store.dispatch('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData);
             },
             clearSelections: function (exception) {
                 if (this.getCheckboxType() == 'single') {
@@ -95,8 +95,8 @@
             getCheckboxType: function () {
                 var field = HawksearchVue.getFacetParamName(this.facetData);
 
-                if (this.$root.$store.state.config.facetConfig.hasOwnProperty(field)) {
-                    return this.$root.$store.state.config.facetConfig[field];
+                if (this.$root.config.facetConfig.hasOwnProperty(field)) {
+                    return this.$root.config.facetConfig[field];
                 }
                 else {
                     return 'multiple';
@@ -104,7 +104,7 @@
             },
             getAssetUrl: function (value) {
                 if (value && value.AssetFullUrl) {
-                    return this.$root.$store.state.config.dashboardUrl + value.AssetFullUrl;
+                    return this.$root.config.dashboardUrl + value.AssetFullUrl;
                 }
             }
         },

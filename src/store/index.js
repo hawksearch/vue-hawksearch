@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { updateUrl } from '../QueryString';
 
 Vue.use(Vuex);
 
@@ -10,6 +9,7 @@ export default () => {
             storeId: null,
             config: {}, // defaults are set in HawksearchVue class
             searchOutput: null,
+            prevSearchOutput: null,
             suggestions: null,
             pendingSearch: {
                 Keyword: "",
@@ -19,18 +19,20 @@ export default () => {
             searchError: false,
             loadingResults: false,
             loadingSuggestions: false,
-            waitingForInitialSearch: true,
-            trackEvent: null
+            waitingForInitialSearch: true
         },
         mutations: {
             setStoreId(state, value) {
                 state.storeId = value;
             },
             updateConfig(state, value) {
-                state.config = _.merge({}, state.config, value);
+                state.config = HawksearchVue.mergeConfig(state.config, value);
             },
             updateResults(state, value) {
                 state.searchOutput = value;
+            },
+            updatePrevResults(state, value) {
+                state.prevSearchOutput = value;
             },
             updateSuggestions(state, value) {
                 state.suggestions = value
@@ -52,87 +54,94 @@ export default () => {
             },
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
-            },
-            setTrackEvent(state, value) {
-                state.trackEvent = value;
             }
         },
         actions: {
             fetchResults({ commit, state }, searchParams) {
-                var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
-                commit('updatePendingSearch', pendingSearch);
-                commit('updateSuggestions', null);
-                commit('updateLoadingSuggestions', false);
-                commit('updateLoadingResults', true);
-                updateUrl(state);
+                return new Promise((resolve, reject) => {
+                    var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
+                    commit('updatePendingSearch', pendingSearch);
+                    commit('updateSuggestions', null);
+                    commit('updateLoadingSuggestions', false);
+                    commit('updateLoadingResults', true);
 
-                HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
-                    commit('updateLoadingResults', false);
+                    HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
+                        commit('updateLoadingResults', false);
 
-                    if (searchOutput) {
-                        commit('setSearchError', false);
+                        if (searchOutput) {
+                            commit('setSearchError', false);
+                            commit('updatePrevResults', _.clone(state.searchOutput));
+                            commit('updateResults', searchOutput);
 
-                        var prevResults = _.clone(state.searchOutput);
-
-                        commit('updateResults', searchOutput);
-
-                        if (state.trackEvent) {
-                            state.trackEvent.track('searchtracking', {
-                                trackingId: searchOutput.TrackingId,
-                                typeId: state.trackEvent.getSearchType(pendingSearch, prevResults)
+                            HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
+                                commit('updateExtendedSearchParams', extendedSearchParams);
+                                resolve()
                             });
                         }
-
-                        HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
-                            commit('updateExtendedSearchParams', extendedSearchParams);
-                        });
-                    }
-                    else if (error) {
-                        commit('updateResults', null);
-                        commit('setSearchError', true);
-                    }
-                    else {
-                        commit('updateResults', null);
-                    }
+                        else if (error) {
+                            commit('updateResults', null);
+                            commit('setSearchError', true);
+                            reject()
+                        }
+                        else {
+                            commit('updateResults', null);
+                            reject()
+                        }
+                    });
                 });
             },
             fetchSuggestions({ commit, state }, searchParams) {
-                HawksearchVue.fetchSuggestions(searchParams, this, (suggestions) => {
-                    if (suggestions) {
-                        commit('updateLoadingSuggestions', false);
-                        commit('updateSuggestions', suggestions);
-                    }
+                return new Promise((resolve, reject) => {
+                    HawksearchVue.fetchSuggestions(searchParams, this, (suggestions) => {
+                        if (suggestions) {
+                            commit('updateLoadingSuggestions', false);
+                            commit('updateSuggestions', suggestions);
+                            resolve()
+                        }
+                    });
                 });
             },
             applyFacets({ dispatch, commit, state }, facetData) {
-                HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
-                    dispatch('fetchResults', { FacetSelections: facetSelections });
+                return new Promise((resolve, reject) => {
+                    HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
+                        dispatch('fetchResults', { FacetSelections: facetSelections }).then(() => { resolve() })
+                    });
                 });
             },
             applyPageNumber({ dispatch, commit, state }, value) {
-                dispatch('fetchResults', { PageNo: value });
+                return new Promise((resolve, reject) => {
+                    dispatch('fetchResults', { PageNo: value }).then(() => { resolve() })
+                });
             },
             applyPageSize({ dispatch, commit, state }, value) {
-                dispatch('fetchResults', { MaxPerPage: value, PageNo: 1 });
+                return new Promise((resolve, reject) => {
+                    dispatch('fetchResults', { MaxPerPage: value, PageNo: 1 }).then(() => { resolve() })
+                });
             },
             applySort({ dispatch, commit, state }, value) {
-                dispatch('fetchResults', { SortBy: value });
+                return new Promise((resolve, reject) => {
+                    dispatch('fetchResults', { SortBy: value }).then(() => { resolve() })
+                });
             },
             applySearchWithin({ dispatch, commit, state }, value) {
-                dispatch('fetchResults', { SearchWithin: value });
+                return new Promise((resolve, reject) => {
+                    dispatch('fetchResults', { SearchWithin: value }).then(() => { resolve() })
+                });
             },
             clearFacet({ dispatch, commit, state }, facet) {
-                var pendingSearch = Object.assign({}, state.pendingSearch);
+                return new Promise((resolve, reject) => {
+                    var pendingSearch = Object.assign({}, state.pendingSearch);
 
-                if (pendingSearch.hasOwnProperty(facet)) {
-                    delete pendingSearch[facet];
-                }
-                else if (pendingSearch.FacetSelections && pendingSearch.FacetSelections.hasOwnProperty(facet)) {
-                    delete pendingSearch.FacetSelections[facet];
-                }
+                    if (pendingSearch.hasOwnProperty(facet)) {
+                        delete pendingSearch[facet];
+                    }
+                    else if (pendingSearch.FacetSelections && pendingSearch.FacetSelections.hasOwnProperty(facet)) {
+                        delete pendingSearch.FacetSelections[facet];
+                    }
 
-                commit('updatePendingSearch', pendingSearch);
-                dispatch('fetchResults', {});
+                    commit('updatePendingSearch', pendingSearch);
+                    dispatch('fetchResults', {}).then(() => { resolve() })
+                });
             }
         },
         getters: {

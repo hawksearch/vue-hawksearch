@@ -37,14 +37,14 @@
             search: function () {
                 this.cancelSuggestions();
 
-                var searchBoxConfig = this.$root.$store.state.config.searchBoxConfig;
+                var searchBoxConfig = this.$root.config.searchBoxConfig;
 
                 if (this.searchPage && (this.searchPage != location.pathname || searchBoxConfig.redirectToCurrentPage)) {
-                    HawksearchVue.redirectSearch(this.keyword, this.$root.$store, this.searchPage);
+                    HawksearchVue.redirectSearch(this.keyword, this.$root, this.searchPage);
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
-                    this.$root.$store.dispatch('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
+                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
                 }
             },
             onKeyDown: function (e) {
@@ -64,7 +64,7 @@
 
                     clearTimeout(this.suggestionDelay);
                     this.suggestionDelay = setTimeout(() => {
-                        this.$root.$store.dispatch('fetchSuggestions', { Keyword: keyword });
+                        this.$root.dispatchToStore('fetchSuggestions', { Keyword: keyword });
                     }, 250);
                 }
                 else {

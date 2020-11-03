@@ -40,17 +40,20 @@
         },
         computed: {
             ...mapState([
-                'searchOutput',
-                'config',
-                'trackEvent'
+                'searchOutput'
             ]),
             ...mapGetters([
                 'getResponseField'
-            ])
+            ]),
+            trackEvent: function () {
+                return this.$root.trackEvent;
+            }
         },
         methods: {
             getField: function (fieldName) {
-                if (this.config && this.config.language) {
+                var config = this.$root.config;
+
+                if (config && config.language) {
                     fieldName += `_${this.config.language}`;
                 }
                 

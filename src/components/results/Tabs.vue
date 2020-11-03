@@ -47,7 +47,7 @@
                         return item;
                     });
 
-                    this.$root.$store.dispatch('applyFacets', facetData);
+                    this.$root.dispatchToStore('applyFacets', facetData);
                 }
             }
         },

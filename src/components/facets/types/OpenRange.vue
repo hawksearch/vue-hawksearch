@@ -27,11 +27,11 @@
             onChange: function () {
                 if (this.minValue || this.maxValue) {
                     this.facetData.Value = (this.minValue || '') + ',' + (this.maxValue || '');
-                    this.$root.$store.dispatch('applyFacets', this.facetData);
+                    this.$root.dispatchToStore('applyFacets', this.facetData);
                 }
                 else {
                     var field = this.facetData.ParamName ? this.facetData.ParamName : this.facetData.Field;
-                    this.$root.$store.dispatch('clearFacet', field);
+                    this.$root.dispatchToStore('clearFacet', field);
                 }
             }
         },

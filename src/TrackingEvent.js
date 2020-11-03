@@ -62,12 +62,13 @@ const AvailableEvents = [
 
 class TrackingEvent {
     trackingURL;
+    trackConfig;
     clientGUID;
 
     constructor(config) {
         this.trackingURL = config.trackEventUrl;
-        this.clientGUID = config.clientGuid;
         this.trackConfig = config.trackConfig;
+        this.clientGUID = config.clientGuid;
     }
 
     getVisitorExpiry() {

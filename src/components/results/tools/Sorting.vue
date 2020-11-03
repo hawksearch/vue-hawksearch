@@ -26,7 +26,7 @@
         },
         methods: {
             onChange: function (e) {
-                this.$root.$store.dispatch('applySort', e.target.value);
+                this.$root.dispatchToStore('applySort', e.target.value);
             }
         },
         computed: {

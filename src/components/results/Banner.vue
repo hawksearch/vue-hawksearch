@@ -73,8 +73,10 @@
         computed: {
             ...mapState([
                 'searchOutput',
-                'trackEvent'
             ]),
+            trackEvent: function () {
+                return this.$root.trackEvent;
+            },
             bannerList: function () {
                 var items = [];
 

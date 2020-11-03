@@ -24,7 +24,7 @@
         },
         methods: {
             onChange: function (e) {
-                this.$root.$store.dispatch('applyPageSize', e.target.value);
+                this.$root.dispatchToStore('applyPageSize', e.target.value);
             }
         },
         computed: {
