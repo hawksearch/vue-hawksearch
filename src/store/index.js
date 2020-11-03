@@ -104,7 +104,7 @@ export default () => {
             applyFacets({ dispatch, commit, state }, facetData) {
                 return new Promise((resolve, reject) => {
                     HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {
-                        dispatch('fetchResults', { FacetSelections: facetSelections }).then(() => { resolve() })
+                        dispatch('fetchResults', { FacetSelections: facetSelections, PageNo: 1 }).then(() => { resolve() })
                     });
                 });
             },
@@ -120,12 +120,12 @@ export default () => {
             },
             applySort({ dispatch, commit, state }, value) {
                 return new Promise((resolve, reject) => {
-                    dispatch('fetchResults', { SortBy: value }).then(() => { resolve() })
+                    dispatch('fetchResults', { SortBy: value, PageNo: 1 }).then(() => { resolve() })
                 });
             },
             applySearchWithin({ dispatch, commit, state }, value) {
                 return new Promise((resolve, reject) => {
-                    dispatch('fetchResults', { SearchWithin: value }).then(() => { resolve() })
+                    dispatch('fetchResults', { SearchWithin: value, PageNo: 1 }).then(() => { resolve() })
                 });
             },
             clearFacet({ dispatch, commit, state }, facet) {
@@ -140,7 +140,7 @@ export default () => {
                     }
 
                     commit('updatePendingSearch', pendingSearch);
-                    dispatch('fetchResults', {}).then(() => { resolve() })
+                    dispatch('fetchResults', { PageNo: 1 }).then(() => { resolve() })
                 });
             }
         },
