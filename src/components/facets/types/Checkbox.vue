@@ -1,6 +1,6 @@
 <template>
     <div class="hawk-facet-rail__facet-values">
-        <div class="hawk-facet-rail__facet-values-checkbox">
+        <div :class="facetValuesWrapperClass()" :style="facetValuesWrapperStyle()" >
             <ul class="hawk-facet-rail__facet-list">
                 <li v-for="value in items" :key="value.Value" class="hawk-facet-rail__facet-list-item">
                     <button @click="selectFacet(value)" class="hawk-facet-rail__facet-btn">
@@ -106,11 +106,39 @@
                 if (value && value.AssetFullUrl) {
                     return this.$root.config.dashboardUrl + value.AssetFullUrl;
                 }
+            },
+            facetValuesWrapperClass: function () {
+                let wrapperClasses = ["hawk-facet-rail__facet-values-checkbox"];
+
+                if (this.shouldScroll) {
+                    wrapperClasses.push("hawk-facet-rail__facet-values-checkbox__scrollable");
+                }
+
+                return wrapperClasses.join(' ');
+            },
+            facetValuesWrapperStyle: function () {
+                let styles = {};
+
+                if (this.shouldScroll) {
+                    let scrollHeight = this.facetData.ScrollHeight;
+
+                    if (!scrollHeight || scrollHeight < 20) {
+                        scrollHeight = 300;
+                    }
+
+                    styles = { height: scrollHeight + 'px' };
+                }
+
+                return styles;
             }
         },
         computed: {
             items: function () {
                 return this.facetData.Values;
+            },
+            shouldScroll: function () {
+                // the facet does truncated listing of values if configured for truncating and we have too many facets
+                return this.facetData.DisplayType === 'scrolling' && this.facetData.Values.length > this.facetData.ScrollThreshold;
             }
         }
     }
@@ -121,5 +149,10 @@
 <style scoped lang="scss">
     .line-through {
         text-decoration: line-through;
+    }
+
+    .hawk-facet-rail__facet-values-checkbox__scrollable {
+        overflow-y: scroll;
+        padding-right: 10px;
     }
 </style>
