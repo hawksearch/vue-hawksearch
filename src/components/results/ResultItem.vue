@@ -35,7 +35,7 @@
                 default: null
             },
             linkField: {
-                default: 'url'
+                default: null
             }
         },
         computed: {
@@ -56,13 +56,21 @@
                 if (config && config.language) {
                     fieldName += `_${this.config.language}`;
                 }
-                
+
                 if (this.result &&
                     this.result.Document &&
                     this.result.Document[fieldName] &&
                     this.result.Document[fieldName].length) {
 
                     return this.result.Document[fieldName][0];
+                }
+            },
+            getLink: function () {
+                var linkField = this.linkField || this.$root.config.resultItem.linkField;
+                var link = this.getField(linkField);
+
+                if (link) {
+                    return HawksearchVue.getAbsoluteUrl(link, this.$root.$store);
                 }
             },
             getJsonData: function (fieldName) {
@@ -75,22 +83,20 @@
                 }
             },
             onClick: function (e) {
+                var link = this.getLink();
+
                 if (this.trackEvent) {
                     this.trackEvent.track('click', {
                         event: e,
                         uniqueId: this.result.DocId,
-                        trackingId: this.getResponseField('TrackingId')
+                        trackingId: this.getResponseField('TrackingId'),
+                        url: link
                     });
                 }
 
-                try {
-                    var link = this.absoluteUrl(this.getField(this.linkField));
-
-                    if (link) {
-                        location.assign(link);
-                    }
+                if (link && this.$root.config.resultItem.itemSelect) {
+                    location.assign(link);
                 }
-                catch (error) { }
             },
             absoluteUrl: function (url) {
                 var store = this.$root.$store;

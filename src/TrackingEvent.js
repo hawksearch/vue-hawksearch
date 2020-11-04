@@ -360,7 +360,7 @@ class TrackingEvent {
                 return this.writeSearchTracking(args.trackingId, args.typeId);
 
             case 'click':
-                return this.writeClick(args.event, args.uniqueId, args.trackingId, '');
+                return this.writeClick(args.event, args.uniqueId, args.trackingId, args.url);
 
             case 'bannerclick':
                 return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId);

@@ -40,6 +40,10 @@ class HawksearchVue {
         },
         searchConfig: {
             scrollUpOnRefresh: true
+        },
+        resultItem: {
+            itemSelect: true,
+            linkField: 'url'
         }
     }
 
