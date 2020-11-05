@@ -10,6 +10,7 @@ import TrackingEvent from './TrackingEvent';
 var _ = require('lodash');
 var axios = require('axios').default;
 var autocompleteCancelation;
+var searchCancelation;
 const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
@@ -238,6 +239,11 @@ class HawksearchVue {
             callback(false)
             return false;
         }
+        
+        if (searchCancelation) {
+            searchCancelation();
+            searchCancelation = null;
+        }
 
         if (!searchParams) {
             searchParams = {};
@@ -249,7 +255,11 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
-        axios.post(this.getFullSearchUrl(store), params).then(response => {
+        axios.post(this.getFullSearchUrl(store), params, {
+            cancelToken: new CancelToken(function executor(c) {
+                searchCancelation = c;
+            })
+        }).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
