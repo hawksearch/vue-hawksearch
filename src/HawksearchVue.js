@@ -255,7 +255,14 @@ class HawksearchVue {
         }
 
         var config = store.state.config;
-        var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName }, config.additionalParameters);
+        var clientData = this.getClientData(store);
+        var params = Object.assign({}, searchParams,
+            {
+                ClientGuid: config.clientGuid,
+                IndexName: config.indexName,
+                ClientData: clientData
+            },
+            config.additionalParameters);
 
         this.cancelSuggestionsRequest();
 
@@ -294,7 +301,14 @@ class HawksearchVue {
         }
 
         var config = store.state.config;
-        var params = Object.assign({}, searchParams, { ClientGuid: config.clientGuid, IndexName: config.indexName, DisplayFullResponse: true });
+        var clientData = this.getClientData(store);
+        var params = Object.assign({}, searchParams,
+            {
+                ClientGuid: config.clientGuid,
+                IndexName: config.indexName,
+                ClientData: clientData,
+                DisplayFullResponse: true
+            });
         axios.post(this.getFullAutocompleteUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
                 autocompleteCancelation = c;
@@ -591,6 +605,36 @@ class HawksearchVue {
             config.language = language;
             store.commit('updateConfig', config);
         }
+    }
+
+    static getClientData(store) {
+        var config = store.state.config;
+        var visitorId = this.getVisitorId(store)
+        var clientData = {
+            "VisitorId": visitorId
+        };
+
+        if (config.language && visitorId) {
+            clientData["Custom"] = {
+                "language": config.language
+            };
+        }
+
+        return clientData;
+    }
+
+    static getVisitorId(store) {
+        var trackingEvent = new TrackingEvent(store.state.config);
+        var hawk_visitor_id = 'hawk_visitor_id'
+
+        let visitorId = trackingEvent.getCookie(hawk_visitor_id);
+
+        if (!visitorId) {
+            trackingEvent.setCookie(hawk_visitor_id, trackingEvent.createGuid(), trackingEvent.getVisitorExpiry());
+            visitorId = trackingEvent.getCookie(hawk_visitor_id);
+        }
+
+        return visitorId
     }
 
     static applyTabSelection(widget) {
