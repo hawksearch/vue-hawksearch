@@ -599,18 +599,18 @@ class HawksearchVue {
     }
 
     static getClientData(store) {
-        var clientData;
         var config = store.state.config;
         var visitorId = this.getVisitorId(store)
+        var clientData = {
+            "VisitorId": visitorId
+        };
 
-        if(config.language && visitorId){
-            clientData = {
-                "VisitorId": visitorId,
-                "Custom": {
-                    "language": config.language
-                }
-            }
+        if (config.language && visitorId) {
+            clientData["Custom"] = {
+                "language": config.language
+            };
         }
+
         return clientData;
     }
 
