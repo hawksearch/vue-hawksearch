@@ -65,7 +65,7 @@ class HawksearchVue {
 
         this.storeInstances[storeId] = store;
 
-        console.info("Created store, id: " + storeId);
+        // console.info("Created store, id: " + storeId);
 
         return store;
     }
@@ -100,7 +100,7 @@ class HawksearchVue {
         // Generate a store instance to attach to widget
         // This is the base create sequence
         if (!store) {
-            console.info("Create widget, id: " + widgetId + ", single initialization");
+            // console.info("Create widget, id: " + widgetId + ", single initialization");
             // Fill in the default values for the config
             config = this.mergeConfig(this.defaultConfig, config);
 
@@ -108,12 +108,12 @@ class HawksearchVue {
         }
         // If store instance is avalable, update it with the new config, if provided
         else if (config) {
-            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
+            // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
             store.commit('updateConfig', config);
         }
         // If the store instance is available, but the config is not, create a default config to keep things consistent
         else {
-            console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
+            // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
             config = this.mergeConfig(this.defaultConfig, store.state.config);
         }
 
@@ -263,8 +263,10 @@ class HawksearchVue {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }, response => {
-            callback(false, true);
+        }).catch(err => {
+            if (!axios.isCancel(err)) {
+                callback(false, true);
+            }
         });
     }
 
@@ -296,8 +298,10 @@ class HawksearchVue {
             if (response && response.status == '200' && response.data) {
                 callback(response.data);
             }
-        }, response => {
-            callback(false);
+        }).catch(err => {
+            if (!axios.isCancel(err)) {
+                callback(false);
+            }
         });
     }
 

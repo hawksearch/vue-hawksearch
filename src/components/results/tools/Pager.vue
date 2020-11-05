@@ -43,7 +43,7 @@
                 }
             },
             onChange: function (e) {
-                this.goToPage(e.target.value);
+                this.goToPage(parseInt(e.target.value, 10));
             },
             goToPage: function (page) {
                 if (page >= 1 && page <= this.totalPages) {
