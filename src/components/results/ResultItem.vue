@@ -54,7 +54,7 @@
                 var config = this.$root.config;
 
                 if (config && config.language) {
-                    fieldName += `_${this.config.language}`;
+                    fieldName += `_${config.language}`;
                 }
 
                 if (this.result &&
