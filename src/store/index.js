@@ -19,7 +19,9 @@ export default () => {
             searchError: false,
             loadingResults: false,
             loadingSuggestions: false,
-            waitingForInitialSearch: true
+            waitingForInitialSearch: true,
+            searchCancelation: null,
+            autocompleteCancelation: null
         },
         mutations: {
             setStoreId(state, value) {
@@ -54,6 +56,12 @@ export default () => {
             },
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
+            },
+            updateSearchCancelation(state, value) {
+                state.searchCancelation = value;
+            },
+            updateAutocompleteCancelation(state, value) {
+                state.autocompleteCancelation = value;
             }
         },
         actions: {
