@@ -9,8 +9,6 @@ import TrackingEvent from './TrackingEvent';
 
 var _ = require('lodash');
 var axios = require('axios').default;
-var autocompleteCancelation;
-var searchCancelation;
 const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
@@ -244,10 +242,10 @@ class HawksearchVue {
             callback(false)
             return false;
         }
-        
-        if (searchCancelation) {
-            searchCancelation();
-            searchCancelation = null;
+
+        if (store.state.searchCancelation) {
+            store.state.searchCancelation();
+            store.commit('updateSearchCancelation', null);
         }
 
         if (!searchParams) {
@@ -267,9 +265,10 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
+
         axios.post(this.getFullSearchUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
-                searchCancelation = c;
+                store.commit('updateSearchCancelation', c);
             })
         }).then(response => {
             if (response.status == '200' && response.data) {
@@ -287,9 +286,9 @@ class HawksearchVue {
             return false;
         }
 
-        if (autocompleteCancelation) {
-            autocompleteCancelation();
-            autocompleteCancelation = null;
+        if (store.state.autocompleteCancelation) {
+            store.state.autocompleteCancelation();
+            store.commit('updateAutocompleteCancelation', null);
         }
 
         if (!callback) {
@@ -309,9 +308,10 @@ class HawksearchVue {
                 ClientData: clientData,
                 DisplayFullResponse: true
             });
+
         axios.post(this.getFullAutocompleteUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
-                autocompleteCancelation = c;
+                store.commit('updateAutocompleteCancelation', c);
             }),
         }).then(response => {
             if (response && response.status == '200' && response.data) {
