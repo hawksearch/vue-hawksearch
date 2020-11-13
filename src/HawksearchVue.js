@@ -6,6 +6,7 @@ import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
 import TrackingEvent from './TrackingEvent';
+import { getVisitorId } from './CookieHandler';
 
 var _ = require('lodash');
 var axios = require('axios').default;
@@ -609,7 +610,7 @@ class HawksearchVue {
 
     static getClientData(store) {
         var config = store.state.config;
-        var visitorId = this.getVisitorId(store)
+        var visitorId = getVisitorId()
         var clientData = {
             "VisitorId": visitorId
         };
@@ -621,20 +622,6 @@ class HawksearchVue {
         }
 
         return clientData;
-    }
-
-    static getVisitorId(store) {
-        var trackingEvent = new TrackingEvent(store.state.config);
-        var hawk_visitor_id = 'hawk_visitor_id'
-
-        let visitorId = trackingEvent.getCookie(hawk_visitor_id);
-
-        if (!visitorId) {
-            trackingEvent.setCookie(hawk_visitor_id, trackingEvent.createGuid(), trackingEvent.getVisitorExpiry());
-            visitorId = trackingEvent.getCookie(hawk_visitor_id);
-        }
-
-        return visitorId
     }
 
     static applyTabSelection(widget) {
