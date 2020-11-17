@@ -26,6 +26,8 @@
             <div class="hawk-results__bottom-tool-row">
                 <tool-row />
             </div>
+            
+            <recommendations />
         </template>
     </div>
 </template>
@@ -38,6 +40,7 @@
     import ResultListing from './ResultListing'
     import Banner from './Banner'
     import Tabs from './Tabs'
+    import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
 
     export default {
@@ -50,6 +53,7 @@
             ResultListing,
             Banner,
             Tabs,
+            Recommendations,
             AutocorrectSuggestions
         },
         mounted() {

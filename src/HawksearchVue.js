@@ -6,7 +6,7 @@ import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
 import TrackingEvent from './TrackingEvent';
-import { getVisitorId } from './CookieHandler';
+import { getVisitorId, getVisitId } from './CookieHandler';
 
 var _ = require('lodash');
 var axios = require('axios').default;
@@ -18,7 +18,10 @@ class HawksearchVue {
         apiUrl: 'https://searchapi-dev.hawksearch.net',
         searchUrl: '/api/v2/search',
         autocompleteUrl: '/api/autocomplete',
+        recommendationUrl: '/api/recommendation/v2/getwidgetitems',
         dashboardUrl: '',
+        currentWidgetGuid: null,
+        currentWidgetUniqueid: null,
         websiteUrl: location.origin,
         trackEventUrl: null,
         indexName: null,
@@ -270,6 +273,60 @@ class HawksearchVue {
         axios.post(this.getFullSearchUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
                 store.commit('updateSearchCancelation', c);
+            })
+        }).then(response => {
+            if (response.status == '200' && response.data) {
+                callback(response.data);
+            }
+        }).catch(err => {
+            if (!axios.isCancel(err)) {
+                callback(false, true);
+            }
+        });
+    }
+
+    static fetchRecommendations(searchParams, store, callback) {
+        if (!callback) {
+            callback = function () { };
+        }
+
+        if (!this.requestConditionsMet(store)) {
+            callback(false)
+            return false;
+        }
+        
+        if (store.state.recommendationsCancelation) {
+            store.state.recommendationsCancelation();
+            store.commit('updateRecommendationsCancelation', null);
+        }
+
+        if (!searchParams) {
+            searchParams = {};
+        }
+
+        var config = store.state.config;
+        var params = {
+                ClientGuid: config.clientGuid,
+                IndexName: config.indexName,
+                DisplayFullResponse: true,
+                visitId: getVisitId(),
+                visitorId: getVisitorId(),
+                enablePreview: true,
+                widgetUids: [
+                   {
+                      widgetGuid: config.currentWidgetGuid,
+                      uniqueid: config.currentWidgetUniqueid
+                   }
+                ],
+                contextProperties: {
+                   uniqueid: config.currentWidgetUniqueid
+                },
+                renderHTML: false
+             }
+
+        axios.post(config.recommendationUrl, params, {
+            cancelToken: new CancelToken(function executor(c) {
+                store.commit('updateRecommendationsCancelation', c);
             })
         }).then(response => {
             if (response.status == '200' && response.data) {

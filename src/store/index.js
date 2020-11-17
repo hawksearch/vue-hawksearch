@@ -19,9 +19,12 @@ export default () => {
             searchError: false,
             loadingResults: false,
             loadingSuggestions: false,
+            recommendationsOutput: null,
+            loadingRecommendations: false,
             waitingForInitialSearch: true,
             searchCancelation: null,
-            autocompleteCancelation: null
+            autocompleteCancelation: null,
+            recommendationsCancelation: null
         },
         mutations: {
             setStoreId(state, value) {
@@ -54,6 +57,12 @@ export default () => {
             updateLoadingSuggestions(state, value) {
                 state.loadingSuggestions = value;
             },
+            updateRecommendationsOutput(state, value) {
+                state.recommendationsOutput = value;
+            },
+            updateLoadingRecommendations(state, value) {
+                state.loadingRecommendations = value;
+            },
             updateWaitingForInitialSearch(state, value) {
                 state.waitingForInitialSearch = value;
             },
@@ -62,6 +71,9 @@ export default () => {
             },
             updateAutocompleteCancelation(state, value) {
                 state.autocompleteCancelation = value;
+            },
+            updateRecommendationsCancelation(state, value) {
+                state.recommendationsCancelation = value;
             }
         },
         actions: {
@@ -72,6 +84,8 @@ export default () => {
                     commit('updateSuggestions', null);
                     commit('updateLoadingSuggestions', false);
                     commit('updateLoadingResults', true);
+                    commit('updateRecommendationsOutput', null);
+                    commit('updateLoadingRecommendations', true);
 
                     HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
                         commit('updateLoadingResults', false);
@@ -93,6 +107,22 @@ export default () => {
                         }
                         else {
                             commit('updateResults', null);
+                            reject()
+                        }
+                    });
+
+                    HawksearchVue.fetchRecommendations(pendingSearch, this, (recommendationsOutput, error) => {
+                        commit('updateLoadingRecommendations', false);
+
+                        if (recommendationsOutput) {
+                            commit('updateRecommendationsOutput', recommendationsOutput);
+                        }
+                        else if (error) {
+                            commit('updateRecommendationsOutput', null);
+                            reject()
+                        }
+                        else {
+                            commit('updateRecommendationsOutput', null);
                             reject()
                         }
                     });
