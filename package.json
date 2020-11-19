@@ -4,7 +4,8 @@
   "description": "Vue.js SDK for Hawksearch",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
-    "build": "cross-env BUILD_ENV=esm rollup -c"
+    "build": "cross-env BUILD_ENV=esm rollup -c",
+    "dev": "rollup -c --watch"
   },
   "repository": {
     "type": "git",
