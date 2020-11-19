@@ -13,7 +13,6 @@
 </template>
 
 <script>
-    import { mapState, mapGetters } from 'vuex';
     import ResultImage from '../ResultImage';
 
     export default {
@@ -36,12 +35,6 @@
             }
         },
         computed: {
-            ...mapState([
-                'recommendationsOutput'
-            ]),
-            ...mapGetters([
-                'getResponseField'
-            ]),
             trackEvent: function () {
                 return this.$root.trackEvent;
             }

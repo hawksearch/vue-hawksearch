@@ -285,7 +285,7 @@ class HawksearchVue {
         });
     }
 
-    static fetchRecommendations(searchParams, store, callback) {
+    static fetchRecommendations(store, callback) {
         if (!callback) {
             callback = function () { };
         }
@@ -293,15 +293,6 @@ class HawksearchVue {
         if (!this.requestConditionsMet(store)) {
             callback(false)
             return false;
-        }
-        
-        if (store.state.recommendationsCancelation) {
-            store.state.recommendationsCancelation();
-            store.commit('updateRecommendationsCancelation', null);
-        }
-
-        if (!searchParams) {
-            searchParams = {};
         }
 
         var config = store.state.config;
@@ -324,11 +315,7 @@ class HawksearchVue {
                 renderHTML: false
              }
 
-        axios.post(config.recommendationUrl, params, {
-            cancelToken: new CancelToken(function executor(c) {
-                store.commit('updateRecommendationsCancelation', c);
-            })
-        }).then(response => {
+        axios.post(config.recommendationUrl, params).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }

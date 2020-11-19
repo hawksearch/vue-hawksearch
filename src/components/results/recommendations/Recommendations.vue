@@ -14,8 +14,6 @@
 </template>
 
 <script lang="js">
-    import { mapState } from 'vuex'
-
     import RecommendationsItem from './RecommendationsItem'
     import PlaceholderItem from '../PlaceholderItem'
     import Spinner from '../Spinner'
@@ -28,31 +26,36 @@
             PlaceholderItem,
             Spinner
         },
+        props: {
+            widgetGuid: {
+                default: null
+            },
+            uniqueid: {
+                default: null
+            }
+        },
         mounted() {
-
+            this.$root.$store.dispatch('fetchRecommendations')
+                .then(response => {
+                    this.loadingRecommendations = false;
+                    this.requestId = response ? response.requestId : null;
+                    this.title = response ? response.widgetItems[0].widgeTitle : null;
+                    this.results = response ? response.widgetItems[0].recommendationItems : null;
+                }, error => { })
         },
         data() {
             return {
-
+                loadingRecommendations: true,
+                results: null,
+                title: null,
+                requestId: null
             }
         },
         methods: {
 
         },
         computed: {
-            ...mapState([
-                'recommendationsOutput',
-                'loadingRecommendations'
-            ]),
-            results: function() {
-                return this.recommendationsOutput ? this.recommendationsOutput.widgetItems[0].recommendationItems : null;
-            },
-            title: function() {
-                return this.recommendationsOutput ? this.recommendationsOutput.widgetItems[0].widgeTitle : null;
-            },
-            requestId: function() {
-                return this.recommendationsOutput ? this.recommendationsOutput.requestId : null;
-            }
+
         }
     }
 
