@@ -86,7 +86,7 @@
 
                 if (this.trackEvent) {
                     this.trackEvent.track('recommendationclick', {
-                        widgetGuid: this.$root.$store.state.config.currentWidgetGuid,
+                        widgetGuid: this.$root.$store.state.config.widgetGuid,
                         uniqueId: this.result.id,
                         requestId: this.requestId,
                         itemIndex: this.result.itemIndex || null

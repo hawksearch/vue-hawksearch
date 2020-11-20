@@ -5,6 +5,7 @@ import { parseSearchQueryString, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
+import Recommendations from './components/results/recommendations/Recommendations.vue';
 import TrackingEvent from './TrackingEvent';
 import { getVisitorId, getVisitId } from './CookieHandler';
 
@@ -20,8 +21,8 @@ class HawksearchVue {
         autocompleteUrl: '/api/autocomplete',
         recommendationUrl: '/api/recommendation/v2/getwidgetitems',
         dashboardUrl: '',
-        currentWidgetGuid: null,
-        currentWidgetUniqueid: null,
+        widgetGuid: null,
+        widgetUniqueid: null,
         websiteUrl: location.origin,
         trackEventUrl: null,
         indexName: null,
@@ -131,7 +132,8 @@ class HawksearchVue {
             components: {
                 SearchBox,
                 FacetList,
-                Results
+                Results,
+                Recommendations
             },
             mounted() {
                 try {
@@ -305,12 +307,12 @@ class HawksearchVue {
                 enablePreview: true,
                 widgetUids: [
                    {
-                      widgetGuid: widgetParams.widgetGuid ?? config.currentWidgetGuid,
-                      uniqueid: widgetParams.uniqueid ??  config.currentWidgetUniqueid
+                      widgetGuid: widgetParams.widgetGuid ?? config.widgetGuid,
+                      uniqueid: widgetParams.widgetUniqueid ?? config.widgetUniqueid
                    }
                 ],
                 contextProperties: {
-                   uniqueid: config.currentWidgetUniqueid
+                   uniqueid: widgetParams.widgetUniqueid ?? config.widgetUniqueid
                 },
                 renderHTML: false
              }
