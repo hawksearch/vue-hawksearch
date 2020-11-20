@@ -1,0 +1,83 @@
+<template>
+    <div class="hawk-page-content">
+        <div class="hawk-preview__bannerTop">
+            <div class="hawk-preview__banner-container">
+                <template v-for="item in items">
+                    <div @click="clickHandler(item)">
+                        <component :is="getItemType(item)" :banner="item"></component>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import { mapState, mapGetters } from 'vuex';
+    import BannerImage from './banner-items/BannerImage';
+    import BannerCustom from './banner-items/BannerCustom';
+    import BannerFeatured from './banner-items/BannerFeatured';
+    import BannerWidget from './banner-items/BannerWidget';
+
+    export default {
+        name: 'page-content',
+        props: ['zone'],
+        components: {
+        },
+        mounted() {
+
+        },
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+            getItemType: function (item) {
+                console.log(item.ContentType);
+                switch (item.ContentType) {
+                    case 'image':
+                        return BannerImage;
+
+                    case 'widget':
+                        return BannerWidget;
+
+                    //case 'featured':
+                    //    return BannerFeatured;
+
+                    case 'custom':
+                        return BannerCustom;
+
+                    default:
+                        return null;
+                }
+            },
+            loadHandler: function (banner) {
+            },
+        },
+        computed: {
+            ...mapState([
+                'searchOutput'
+            ]),
+            items: function () {
+                var items = [];
+
+                if (this.searchOutput && this.searchOutput.PageContent && this.searchOutput.PageContent.length) {
+                    var pageContentZone = this.searchOutput.PageContent.filter(items => items.ZoneName == this.zone);
+
+                    if (pageContentZone && pageContentZone.length) {
+                        items = pageContentZone[0].Items;
+                    }
+                }
+
+                console.log(items);
+                return items;
+            }
+        }
+    }
+
+
+</script>
+
+<style scoped lang="scss">
+</style>
