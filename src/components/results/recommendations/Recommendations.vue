@@ -35,12 +35,12 @@
             }
         },
         mounted() {
-            this.$root.$store.dispatch('fetchRecommendations')
+            this.$root.$store.dispatch('fetchRecommendations', {widgetGuid: this.widgetGuid, uniqueid: this.uniqueid})
                 .then(response => {
                     this.loadingRecommendations = false;
                     this.requestId = response ? response.requestId : null;
-                    this.title = response ? response.widgetItems[0].widgeTitle : null;
-                    this.results = response ? response.widgetItems[0].recommendationItems : null;
+                    this.title = response && response.widgetItems[0] ? response.widgetItems[0].widgeTitle : null;
+                    this.results = response && response.widgetItems[0] ? response.widgetItems[0].recommendationItems : null;
                 }, error => { })
         },
         data() {

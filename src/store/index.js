@@ -109,9 +109,9 @@ export default () => {
                     });
                 });
             },
-            fetchRecommendations({ commit }) {
+            fetchRecommendations({ commit }, widgetParams) {
                 return new Promise((resolve, reject) => {
-                    HawksearchVue.fetchRecommendations(this, (recommendationsOutput, error) => {
+                    HawksearchVue.fetchRecommendations(this, widgetParams, (recommendationsOutput, error) => {
                         if (recommendationsOutput) {
                             resolve(recommendationsOutput)
                         }

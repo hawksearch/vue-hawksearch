@@ -285,7 +285,7 @@ class HawksearchVue {
         });
     }
 
-    static fetchRecommendations(store, callback) {
+    static fetchRecommendations(store, widgetParams, callback) {
         if (!callback) {
             callback = function () { };
         }
@@ -305,8 +305,8 @@ class HawksearchVue {
                 enablePreview: true,
                 widgetUids: [
                    {
-                      widgetGuid: config.currentWidgetGuid,
-                      uniqueid: config.currentWidgetUniqueid
+                      widgetGuid: widgetParams.widgetGuid ?? config.currentWidgetGuid,
+                      uniqueid: widgetParams.uniqueid ??  config.currentWidgetUniqueid
                    }
                 ],
                 contextProperties: {
