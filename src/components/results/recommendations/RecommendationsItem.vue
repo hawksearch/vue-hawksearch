@@ -1,6 +1,6 @@
 <template>
-    <div class="hawk-results__item-name">
-        <div class="hawk-results__item" @click="onClick">
+    <div class="hawk-recommendations__item-name">
+        <div class="hawk-recommendations__item" @click="onClick">
             <template>
                 <result-image :imagePath="getField('imageUrl')"></result-image>
 
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+    import { mapState, mapGetters } from 'vuex';
     import ResultImage from '../ResultImage';
 
     export default {
@@ -35,6 +36,12 @@
             }
         },
         computed: {
+            ...mapState([
+                'recommendationsOutput'
+            ]),
+            ...mapGetters([
+                'getResponseField'
+            ]),
             trackEvent: function () {
                 return this.$root.trackEvent;
             }
@@ -86,7 +93,7 @@
 
                 if (this.trackEvent) {
                     this.trackEvent.track('recommendationclick', {
-                        widgetGuid: this.$root.$store.state.config.widgetGuid,
+                        widgetGuid: this.$root.$store.state.config.currentWidgetGuid,
                         uniqueId: this.result.id,
                         requestId: this.requestId,
                         itemIndex: this.result.itemIndex || null

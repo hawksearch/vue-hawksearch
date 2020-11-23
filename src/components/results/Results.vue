@@ -26,8 +26,6 @@
             <div class="hawk-results__bottom-tool-row">
                 <tool-row />
             </div>
-            
-            <recommendations />
         </template>
     </div>
 </template>

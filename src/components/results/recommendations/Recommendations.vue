@@ -1,11 +1,21 @@
 <template>
-    <div class="hawk-results__listing">
-        <template v-if="loadingRecommendations">
-            <spinner></spinner>
+    <div>
+        <template v-if="results && results.length && title">
+            <div class="recommendations-title">
+                <h4>{{title}}</h4>
+            </div>
         </template>
+        
+        <template>
+            <div class="recommendations-container">
+                <template v-if="loadingRecommendations">
+                    <spinner></spinner>
+                </template>
 
-        <template v-if="results && results.length">
-            <recommendations-item v-for="result in results" :key="result.id" :result="result" :requestId="requestId"></recommendations-item>
+                <template v-if="results && results.length">
+                    <recommendations-item class="recommendations-item" v-for="result in results" :key="result.id" :result="result" :requestId="requestId"></recommendations-item>
+                </template>
+            </div>
         </template>
     </div>
 </template>
