@@ -28,7 +28,6 @@
             </div>
         </template>
 
-        <page-content zone="Image Content"></page-content>
     </div>
 </template>
 

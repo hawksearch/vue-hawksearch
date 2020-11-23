@@ -1,5 +1,5 @@
 <template>
-    <div className="hawk-results__item-image">
+    <div class="hawk-results__item-image">
         <img :src="imageUrl" />
     </div>
 </template>

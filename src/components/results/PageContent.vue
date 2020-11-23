@@ -16,7 +16,7 @@
     import { mapState, mapGetters } from 'vuex';
     import BannerImage from './banner-items/BannerImage';
     import BannerCustom from './banner-items/BannerCustom';
-    import BannerFeatured from './banner-items/BannerFeatured';
+    import FeaturedItems from './banner-items/FeaturedItems';
     import BannerWidget from './banner-items/BannerWidget';
 
     export default {
@@ -34,7 +34,6 @@
         },
         methods: {
             getItemType: function (item) {
-                console.log(item.ContentType);
                 switch (item.ContentType) {
                     case 'image':
                         return BannerImage;
@@ -42,11 +41,11 @@
                     case 'widget':
                         return BannerWidget;
 
-                    //case 'featured':
-                    //    return BannerFeatured;
-
                     case 'custom':
                         return BannerCustom;
+
+                    case 'featured':
+                        return FeaturedItems;
 
                     default:
                         return null;
@@ -70,7 +69,6 @@
                     }
                 }
 
-                console.log(items);
                 return items;
             }
         }
