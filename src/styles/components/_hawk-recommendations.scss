@@ -1,0 +1,32 @@
+.recommendations-title {
+	text-align: center;
+}
+
+.recommendations-container {
+	display: flex;
+	overflow-x: auto;
+}
+
+.recommendations-item {
+	flex-shrink: 0;
+}
+	
+.hawk-recommendations__item-name {
+	margin: auto;
+	margin-top: 10px;
+	margin-left: 15px;
+
+	text-align: center;
+}
+
+.hawk-recommendations__item {
+	margin: 0 0 2em;
+	width: 100%;
+
+	@include md {
+		max-width: 300px;
+	}
+
+	@include lg {
+	}
+}

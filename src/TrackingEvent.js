@@ -55,6 +55,7 @@ const TrackEventNameMapping = {
 
 const AvailableEvents = [
     'click',
+    'recommendationclick',
     'pageload',
     'searchtracking',
     'autocompleteclick',
