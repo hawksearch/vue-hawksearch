@@ -109,6 +109,21 @@ export default () => {
                     });
                 });
             },
+            fetchRecommendations({ commit }, widgetParams) {
+                return new Promise((resolve, reject) => {
+                    HawksearchVue.fetchRecommendations(this, widgetParams, (recommendationsOutput, error) => {
+                        if (recommendationsOutput) {
+                            resolve(recommendationsOutput)
+                        }
+                        else if (error) {
+                            reject()
+                        }
+                        else {
+                            reject()
+                        }
+                    });
+                });
+            },
             applyFacets({ dispatch, commit, state }, facetData) {
                 return new Promise((resolve, reject) => {
                     HawksearchVue.applyFacets(facetData, state.pendingSearch.FacetSelections, (facetSelections) => {

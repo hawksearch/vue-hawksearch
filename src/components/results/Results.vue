@@ -40,6 +40,7 @@
     import PageContent from './PageContent'
     import Banner from './Banner'
     import Tabs from './Tabs'
+    import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
 
     console.log(PageContent)
@@ -55,6 +56,7 @@
             PageContent,
             Banner,
             Tabs,
+            Recommendations,
             AutocorrectSuggestions
         },
         mounted() {
