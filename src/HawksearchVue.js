@@ -5,6 +5,7 @@ import { parseSearchQueryString, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
+import PageContent from './components/results/PageContent.vue';
 import Recommendations from './components/results/recommendations/Recommendations.vue';
 import TrackingEvent from './TrackingEvent';
 import { getVisitorId, getVisitId } from './CookieHandler';
@@ -133,6 +134,7 @@ class HawksearchVue {
                 SearchBox,
                 FacetList,
                 Results,
+                PageContent,
                 Recommendations
             },
             mounted() {

@@ -27,6 +27,7 @@
                 <tool-row />
             </div>
         </template>
+
     </div>
 </template>
 
@@ -36,10 +37,13 @@
     import Selections from '../facets/Selections'
     import ToolRow from './ToolRow'
     import ResultListing from './ResultListing'
+    import PageContent from './PageContent'
     import Banner from './Banner'
     import Tabs from './Tabs'
     import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
+
+    console.log(PageContent)
 
     export default {
         name: 'results',
@@ -49,6 +53,7 @@
             Selections,
             ToolRow,
             ResultListing,
+            PageContent,
             Banner,
             Tabs,
             Recommendations,

@@ -14,7 +14,7 @@
     import { mapState } from 'vuex';
     import BannerImage from './banner-items/BannerImage';
     import BannerCustom from './banner-items/BannerCustom';
-    import BannerFeatured from './banner-items/BannerFeatured';
+    //import BannerFeatured from './banner-items/BannerFeatured';
     import BannerWidget from './banner-items/BannerWidget';
 
     export default {
