@@ -487,6 +487,7 @@ class HawksearchVue {
 
         switch (facet.FacetType) {
             case 'checkbox':
+            case 'link':
             case 'nestedcheckbox':
             case 'swatch':
                 handleCheckboxes(facet.Values);
