@@ -43,8 +43,6 @@
     import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
 
-    console.log(PageContent)
-
     export default {
         name: 'results',
         props: [],
