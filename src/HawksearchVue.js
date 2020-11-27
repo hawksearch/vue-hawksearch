@@ -309,12 +309,12 @@ class HawksearchVue {
                 enablePreview: true,
                 widgetUids: [
                    {
-                      widgetGuid: widgetParams.widgetGuid ?? config.widgetGuid,
-                      uniqueid: widgetParams.widgetUniqueid ?? config.widgetUniqueid
+                      widgetGuid: widgetParams.widgetGuid || config.widgetGuid,
+                      uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
                    }
                 ],
                 contextProperties: {
-                   uniqueid: widgetParams.widgetUniqueid ?? config.widgetUniqueid
+                   uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
                 },
                 renderHTML: false
              }
