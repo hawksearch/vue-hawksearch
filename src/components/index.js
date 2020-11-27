@@ -3,7 +3,7 @@ export { default as FacetList } from './facets/FacetList';
 export { default as SearchResultsLabel } from './facets/SearchResultsLabel';
 export { default as Selections } from './facets/Selections';
 export { default as Checkbox } from './facets/types/Checkbox';
-export { default as Link } from './facets/types/Link';
+export { default as FacetLink } from './facets/types/FacetLink';
 export { default as NestedCheckbox } from './facets/types/NestedCheckbox';
 export { default as NestedItem } from './facets/types/NestedItem';
 export { default as OpenRange } from './facets/types/OpenRange';

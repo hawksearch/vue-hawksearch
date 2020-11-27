@@ -52,6 +52,7 @@
 
     // facet types
     import Checkbox from './types/Checkbox';
+    import FacetLink from './types/FacetLink';
     import NestedCheckbox from './types/NestedCheckbox';
     import Search from './types/Search';
     import OpenRange from './types/OpenRange';
@@ -66,6 +67,7 @@
             PlusSvg,
             MinusSvg,
             Checkbox,
+            FacetLink,
             NestedCheckbox,
             Search,
             OpenRange,
@@ -140,9 +142,9 @@
                         return "checkbox";
                         break;
 
-                    //case "link":
-                    //    return "link";
-                    //    break;
+                    case "link":
+                        return "facet-link";
+                        break;
 
                     case "nestedcheckbox":
                         return "nested-checkbox";
