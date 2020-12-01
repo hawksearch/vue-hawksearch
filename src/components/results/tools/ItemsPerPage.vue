@@ -30,8 +30,8 @@
             }
         },
         methods: {
-            selectClick(event) {
-                var selectedPageSize = this.paginationItems.find(item => item.Label == event).PageSize.toString()
+            selectClick(option) {
+                var selectedPageSize = this.paginationItems.find(item => item.Label == option).PageSize.toString()
                 this.$root.dispatchToStore('applyPageSize', selectedPageSize);
             }
         },

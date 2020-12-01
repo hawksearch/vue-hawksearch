@@ -32,8 +32,8 @@
             }
         },
         methods: {
-            selectClick(event) {
-                var selectedValue = this.sortingItems.find(item => item.Label == event).Value
+            selectClick(option) {
+                var selectedValue = this.sortingItems.find(item => item.Label == option).Value
                 this.$root.dispatchToStore('applySort', selectedValue);
             }
         },
