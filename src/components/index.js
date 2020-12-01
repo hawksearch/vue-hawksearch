@@ -20,6 +20,7 @@ export { default as Tabs } from './results/Tabs';
 export { default as ToolRow } from './results/ToolRow';
 export { default as Recommendations } from './results/recommendations/Recommendations';
 export { default as RecommendationsItem } from './results/recommendations/RecommendationsItem';
+export { default as CustomSelect } from './results/tools/CustomSelect';
 export { default as ItemsPerPage } from './results/tools/ItemsPerPage';
 export { default as Pager } from './results/tools/Pager';
 export { default as Pagination } from './results/tools/Pagination';
