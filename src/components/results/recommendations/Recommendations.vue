@@ -107,11 +107,13 @@
         },
         methods: {
             slide: function (direction) {
+                var delta = (this.widgetItem.carouselData.scrollNumber * this.itemWidth);
+
                 if (direction == "prev" && this.slideOffset < 0) {
-                    this.slideOffset += this.itemWidth;
+                    this.slideOffset += delta;
                 }
                 else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
-                    this.slideOffset -= this.itemWidth;
+                    this.slideOffset -= delta;
                 }
             },
             navigateTo: function (index) {
