@@ -47,8 +47,9 @@
                 clearTimeout(this.timeout);
                 this.open = !this.open
             },
-            clickSelectOption: function(option) {
-                this.$parent.selectClick(option);
+            clickSelectOption: function (option) {
+                //this.$parent.selectClick(option);
+                this.$emit('change', { target: { value: option } });
                 
                 this.selected = option;
                 this.open = false;

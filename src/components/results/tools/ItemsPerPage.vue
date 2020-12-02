@@ -5,6 +5,7 @@
                 :options="itemsLables"
                 :default="selectedItem || defaultItem"
                 class="select"
+                @change="onChange"
                 />
         </div>
     </div>
@@ -33,6 +34,9 @@
             selectClick(option) {
                 var selectedPageSize = this.paginationItems.find(item => item.Label == option).PageSize.toString()
                 this.$root.dispatchToStore('applyPageSize', selectedPageSize);
+            },
+            onChange: function (e) {
+                this.$root.dispatchToStore('applyPageSize', e.target.value);
             }
         },
         computed: {
