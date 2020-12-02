@@ -56,7 +56,7 @@
             doBlurSelect: function() {                
                 this.timeout = setTimeout(() => {
                     this.open = false
-                }, 0);
+                }, 400);
             }
         },
         computed: {
