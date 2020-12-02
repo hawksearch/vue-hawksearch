@@ -82,14 +82,18 @@
                     .then(response => {
                         var widgetItem = response.widgetItems.length ? response.widgetItems[0] : {};
 
-                        if (!this.widgetGuid) {
-                            this.widgetGuid = widgetItem.widgetGuid;
+                        if (widgetItem.recommendationItems && widgetItem.recommendationItems.length) {
+                            if (!this.widgetGuid) {
+                                this.widgetGuid = widgetItem.widgetGuid;
+                            }
+
+                            if (widgetItem.carouselData) {
+                                this.itemWidth = Math.floor((this.componentWidth - (2 * this.filler)) / widgetItem.carouselData.nofVisible);
+                            }
+
+                            this.requestId = response.requestId;
+                            this.widgetItem = widgetItem;
                         }
-
-                        this.itemWidth = Math.floor((this.componentWidth - (2 * this.filler)) / widgetItem.carouselData.nofVisible);
-
-                        this.requestId = response.requestId;
-                        this.widgetItem = widgetItem;
                     }, error => { })
             }, 2000)
         },
