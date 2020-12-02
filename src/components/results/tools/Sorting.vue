@@ -1,14 +1,12 @@
-<template>
+<template v-if="showItems">
     <div class="hawk-sorting">
         <span class="hawk-sorting__label">{{ $t('Sort By') }}</span>
 
-        <div v-if="showItems" class="custom-select-wrapper">
-            <CustomSelect
-                :options="items"
-                :default="selectedItem || defaultItem"
-                class="select"
-                />
-        </div>
+        <select @change="onChange">
+            <option v-for="sortingItem in sorting.Items" :key="sortingItem.Value" :value="sortingItem.Value" :selected="sortingItem.Selected">
+                {{ sortingItem.Label }}
+            </option>
+        </select>
     </div>
 </template>
 
@@ -32,15 +30,17 @@
             }
         },
         methods: {
-            selectClick(option) {
-                var selectedValue = this.sortingItems.find(item => item.Label == option).Value
-                this.$root.dispatchToStore('applySort', selectedValue);
+            onChange: function (e) {
+                this.$root.dispatchToStore('applySort', e.target.value);
             }
         },
         computed: {
             ...mapState([
                 'searchOutput'
             ]),
+            sorting: function () {
+                return this.searchOutput ? this.searchOutput.Sorting : [];
+            },
             sortingItems: function () {
                 return this.searchOutput && 
                     this.searchOutput.Sorting && 
@@ -49,15 +49,6 @@
             },
             showItems: function () {
                 return this.sortingItems.length > 0;
-            },
-            items: function () {
-                return this.sortingItems ? this.sortingItems.map(item => item.Label) : [];
-            },
-            selectedItem: function () {
-                return this.sortingItems ? this.sortingItems.find(item => !!item.Selected).Label : null;
-            },
-            defaultItem: function () {
-                return this.sortingItems ? this.sortingItems.find(item => !!item.IsDefault).Label : null;
             }
         }
     }

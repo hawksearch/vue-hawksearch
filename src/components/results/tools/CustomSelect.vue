@@ -5,7 +5,7 @@
         </div>
         <div class="items" :class="{ selectHide: !open }">
             <div v-for="(option, i) of options" :key="i" @click="clickSelectOption(option)" >
-                {{ option }}
+                {{ option.label }}
             </div>
         </div>
     </div>
@@ -48,8 +48,7 @@
                 this.open = !this.open
             },
             clickSelectOption: function (option) {
-                //this.$parent.selectClick(option);
-                this.$emit('change', { target: { value: option } });
+                this.$emit('change', { target: { value: option.value } });
                 
                 this.selected = option;
                 this.open = false;
