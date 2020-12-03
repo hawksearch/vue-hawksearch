@@ -2,7 +2,7 @@
     <div class="hawk-items-per-page">
         
         <select :value="pagination.MaxPerPage" @change="onChange">
-            <option v-for="paginationItem in pagination.Items" :key="paginationItem.PageSize" :value="paginationItem.PageSize">
+            <option v-for="paginationItem in paginationItems" :key="paginationItem.PageSize" :value="paginationItem.PageSize">
                 {{ paginationItem.Label }}
             </option>
         </select>

@@ -3,7 +3,7 @@
         <span class="hawk-sorting__label">{{ $t('Sort By') }}</span>
 
         <select @change="onChange">
-            <option v-for="sortingItem in sorting.Items" :key="sortingItem.Value" :value="sortingItem.Value" :selected="sortingItem.Selected">
+            <option v-for="sortingItem in sortingItems" :key="sortingItem.Value" :value="sortingItem.Value" :selected="sortingItem.Selected">
                 {{ sortingItem.Label }}
             </option>
         </select>
