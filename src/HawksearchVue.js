@@ -356,7 +356,8 @@ class HawksearchVue {
                 IndexName: config.indexName,
                 ClientData: clientData,
                 DisplayFullResponse: true
-            });
+            },
+            config.additionalParameters);
 
         axios.post(this.getFullAutocompleteUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
@@ -558,7 +559,7 @@ class HawksearchVue {
         }
     }
 
-    static paramWhitelist = ['CustomUrl']
+    static paramWhitelist = ['CustomUrl', 'Query']
 
     static isWhitelistedParam(key) {
         return this.paramWhitelist.includes(key);
