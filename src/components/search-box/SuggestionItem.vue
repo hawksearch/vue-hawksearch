@@ -1,7 +1,7 @@
 <template>
     <li @click="onClick">
         <div v-html="item.Thumb"></div>
-        <p class="p-name">{{ item.ProductName }}</p>
+        <p class="p-name">{{ getField('item.ProductName') }}</p>
     </li>
 </template>
 
