@@ -625,6 +625,17 @@ class HawksearchVue {
             polyfillElement.setAttribute('src', 'https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch');
             document.head.appendChild(polyfillElement);
         }
+
+        if (!String.prototype.replaceAll) {
+            String.prototype.replaceAll = function(str, newStr){
+
+                if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+                    return this.replace(str, newStr);
+                }
+
+                return this.replace(new RegExp(str, 'g'), newStr);
+            };
+        }
     }
 
     static handleAdditionalParameters(widget) {
