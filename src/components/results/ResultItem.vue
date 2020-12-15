@@ -51,12 +51,11 @@
         },
         methods: {
             getField: function (fieldName) {
-                var config = this.$root.config;
-
+                var config = this.$root.$store.state.config;
+               
                 if (config && config.language) {
                     fieldName += `_${config.language}`;
                 }
-
                 if (this.result &&
                     this.result.Document &&
                     this.result.Document[fieldName] &&

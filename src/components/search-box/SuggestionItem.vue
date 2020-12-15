@@ -18,6 +18,22 @@
             }
         },
         methods: {
+            getField: function (fieldName) {
+                var config = this.$root.$store.state.config;
+
+                if (config && config.language) {
+                    fieldName += `_${config.language}`;
+                }
+
+                if (this.item &&
+                    this.item.Results &&
+                    this.item.Results.Document &&
+                    this.item.Results.Document[fieldName] &&
+                    this.item.Results.Document[fieldName].length) {
+
+                    return this.item.Results.Document[fieldName][0];
+                }
+            },
             onClick: function () {
                 this.$emit('itemselected', this.item);
             }
