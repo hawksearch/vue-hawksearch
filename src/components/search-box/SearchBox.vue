@@ -29,7 +29,6 @@
                 keywordEnter: null,
                 placeholder: 'Enter search term',
                 suggestionDelay: null,
-                loadingSuggestions: false,
                 fieldFocused: false
             }
         },
@@ -94,7 +93,6 @@
         computed: {
             ...mapState([
                 'loadingResults',
-                'loadingSuggestions',
                 'searchOutput'
             ])
         },
