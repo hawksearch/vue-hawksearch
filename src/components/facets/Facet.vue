@@ -76,6 +76,7 @@
         },
         created: function () {
             this.setFilter();
+            this.setCollapsed();
         },
         data() {
             return {
@@ -98,6 +99,7 @@
             },
             toggleCollapse: function () {
                 this.isCollapsed = !this.isCollapsed;
+                sessionStorage.setItem(this.getStorageName(),this.isCollapsed)
             },
             setFilter: function () {
                 if (this.filteredData && this.filter) {
@@ -119,6 +121,19 @@
             toggleTruncate: function () {
                 this.isTruncated = !this.isTruncated;
                 this.setFilter();
+            },
+            setCollapsed: function () {
+                let isCollaped = sessionStorage.getItem(this.getStorageName())
+
+                if (isCollaped) {
+                     this.isCollapsed = JSON.parse(isCollaped)
+                }
+            },
+            getStorageName: function () {
+                let facetName = HawksearchVue.getFacetParamName(this.facetData)
+                let pathName = location.pathname.replaceAll('/','_')
+
+                return 'hs_facet_'+ pathName + '_' +  facetName
             }
         },
         watch: {
