@@ -1,5 +1,5 @@
 <template>
-    <div ref="recommendations-wrapper" class="recommendations-wrapper">
+    <div ref="recommendations-wrapper" class="recommendations-wrapper" >
         <template v-if="widgetItem.recommendationItems">
             <div class="recommendations-title">
                 <h4>{{ widgetItem.widgeTitle }}</h4>
@@ -13,7 +13,7 @@
                         <left-chevron-svg icon-class="hawk-pagination__left" />
                     </div>
 
-                    <div class="recommendations-container slider-enabled" :style="{ width: widgetItem.carouselData.nofVisible * itemWidth + 'px', height: itemHeight + 'px' }">
+                    <div class="recommendations-container slider-enabled" :style="{ width: widgetItem.carouselData.nofVisible * itemWidth + 'px', height: itemHeight + 'px' }" @mousedown="onMouseDown" @mousemove="dragMouse" @mouseup="onMouseUp">
                         <div class="recommendations-container-inner" :style="{ left: slideOffset + 'px', transition: 'left ' + widgetItem.carouselData.animationSpeed + 'ms' }">
                             <recommendations-item class="recommendations-item"
                                                   v-for="result in widgetItem.recommendationItems"
@@ -21,7 +21,8 @@
                                                   :result="result"
                                                   :requestId="requestId"
                                                   :widgetGuid="widgetGuid"
-                                                  :style="{ width: itemWidth + 'px'}"></recommendations-item>
+                                                  :style="{ width: itemWidth + 'px'}"
+                                                  ></recommendations-item>
                         </div>
 
                     </div>
@@ -57,6 +58,7 @@
     import PlaceholderItem from '../PlaceholderItem'
     import LeftChevronSvg from '../../svg/LeftChevronSvg'
     import RightChevronSvg from '../../svg/RightChevronSvg'
+import func from '../../../../vue-temp/vue-editor-bridge'
 
     export default {
         name: 'recommendations',
@@ -106,13 +108,57 @@
                 itemWidth: 300,
                 itemHeight: 300,
                 filler: 100,
-                showComponent: 0
+                showComponent: 0,
+                positions: {
+                clientX: 0,
+                prevClientX: 0,
+                movementX: 0,
+                },
+                isMouseDown: false
             }
         },
+        created:function() {
+        },
         methods: {
+            onMouseUp : function (event) {
+                this.isMouseDown = false;
+                this.positions.prevClientX = 0
+                window.removeEventListener('click')
+            },
+            onMouseDown: function (event){
+                this.positions.clientX = event.clientX;
+                this.isMouseDown = true
+                window.addEventListener('click', (e) => {e.preventDefault()})
+            },
+            dragMouse: function (event) {
+                if (this.isMouseDown == true) {
+                    let direction = null
+
+                    if(this.positions.prevClientX == 0){
+                        this.positions.movementX = this.positions.clientX - event.clientX
+                        this.positions.prevClientX = event.clientX
+                    }
+                    else{
+                        this.positions.movementX = this.positions.prevClientX - event.clientX
+                        this.positions.prevClientX = event.clientX
+                    }
+                    if(this.positions.movementX < 0)
+                        direction = 'prev'
+                    else
+                        direction = "next"
+
+                    if (direction == "prev" && this.slideOffset < 0) {
+                        this.slideOffset += Math.abs(this.positions.movementX);
+                    }
+                    else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
+                        this.slideOffset -= Math.abs(this.positions.movementX);
+                    }
+                    console.log(this.positions.movementX)
+                }
+            },
             slide: function (direction) {
                 var delta = (this.widgetItem.carouselData.scrollNumber * this.itemWidth);
-
+                console.log(delta)
                 if (direction == "prev" && this.slideOffset < 0) {
                     this.slideOffset += delta;
                 }
@@ -157,4 +203,7 @@
 </script>
 
 <style scoped lang="scss">
+.recommendations-container:hover {
+    cursor: pointer;
+}
 </style>
