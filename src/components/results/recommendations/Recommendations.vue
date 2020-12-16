@@ -122,31 +122,33 @@
             onMouseUp : function (event) {
                 this.isMouseDown = false;
                 this.positions.prevClientX = 0
-                window.removeEventListener('click')
+                this.positions.clientX = 0
             },
             onMouseDown: function (event){
                 this.positions.clientX = event.clientX;
                 this.isMouseDown = true
-                window.addEventListener('click', (e) => {e.preventDefault()})
             },
             dragMouse: function (event) {
 
                 if (this.isMouseDown == true) {
                     let direction = null
 
-                    if(this.positions.prevClientX == 0){
+                    if (this.positions.prevClientX == 0){
                         this.positions.movementX = this.positions.clientX - event.clientX
-                        this.positions.prevClientX = event.clientX
                     }
-                    else{
+                    else {
                         this.positions.movementX = this.positions.prevClientX - event.clientX
-                        this.positions.prevClientX = event.clientX
                     }
 
-                    if(this.positions.movementX < 0)
+                    this.positions.prevClientX = event.clientX
+
+                    if (this.positions.movementX < 0) {
                         direction = 'prev'
-                    else
+                    }
+                    else {
                         direction = "next"
+                    }
+
 
                     if (direction == "prev" && this.slideOffset < 0) {
                         this.slideOffset += Math.abs(this.positions.movementX);
