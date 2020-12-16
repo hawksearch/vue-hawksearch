@@ -58,7 +58,6 @@
     import PlaceholderItem from '../PlaceholderItem'
     import LeftChevronSvg from '../../svg/LeftChevronSvg'
     import RightChevronSvg from '../../svg/RightChevronSvg'
-import func from '../../../../vue-temp/vue-editor-bridge'
 
     export default {
         name: 'recommendations',
@@ -131,6 +130,7 @@ import func from '../../../../vue-temp/vue-editor-bridge'
                 window.addEventListener('click', (e) => {e.preventDefault()})
             },
             dragMouse: function (event) {
+
                 if (this.isMouseDown == true) {
                     let direction = null
 
@@ -142,6 +142,7 @@ import func from '../../../../vue-temp/vue-editor-bridge'
                         this.positions.movementX = this.positions.prevClientX - event.clientX
                         this.positions.prevClientX = event.clientX
                     }
+
                     if(this.positions.movementX < 0)
                         direction = 'prev'
                     else
