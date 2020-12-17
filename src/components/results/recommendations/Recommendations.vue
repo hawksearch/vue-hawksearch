@@ -14,7 +14,7 @@
                     </div>
 
                     <div class="recommendations-container slider-enabled" :style="{ width: widgetItem.carouselData.nofVisible * itemWidth + 'px', height: itemHeight + 'px' }" @mousedown="onMouseDown" @mousemove="dragMouse" @mouseup="onMouseUp">
-                        <div class="recommendations-container-inner" :style="{ left: slideOffset + 'px', transition: 'left ' + widgetItem.carouselData.animationSpeed + 'ms' }">
+                        <div class="recommendations-container-inner" :style="[{left: slideOffset + 'px'}, isNavigationClicked ? { transition: 'left ' + widgetItem.carouselData.animationSpeed + 'ms'} : {transition : 'none'} ]">
                             <recommendations-item class="recommendations-item"
                                                   v-for="result in widgetItem.recommendationItems"
                                                   :key="result.id"
@@ -113,7 +113,8 @@
                 prevClientX: 0,
                 movementX: 0,
                 },
-                isMouseDown: false
+                isMouseDown: false,
+                isNavigationClicked: false
             }
         },
         created:function() {
@@ -123,16 +124,19 @@
                 this.isMouseDown = false;
                 this.positions.prevClientX = 0
                 this.positions.clientX = 0
+                this.isNavigationClicked = true;
+
             },
             onMouseDown: function (event){
                 this.positions.clientX = event.clientX;
                 this.isMouseDown = true
+                this.isNavigationClicked = false;
+
             },
             dragMouse: function (event) {
 
                 if (this.isMouseDown == true) {
                     let direction = null
-
                     if (this.positions.prevClientX == 0){
                         this.positions.movementX = this.positions.clientX - event.clientX
                     }
@@ -161,7 +165,8 @@
             },
             slide: function (direction) {
                 var delta = (this.widgetItem.carouselData.scrollNumber * this.itemWidth);
-                console.log(delta)
+                this.isNavigationClicked = true;
+
                 if (direction == "prev" && this.slideOffset < 0) {
                     this.slideOffset += delta;
                 }
