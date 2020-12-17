@@ -22,6 +22,7 @@
                                                   :requestId="requestId"
                                                   :widgetGuid="widgetGuid"
                                                   :style="{ width: itemWidth + 'px'}"
+                                                  :isItemClickable="isItemClickable"
                                                   ></recommendations-item>
                         </div>
 
@@ -114,29 +115,30 @@
                 movementX: 0,
                 },
                 isMouseDown: false,
-                isNavigationClicked: false
+                isNavigationClicked: false,
+                isItemClickable: true
             }
         },
         created:function() {
         },
         methods: {
-            onMouseUp : function (event) {
+            onMouseUp: function (event) {
                 this.isMouseDown = false;
                 this.positions.prevClientX = 0
                 this.positions.clientX = 0
                 this.isNavigationClicked = true;
-
+                setTimeout(() => { this.isItemClickable = true }, 200);
             },
             onMouseDown: function (event){
                 this.positions.clientX = event.clientX;
                 this.isMouseDown = true
                 this.isNavigationClicked = false;
-
             },
             dragMouse: function (event) {
-
                 if (this.isMouseDown == true) {
+                    this.isItemClickable = false
                     let direction = null
+
                     if (this.positions.prevClientX == 0){
                         this.positions.movementX = this.positions.clientX - event.clientX
                     }
@@ -160,7 +162,6 @@
                     else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
                         this.slideOffset -= Math.abs(this.positions.movementX);
                     }
-                    console.log(this.positions.movementX)
                 }
             },
             slide: function (direction) {
