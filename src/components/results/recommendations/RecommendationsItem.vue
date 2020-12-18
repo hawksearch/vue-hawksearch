@@ -99,7 +99,6 @@
                 if(this.isItemClickable){
                     var link = this.getLink();
 
-
                     if (this.trackEvent) {
                         this.trackEvent.track('recommendationclick', {
                             widgetGuid: this.widgetGuid || this.$root.$store.state.config.widgetGuid,

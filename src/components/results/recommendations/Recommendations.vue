@@ -1,5 +1,5 @@
 <template>
-    <div ref="recommendations-wrapper" class="recommendations-wrapper" >
+    <div ref="recommendations-wrapper" class="recommendations-wrapper">
         <template v-if="widgetItem.recommendationItems">
             <div class="recommendations-title">
                 <h4>{{ widgetItem.widgeTitle }}</h4>
@@ -22,10 +22,9 @@
                                                   :requestId="requestId"
                                                   :widgetGuid="widgetGuid"
                                                   :style="{ width: itemWidth + 'px'}"
-                                                  :isItemClickable="isItemClickable"
-                                                  ></recommendations-item>
+                                                  :isItemClickable="isItemClickable">
+                                                  </recommendations-item>
                         </div>
-
                     </div>
 
                     <div v-if="widgetItem.carouselData.showNextPrevButtons" class="slider-button-next" @click="slide('next')" :style="{ height: itemHeight + 'px' }">
@@ -50,7 +49,6 @@
                                       :widgetGuid="widgetGuid"></recommendations-item>
             </template>
         </template>
-
     </div>
 </template>
 
@@ -180,15 +178,15 @@
 
                 if (direction == "prev" && this.slideOffset < 0) {
                     if(this.slideOffset + delta >= 0)
-                            this.slideOffset = 0
-                        else
-                            this.slideOffset += delta
+                        this.slideOffset = 0
+                    else
+                        this.slideOffset += delta
                 }
                 else if (direction == "next" && Math.abs(this.slideOffset) < maxSlideOffset) {
                     if(Math.abs(this.slideOffset - delta) >= maxSlideOffset)
-                            this.slideOffset = - maxSlideOffset
-                        else
-                            this.slideOffset -= delta
+                        this.slideOffset = - maxSlideOffset
+                    else
+                        this.slideOffset -= delta
                 }
             },
             navigateTo: function (index) {
