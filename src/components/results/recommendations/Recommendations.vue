@@ -36,7 +36,7 @@
                 </div>
                 <div v-if="widgetItem.carouselData.showDots" class="recommendations-navigation">
                     <div class="filler"></div>
-                    <div v-for="index in Math.ceil(widgetItem.itemsCount / widgetItem.carouselData.scrollNumber)" :key="index" class="recommendations-navigation-item" @click="navigateTo(index)">
+                    <div v-for="index in Math.ceil(widgetItem.recommendationItems.length / widgetItem.carouselData.nofVisible)" :key="index" class="recommendations-navigation-item" @click="navigateTo(index)">
                     </div>
                     <div class="filler"></div>
                 </div>
@@ -113,9 +113,10 @@
                 clientX: 0,
                 prevClientX: 0,
                 movementX: 0,
+                direction: null
                 },
                 isMouseDown: false,
-                isNavigationClicked: false,
+                isNavigationClicked: true,
                 isItemClickable: true
             }
         },
@@ -127,6 +128,7 @@
                 this.positions.prevClientX = 0
                 this.positions.clientX = 0
                 this.isNavigationClicked = true;
+                this.positions.direction = null
                 setTimeout(() => { this.isItemClickable = true }, 200);
             },
             onMouseDown: function (event){
@@ -137,7 +139,6 @@
             dragMouse: function (event) {
                 if (this.isMouseDown == true) {
                     this.isItemClickable = false
-                    let direction = null
 
                     if (this.positions.prevClientX == 0){
                         this.positions.movementX = this.positions.clientX - event.clientX
@@ -149,30 +150,45 @@
                     this.positions.prevClientX = event.clientX
 
                     if (this.positions.movementX < 0) {
-                        direction = 'prev'
+                        this.positions.direction = 'prev'
                     }
                     else {
-                        direction = "next"
+                        this.positions.direction = "next"
                     }
 
+                    var absDelta = Math.abs(this.positions.movementX)
+                    var maxSlideOffset = ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)
 
-                    if (direction == "prev" && this.slideOffset < 0) {
-                        this.slideOffset += Math.abs(this.positions.movementX);
+                    if (this.positions.direction == "prev" && this.slideOffset < 0) {
+                        if(this.slideOffset + absDelta >= 0)
+                            this.slideOffset = 0
+                        else
+                            this.slideOffset += absDelta
                     }
-                    else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
-                        this.slideOffset -= Math.abs(this.positions.movementX);
+                    else if (this.positions.direction == "next" && Math.abs(this.slideOffset) < maxSlideOffset ) {
+                        if(Math.abs(this.slideOffset - absDelta) >= maxSlideOffset)
+                            this.slideOffset = - maxSlideOffset
+                        else
+                            this.slideOffset -= absDelta
                     }
                 }
             },
             slide: function (direction) {
                 var delta = (this.widgetItem.carouselData.scrollNumber * this.itemWidth);
                 this.isNavigationClicked = true;
+                var maxSlideOffset = ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)
 
                 if (direction == "prev" && this.slideOffset < 0) {
-                    this.slideOffset += delta;
+                    if(this.slideOffset + delta >= 0)
+                            this.slideOffset = 0
+                        else
+                            this.slideOffset += delta
                 }
-                else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
-                    this.slideOffset -= delta;
+                else if (direction == "next" && Math.abs(this.slideOffset) < maxSlideOffset) {
+                    if(Math.abs(this.slideOffset - delta) >= maxSlideOffset)
+                            this.slideOffset = - maxSlideOffset
+                        else
+                            this.slideOffset -= delta
                 }
             },
             navigateTo: function (index) {
