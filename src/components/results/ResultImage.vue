@@ -1,6 +1,6 @@
 <template>
     <div class="hawk-results__item-image">
-        <img :src="imageUrl" />
+        <img :src="imageUrl"  draggable="false"/>
     </div>
 </template>
 
@@ -28,7 +28,7 @@
         computed: {
             imageUrl: function () {
                 return this.imagePath;
-            } 
+            }
         }
     }
 
