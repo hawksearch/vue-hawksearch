@@ -126,7 +126,10 @@
                 let isCollaped = sessionStorage.getItem(this.getStorageName())
 
                 if (isCollaped) {
-                     this.isCollapsed = JSON.parse(isCollaped)
+                    this.isCollapsed = JSON.parse(isCollaped)
+                }
+                else {
+                    this.isCollapsed = this.facetData.IsCollapsedDefault;
                 }
             },
             getStorageName: function () {
