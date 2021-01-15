@@ -1,8 +1,6 @@
 <template>
     <li @click="onClick">
-        <div v-html="item.Thumb"></div>
-        <p class="p-name" v-if="getField('title') != null">{{ getField('title') }}</p>
-        <p class="p-name" v-else-if="getField('content') != null">{{ getField('content') }}</p>
+        <p class="p-name">{{ getField('title') }}</p>
     </li>
 </template>
 
