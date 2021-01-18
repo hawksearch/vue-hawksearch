@@ -163,7 +163,6 @@ class HawksearchVue {
             },
             watch: {
                 searchOutput: function (n, o) {
-                    HawksearchVue.scrollToBeginning(this);
                     this.$emit('resultsupdate', n);
                 },
                 pendingSearch: function (n, o) {
@@ -194,6 +193,20 @@ class HawksearchVue {
                                     typeId: this.trackEvent.getSearchType(storeState.pendingSearch, storeState.prevSearchOutput)
                                 });
                             }
+                        }
+
+                        var pageLoadingActions = [
+                            'fetchResults',
+                            'applyFacets',
+                            'applyPageNumber',
+                            'applyPageSize',
+                            'applySort',
+                            'applySearchWithin',
+                            'clearFacet',
+                        ];
+
+                        if (pageLoadingActions.includes(action)) {
+                            HawksearchVue.scrollToBeginning(this);
                         }
                     });
                 }
@@ -522,13 +535,14 @@ class HawksearchVue {
 
         Vue.prototype.$mount = function (el, hydrating) {
             const options = this.$options;
+            var templateOverride = (options.propsData && options.propsData.templateOverride) || options.templateOverride;
 
-            if (options.templateOverride &&
-                typeof options.templateOverride === 'string' &&
-                options.templateOverride.charAt(0) === '#' &&
-                document.querySelector(options.templateOverride)) {
+            if (templateOverride &&
+                typeof templateOverride === 'string' &&
+                templateOverride.charAt(0) === '#' &&
+                document.querySelector(templateOverride)) {
 
-                let renderFunctions = Vue.compile(document.querySelector(options.templateOverride).innerHTML);
+                let renderFunctions = Vue.compile(document.querySelector(templateOverride).innerHTML);
                 Object.assign(options, renderFunctions);
             }
 
@@ -721,6 +735,16 @@ class HawksearchVue {
         if (widget.config.searchConfig.scrollUpOnRefresh) {
             window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
         }
+    }
+
+    static collapseAllFacets() {
+        Object.values(HawksearchVue.widgetInstances).forEach(w => {
+            w.$children.forEach(c => {
+                if (c.$options.name == 'facet-list') {
+                    c.collapseAll();
+                }
+            })
+        })
     }
 
 }

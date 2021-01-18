@@ -15,6 +15,7 @@
     import { mapState } from 'vuex';
 
     export default {
+        name: 'custom-select',
         props:{
             options:{
                 type: Array,

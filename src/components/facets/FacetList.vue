@@ -4,7 +4,7 @@
 
         <div class="hawk-facet-rail__facet-list">
             <template v-if="facets && facets.length">
-                <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData"></facet>
+                <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData" @expand="onExpand"></facet>
             </template>
             <template v-else-if="loadingResults">
                 <placeholder-facet v-for="index in 4" :key="index"></placeholder-facet>
@@ -37,7 +37,29 @@
             }
         },
         methods: {
-
+            onExpand: function (facet) {
+                if (this.$root.config.facetConfig.hasOwnProperty('_expand') && this.$root.config.facetConfig['_expand'] == 'single') {
+                    this.$children.forEach(f => {
+                        if (f != facet && f.hasOwnProperty('isCollapsed')) {
+                            f.isCollapsed = true;
+                        }
+                    })
+                }
+            },
+            collapseAll: function () {
+                this.$children.forEach(f => {
+                    if (f.hasOwnProperty('isCollapsed')) {
+                        f.isCollapsed = true;
+                    }
+                })
+            },
+            expandAll: function () {
+                this.$children.forEach(f => {
+                    if (f.hasOwnProperty('isCollapsed')) {
+                        f.isCollapsed = false;
+                    }
+                })
+            }
         },
         computed: {
             ...mapState([
