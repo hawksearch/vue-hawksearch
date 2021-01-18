@@ -10,12 +10,14 @@
 <script>
     import { mapState } from 'vuex'
     import SearchSuggestions from "./SearchSuggestions";
+    import CustomResultsLabel from "../results/tools/CustomResultsLabel";
 
     export default {
         name: 'search-box',
-        props: ['indexName', 'searchPage'],
+        props: ['indexName', 'searchPage', 'templateOverride'],
         components: {
-            SearchSuggestions
+            SearchSuggestions,
+            CustomResultsLabel
         },
         mounted() {
             this.$root.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
@@ -97,7 +99,7 @@
             ])
         },
         watch: {
-            searchOutput (newValue, oldValue) {
+            searchOutput(newValue, oldValue) {
                 if (newValue.Keyword && newValue.Keyword.length) {
                     this.keyword = newValue.Keyword;
                 }

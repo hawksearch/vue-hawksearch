@@ -99,7 +99,17 @@
             },
             toggleCollapse: function () {
                 this.isCollapsed = !this.isCollapsed;
-                sessionStorage.setItem(this.getStorageName(),this.isCollapsed)
+
+                if (this.isPersistent()) {
+                    sessionStorage.setItem(this.getStorageName(), this.isCollapsed)
+                }
+
+                if (!this.isCollapsed) {
+                    this.$emit('expand', this);
+                }
+                else {
+                    this.$emit('collapse', this);
+                }
             },
             setFilter: function () {
                 if (this.filteredData && this.filter) {
@@ -123,20 +133,28 @@
                 this.setFilter();
             },
             setCollapsed: function () {
-                let isCollaped = sessionStorage.getItem(this.getStorageName())
+                this.isCollapsed = this.facetData.IsCollapsedDefault;
 
-                if (isCollaped) {
-                    this.isCollapsed = JSON.parse(isCollaped)
+                try {
+                    if (this.isPersistent() && sessionStorage.getItem(this.getStorageName())) {
+                        this.isCollapsed = JSON.parse(sessionStorage.getItem(this.getStorageName()))
+                    }
                 }
-                else {
-                    this.isCollapsed = this.facetData.IsCollapsedDefault;
-                }
+                catch (e) { }
             },
             getStorageName: function () {
                 let facetName = HawksearchVue.getFacetParamName(this.facetData)
-                let pathName = location.pathname.replaceAll('/','_')
+                let pathName = location.pathname.replaceAll('/', '_')
 
-                return 'hs_facet_'+ pathName + '_' +  facetName
+                return 'hs_facet_' + pathName + '_' + facetName
+            },
+            isPersistent: function () {
+                if (this.$root.config.facetConfig.hasOwnProperty('_persist') && this.$root.config.facetConfig['_persist'] == false) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
             }
         },
         watch: {
@@ -197,7 +215,6 @@
             }
         }
     }
-
 
 </script>
 

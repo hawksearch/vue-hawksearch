@@ -50,7 +50,7 @@
             }
         },
         methods: {
-            getField: function (fieldName) {
+            getField: function (fieldName, options) {
                 var config = this.$root.$store.state.config;
                
                 if (config && config.language) {
@@ -61,7 +61,44 @@
                     this.result.Document[fieldName] &&
                     this.result.Document[fieldName].length) {
 
+                    if (options) {
+                        if (options.truncateTo) {
+                            return this.truncateValue(this.result.Document[fieldName][0], options.truncate);
+                        }
+
+                        if (options.parseAsArray) {
+                            return this.result.Document[fieldName];
+                        }
+                    }
+
                     return this.result.Document[fieldName][0];
+                }
+            },
+            truncateValue: function (value, limit) {
+                if (value) {
+                    var truncated = '';
+                    var arrValue = value.split(' ');
+
+                    limit = parseInt(limit) || 100;
+
+                    if (arrValue.length < 2) {
+                        truncated = value.substr(0, limit);
+                    }
+                    else {
+                        var appoxValue = '';
+
+                        for (var i = 0; i < arrValue.length && appoxValue.length < limit; i++) {
+                            appoxValue += " " + arrValue[i];
+                        }
+
+                        truncated = appoxValue;
+                    }
+
+                    if (value.length > limit) {
+                        truncated += ' ...'
+                    }
+
+                    return truncated;
                 }
             },
             getLink: function () {
