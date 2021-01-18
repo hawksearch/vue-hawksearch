@@ -56,7 +56,7 @@
             expandAll: function () {
                 this.$children.forEach(f => {
                     if (f.hasOwnProperty('isCollapsed')) {
-                        f.isCollapsed = true;
+                        f.isCollapsed = false;
                     }
                 })
             }
