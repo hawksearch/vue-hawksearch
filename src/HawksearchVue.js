@@ -48,7 +48,8 @@ class HawksearchVue {
         },
         resultItem: {
             itemSelect: true,
-            linkField: 'url'
+            linkField: 'url',
+            langIndiffFields: []
         }
     }
 
@@ -115,8 +116,8 @@ class HawksearchVue {
         else if (config) {
             // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
 
-            // Fill in the default values for the config
-            config = this.mergeConfig(this.defaultConfig, config);
+            // Extend the existing store config
+            config = this.mergeConfig(store.state.config, config);
 
             store.commit('updateConfig', config);
         }
