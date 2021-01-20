@@ -249,8 +249,8 @@ class TrackingEvent {
             EventType: E_T.autoCompleteClick,
             EventData: btoa(
                 JSON.stringify({
-                    Keyword: keyword,
-                    Name: name,
+                    Keyword: encodeURIComponent(keyword),
+                    Name: encodeURIComponent(name),
                     SuggestType: suggestType,
                     Url: url,
                 })
