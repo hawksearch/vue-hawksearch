@@ -81,41 +81,15 @@ function parseQueryStringToObject(search) {
 }
 
 function convertObjectToQueryString(queryObj) {
-	const queryStringValues = [];
+	var params = new URLSearchParams();
 
 	for (const key in queryObj) {
-		if (queryObj.hasOwnProperty(key)) {
-			if (allowedParams.includes(key)) {
-				const value = queryObj[key];
-
-				if (value === undefined || value === null) {
-					// if any of the special keys just aren't defined or are null, don't include them in
-					// the query string
-					continue;
-				}
-
-				if (typeof value !== 'string') {
-					throw new Error(`${key} must be a string`);
-				}
-
-				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + value);
-			} else {
-				const values = queryObj[key];
-
-				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
-				const escapedValues = [];
-
-				for (const unescapedValue of values) {
-					escapedValues.push(unescapedValue.replace(',', '::'));
-				}
-
-				queryStringValues.push(key + '=' + escapedValues.join(','));
-			}
+		if (queryObj[key]) {
+			params.set(key, queryObj[key])
 		}
 	}
 
-	return '?' + queryStringValues.join('&');
+	return '?' + params.toString();
 }
 
 function getSearchQueryString(searchRequest) {
