@@ -83,7 +83,7 @@
                 }
                 else {
                     this.clearSearchWithin();
-                    this.$root.dispatchToStore('fetchResults', {});
+                    this.$root.dispatchToStore('fetchResults', { PageNo: 1 });
                 }
             },
             clearSelectionItem: function (field, item) {
@@ -100,7 +100,7 @@
                 }
                 else {
                     this.clearSearchWithin();
-                    this.$root.dispatchToStore('fetchResults', {});
+                    this.$root.dispatchToStore('fetchResults', { PageNo: 1 });
                 }
             },
             clearAll: function () {
@@ -109,7 +109,7 @@
                 this.refreshResults();
             },
             refreshResults: function () {
-                var headers = {};
+                var headers = { PageNo: 1 };
                 var facetHeaders = Object.assign({}, this.selections);
 
                 if (facetHeaders.hasOwnProperty('searchWithin')) {
