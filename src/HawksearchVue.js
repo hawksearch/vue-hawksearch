@@ -279,7 +279,7 @@ class HawksearchVue {
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 ClientData: clientData
             },
             config.additionalParameters);
@@ -316,7 +316,7 @@ class HawksearchVue {
         var config = store.state.config;
         var params = {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 DisplayFullResponse: true,
                 visitId: getVisitId(),
                 visitorId: getVisitorId(),
@@ -367,7 +367,7 @@ class HawksearchVue {
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 ClientData: clientData,
                 DisplayFullResponse: true
             },
@@ -746,6 +746,14 @@ class HawksearchVue {
                 }
             })
         })
+    }
+
+    static getIndexName(config) {
+        var urlParams = new URLSearchParams(location.search);
+        var urlIndexName = urlParams.get('indexName');
+        var configIndexName = config.indexName;
+
+        return configIndexName || urlIndexName || "";
     }
 
 }
