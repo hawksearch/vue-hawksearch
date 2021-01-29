@@ -77,7 +77,7 @@
             clearSelectionField: function (field) {
                 if (field != 'searchWithin') {
                     if (this.selections.hasOwnProperty(field)) {
-                        delete this.selections[field];
+                        this.selections[field].Items = [];
                         this.refreshResults();
                     }
                 }
@@ -90,11 +90,6 @@
                 if (field != 'searchWithin') {
                     if (this.selections.hasOwnProperty(field)) {
                         this.selections[field].Items = this.selections[field].Items.filter(v => v != item);
-
-                        if (this.selections[field].Items.length == 0) {
-                            delete this.selections[field];
-                        }
-
                         this.refreshResults();
                     }
                 }
@@ -104,7 +99,12 @@
                 }
             },
             clearAll: function () {
-                this.selections = [];
+                if (this.selections) {
+                    Object.keys(this.selections).forEach(field => {
+                        this.selections[field].Items = [];
+                    });
+                }
+
                 this.clearSearchWithin();
                 this.refreshResults();
             },
@@ -121,7 +121,7 @@
                     facetHeaders[key] = facetHeaders[key].Items.map(item => item.Value);
                 });
 
-                headers.FacetSelections = facetHeaders;
+                headers.FacetSelections = _.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !_.isEmpty(a) });
 
                 this.$root.dispatchToStore('fetchResults', headers);
             },
