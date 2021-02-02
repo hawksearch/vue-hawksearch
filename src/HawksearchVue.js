@@ -756,6 +756,18 @@ class HawksearchVue {
         return configIndexName || urlIndexName || "";
     }
 
+    static getTabField(store) {
+        var field;
+
+        store.state.searchOutput.Facets.forEach(facet => {
+            if (facet.FieldType == "tab") {
+                field = facet.Field;
+            }
+        })
+
+        return field;
+    }
+
 }
 
 export default HawksearchVue;
