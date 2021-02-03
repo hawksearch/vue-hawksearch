@@ -18,13 +18,15 @@ export function parseSearchQueryString(search) {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language } = queryObj;
+	let { ...facetSelections } = queryObj;
+	facetSelections = _.mapValues(facetSelections, (value) => { return _.isArray(value) ? value : [value]});
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
+
 	return {
 		Keyword: lpurl || pageId ? '' : keyword,
-
 		SortBy: sort,
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,

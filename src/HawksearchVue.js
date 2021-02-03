@@ -251,6 +251,7 @@ class HawksearchVue {
         this.handleLanguageParameters(widget, searchParams);
 
         store.dispatch('fetchResults', searchParams).then(() => {
+            this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
     }
@@ -768,6 +769,22 @@ class HawksearchVue {
         return field;
     }
 
+    static getFacetFieldNames(store) {
+        var fields = [];
+
+        store.state.searchOutput.Facets.forEach(facet => {
+            fields.push(this.getFacetParamName(facet));
+        })
+
+        return fields;
+    }
+
+    static truncateFacetSelections(store){
+        var pendingSearch = _.cloneDeep(store.state.pendingSearch);
+        pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value,field) => {return _.includes(this.getFacetFieldNames(store),field)});
+
+        store.commit('updatePendingSearch',pendingSearch);
+    }
 }
 
 export default HawksearchVue;

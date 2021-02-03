@@ -111,7 +111,7 @@
         },
         watch: {
             searchOutput(newValue, oldValue) {
-                if (newValue.Keyword && newValue.Keyword.length) {
+                if (newValue && newValue.Keyword && newValue.Keyword.length) {
                     this.keyword = newValue.Keyword;
                 }
             }
