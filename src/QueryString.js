@@ -18,13 +18,15 @@ export function parseSearchQueryString(search) {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language } = queryObj;
+	let { ...facetSelections } = queryObj;
+	facetSelections = _.mapValues(facetSelections, (value) => { return _.isArray(value) ? value : [value]});
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
+
 	return {
 		Keyword: lpurl || pageId ? '' : keyword,
-
 		SortBy: sort,
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,
@@ -81,41 +83,15 @@ function parseQueryStringToObject(search) {
 }
 
 function convertObjectToQueryString(queryObj) {
-	const queryStringValues = [];
+	var params = new URLSearchParams();
 
 	for (const key in queryObj) {
-		if (queryObj.hasOwnProperty(key)) {
-			if (allowedParams.includes(key)) {
-				const value = queryObj[key];
-
-				if (value === undefined || value === null) {
-					// if any of the special keys just aren't defined or are null, don't include them in
-					// the query string
-					continue;
-				}
-
-				if (typeof value !== 'string') {
-					throw new Error(`${key} must be a string`);
-				}
-
-				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + value);
-			} else {
-				const values = queryObj[key];
-
-				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
-				const escapedValues = [];
-
-				for (const unescapedValue of values) {
-					escapedValues.push(unescapedValue.replace(',', '::'));
-				}
-
-				queryStringValues.push(key + '=' + escapedValues.join(','));
-			}
+		if (queryObj[key]) {
+			params.set(key, queryObj[key])
 		}
 	}
 
-	return '?' + queryStringValues.join('&');
+	return '?' + params.toString();
 }
 
 function getSearchQueryString(searchRequest) {
