@@ -49,6 +49,10 @@ class HawksearchVue {
         resultItem: {
             itemSelect: true,
             linkField: 'url'
+        },
+        suggestionItem: {
+            linkField: 'link',
+            titleFiled: 'title'
         }
     }
 
