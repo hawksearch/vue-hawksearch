@@ -165,6 +165,49 @@ export default () => {
                     commit('updatePendingSearch', pendingSearch);
                     dispatch('fetchResults', { PageNo: 1 }).then(() => { resolve() })
                 });
+            },
+            loadMoreResults({ dispatch, commit, state }) {
+                return new Promise((resolve, reject) => {
+                    var page = state.searchOutput.Pagination.CurrentPage + 1;
+
+                    if (page >= 1 && page <= state.searchOutput.Pagination.NofPages) {
+                        var searchParams = { PageNo: page };
+                        var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
+                        commit('updatePendingSearch', pendingSearch);
+                        commit('updateSuggestions', null);
+                        commit('updateLoadingSuggestions', false);
+                        commit('updateLoadingResults', true);
+
+                        HawksearchVue.fetchResults(pendingSearch, this, (searchOutput, error) => {
+                            commit('updateLoadingResults', false);
+
+                            if (searchOutput) {
+                                var currentSearchOutput = _.clone(state.searchOutput);
+                                var newSearchOutput = _.clone(searchOutput);
+
+                                newSearchOutput.Results = _.concat(currentSearchOutput.Results, newSearchOutput.Results);
+
+                                commit('setSearchError', false);
+                                commit('updatePrevResults', currentSearchOutput);
+                                commit('updateResults', newSearchOutput);
+
+                                HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
+                                    commit('updateExtendedSearchParams', extendedSearchParams);
+                                    resolve()
+                                });
+                            }
+                            else if (error) {
+                                commit('updateResults', null);
+                                commit('setSearchError', true);
+                                reject()
+                            }
+                            else {
+                                commit('updateResults', null);
+                                reject()
+                            }
+                        });
+                    }
+                });
             }
         },
         getters: {

@@ -36,6 +36,9 @@
             },
             linkField: {
                 default: null
+            },
+            isItemClickable: {
+                default: null
             }
         },
         computed: {
@@ -92,19 +95,22 @@
                 }
             },
             onClick: function (e) {
-                var link = this.getLink();
 
-                if (this.trackEvent) {
-                    this.trackEvent.track('recommendationclick', {
-                        widgetGuid: this.widgetGuid || this.$root.$store.state.config.widgetGuid,
-                        uniqueId: this.result.id,
-                        requestId: this.requestId,
-                        itemIndex: this.result.itemIndex || null
-                    });
-                }
-                
-                if (link && this.$root.config.resultItem.itemSelect) {
-                    location.assign(link);
+                if(this.isItemClickable){
+                    var link = this.getLink();
+
+                    if (this.trackEvent) {
+                        this.trackEvent.track('recommendationclick', {
+                            widgetGuid: this.widgetGuid || this.$root.$store.state.config.widgetGuid,
+                            uniqueId: this.result.id,
+                            requestId: this.requestId,
+                            itemIndex: this.result.itemIndex || null
+                        });
+                    }
+
+                    if (link && this.$root.config.resultItem.itemSelect) {
+                        location.assign(link);
+                    }
                 }
             }
         }

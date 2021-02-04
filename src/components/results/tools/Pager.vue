@@ -3,7 +3,7 @@
         <button class="hawk-pagination__item" @click="goToPreviousPage">
             <left-chevron-svg icon-class="hawk-pagination__left" />
         </button>
-        <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" />
+        <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" min="1" :max="totalPages" />
         <span class="hawk-pagination__total-text"><span class="break"></span> of {{ totalPages }}</span>
         <button class="hawk-pagination__item" @click="goToNextPage">
             <right-chevron-svg icon-class="hawk-pagination__right" />
@@ -42,12 +42,27 @@
                     this.goToPage(parseInt(this.page, 10) + 1);
                 }
             },
-            onChange: function (e) {
-                this.goToPage(parseInt(e.target.value, 10));
-            },
             goToPage: function (page) {
                 if (page >= 1 && page <= this.totalPages) {
                     this.$root.dispatchToStore('applyPageNumber', page);
+                }
+            },
+            onChange: function (e) {
+                this.goToPage(parseInt(e.target.value, 10));
+            },
+            onInput: function (e) {
+                let wantedPageNo = parseInt(e.currentTarget.value, 10);
+
+                if (wantedPageNo > this.totalPages) {
+                    wantedPageNo = this.totalPages;
+                    e.currentTarget.value = "";
+                    e.preventDefault();
+                }
+
+                if (wantedPageNo < 1) {
+                    wantedPageNo = 1;
+                    e.currentTarget.value = "";
+                    e.preventDefault();
                 }
             }
         },

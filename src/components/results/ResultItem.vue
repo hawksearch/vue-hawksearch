@@ -50,18 +50,57 @@
             }
         },
         methods: {
-            getField: function (fieldName) {
+            getField: function (fieldName, options) {
                 var config = this.$root.$store.state.config;
+                var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
                
-                if (config && config.language) {
+                if (config && config.language && !_.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${config.language}`;
                 }
+
                 if (this.result &&
                     this.result.Document &&
                     this.result.Document[fieldName] &&
                     this.result.Document[fieldName].length) {
 
+                    if (options) {
+                        if (options.truncateTo) {
+                            return this.truncateValue(this.result.Document[fieldName][0], options.truncate);
+                        }
+
+                        if (options.parseAsArray) {
+                            return this.result.Document[fieldName];
+                        }
+                    }
+
                     return this.result.Document[fieldName][0];
+                }
+            },
+            truncateValue: function (value, limit) {
+                if (value) {
+                    var truncated = '';
+                    var arrValue = value.split(' ');
+
+                    limit = parseInt(limit) || 100;
+
+                    if (arrValue.length < 2) {
+                        truncated = value.substr(0, limit);
+                    }
+                    else {
+                        var appoxValue = '';
+
+                        for (var i = 0; i < arrValue.length && appoxValue.length < limit; i++) {
+                            appoxValue += " " + arrValue[i];
+                        }
+
+                        truncated = appoxValue;
+                    }
+
+                    if (value.length > limit) {
+                        truncated += ' ...'
+                    }
+
+                    return truncated;
                 }
             },
             getLink: function () {

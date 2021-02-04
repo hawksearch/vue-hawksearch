@@ -10,12 +10,14 @@
 <script>
     import { mapState } from 'vuex'
     import SearchSuggestions from "./SearchSuggestions";
+    import CustomResultsLabel from "../results/tools/CustomResultsLabel";
 
     export default {
         name: 'search-box',
-        props: ['indexName', 'searchPage'],
+        props: ['indexName', 'searchPage', 'templateOverride'],
         components: {
-            SearchSuggestions
+            SearchSuggestions,
+            CustomResultsLabel
         },
         mounted() {
             this.$root.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
@@ -43,7 +45,18 @@
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
-                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {} });
+                    var store = this.$root.$store;
+                    var facetSelections = {};
+
+                    if (this.$root.config.tabConfig.alwaysOn) {
+                        facetSelections = _.pickBy(store.state.pendingSearch.FacetSelections, (value, field) => field == HawksearchVue.getTabField(store));
+                    }
+
+                    this.$root.dispatchToStore('fetchResults', {
+                        Keyword: this.keyword || "",
+                        FacetSelections: facetSelections,
+                        PageNo: 1
+                    });
                 }
             },
             onKeyDown: function (e) {
@@ -97,8 +110,8 @@
             ])
         },
         watch: {
-            searchOutput (newValue, oldValue) {
-                if (newValue.Keyword && newValue.Keyword.length) {
+            searchOutput(newValue, oldValue) {
+                if (newValue && newValue.Keyword && newValue.Keyword.length) {
                     this.keyword = newValue.Keyword;
                 }
             }

@@ -48,7 +48,8 @@ class HawksearchVue {
         },
         resultItem: {
             itemSelect: true,
-            linkField: 'url'
+            linkField: 'url',
+            langIndiffFields: []
         },
         suggestionItem: {
             linkField: 'link',
@@ -119,8 +120,8 @@ class HawksearchVue {
         else if (config) {
             // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
 
-            // Fill in the default values for the config
-            config = this.mergeConfig(this.defaultConfig, config);
+            // Extend the existing store config
+            config = this.mergeConfig(store.state.config, config);
 
             store.commit('updateConfig', config);
         }
@@ -167,7 +168,6 @@ class HawksearchVue {
             },
             watch: {
                 searchOutput: function (n, o) {
-                    HawksearchVue.scrollToBeginning(this);
                     this.$emit('resultsupdate', n);
                 },
                 pendingSearch: function (n, o) {
@@ -198,6 +198,20 @@ class HawksearchVue {
                                     typeId: this.trackEvent.getSearchType(storeState.pendingSearch, storeState.prevSearchOutput)
                                 });
                             }
+                        }
+
+                        var pageLoadingActions = [
+                            'fetchResults',
+                            'applyFacets',
+                            'applyPageNumber',
+                            'applyPageSize',
+                            'applySort',
+                            'applySearchWithin',
+                            'clearFacet',
+                        ];
+
+                        if (pageLoadingActions.includes(action)) {
+                            HawksearchVue.scrollToBeginning(this);
                         }
                     });
                 }
@@ -241,6 +255,7 @@ class HawksearchVue {
         this.handleLanguageParameters(widget, searchParams);
 
         store.dispatch('fetchResults', searchParams).then(() => {
+            this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
     }
@@ -269,7 +284,7 @@ class HawksearchVue {
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 ClientData: clientData
             },
             config.additionalParameters);
@@ -306,7 +321,7 @@ class HawksearchVue {
         var config = store.state.config;
         var params = {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 DisplayFullResponse: true,
                 visitId: getVisitId(),
                 visitorId: getVisitorId(),
@@ -357,7 +372,7 @@ class HawksearchVue {
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
-                IndexName: config.indexName,
+                IndexName: this.getIndexName(config),
                 ClientData: clientData,
                 DisplayFullResponse: true
             },
@@ -526,13 +541,14 @@ class HawksearchVue {
 
         Vue.prototype.$mount = function (el, hydrating) {
             const options = this.$options;
+            var templateOverride = (options.propsData && options.propsData.templateOverride) || options.templateOverride;
 
-            if (options.templateOverride &&
-                typeof options.templateOverride === 'string' &&
-                options.templateOverride.charAt(0) === '#' &&
-                document.querySelector(options.templateOverride)) {
+            if (templateOverride &&
+                typeof templateOverride === 'string' &&
+                templateOverride.charAt(0) === '#' &&
+                document.querySelector(templateOverride)) {
 
-                let renderFunctions = Vue.compile(document.querySelector(options.templateOverride).innerHTML);
+                let renderFunctions = Vue.compile(document.querySelector(templateOverride).innerHTML);
                 Object.assign(options, renderFunctions);
             }
 
@@ -727,6 +743,52 @@ class HawksearchVue {
         }
     }
 
+    static collapseAllFacets() {
+        Object.values(HawksearchVue.widgetInstances).forEach(w => {
+            w.$children.forEach(c => {
+                if (c.$options.name == 'facet-list') {
+                    c.collapseAll();
+                }
+            })
+        })
+    }
+
+    static getIndexName(config) {
+        var urlParams = new URLSearchParams(location.search);
+        var urlIndexName = urlParams.get('indexName');
+        var configIndexName = config.indexName;
+
+        return configIndexName || urlIndexName || "";
+    }
+
+    static getTabField(store) {
+        var field;
+
+        store.state.searchOutput.Facets.forEach(facet => {
+            if (facet.FieldType == "tab") {
+                field = facet.Field;
+            }
+        })
+
+        return field;
+    }
+
+    static getFacetFieldNames(store) {
+        var fields = [];
+
+        store.state.searchOutput.Facets.forEach(facet => {
+            fields.push(this.getFacetParamName(facet));
+        })
+
+        return fields;
+    }
+
+    static truncateFacetSelections(store){
+        var pendingSearch = _.cloneDeep(store.state.pendingSearch);
+        pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value,field) => {return _.includes(this.getFacetFieldNames(store),field)});
+
+        store.commit('updatePendingSearch',pendingSearch);
+    }
 }
 
 export default HawksearchVue;

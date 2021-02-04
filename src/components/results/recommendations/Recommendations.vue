@@ -13,17 +13,18 @@
                         <left-chevron-svg icon-class="hawk-pagination__left" />
                     </div>
 
-                    <div class="recommendations-container slider-enabled" :style="{ width: widgetItem.carouselData.nofVisible * itemWidth + 'px', height: itemHeight + 'px' }">
-                        <div class="recommendations-container-inner" :style="{ left: slideOffset + 'px', transition: 'left ' + widgetItem.carouselData.animationSpeed + 'ms' }">
+                    <div class="recommendations-container slider-enabled" :style="{ width: widgetItem.carouselData.nofVisible * itemWidth + 'px', height: itemHeight + 'px' }" @mousedown="onMouseDown" @mousemove="dragMouse" @mouseup="onMouseUp">
+                        <div class="recommendations-container-inner" :style="[{left: slideOffset + 'px'}, isNavigationClicked ? { transition: 'left ' + widgetItem.carouselData.animationSpeed + 'ms'} : {transition : 'none'} ]">
                             <recommendations-item class="recommendations-item"
                                                   v-for="result in widgetItem.recommendationItems"
                                                   :key="result.id"
                                                   :result="result"
                                                   :requestId="requestId"
                                                   :widgetGuid="widgetGuid"
-                                                  :style="{ width: itemWidth + 'px'}"></recommendations-item>
+                                                  :style="{ width: itemWidth + 'px'}"
+                                                  :isItemClickable="isItemClickable">
+                                                  </recommendations-item>
                         </div>
-
                     </div>
 
                     <div v-if="widgetItem.carouselData.showNextPrevButtons" class="slider-button-next" @click="slide('next')" :style="{ height: itemHeight + 'px' }">
@@ -34,7 +35,7 @@
                 </div>
                 <div v-if="widgetItem.carouselData.showDots" class="recommendations-navigation">
                     <div class="filler"></div>
-                    <div v-for="index in Math.ceil(widgetItem.itemsCount / widgetItem.carouselData.scrollNumber)" :key="index" class="recommendations-navigation-item" @click="navigateTo(index)">
+                    <div v-for="index in Math.ceil(widgetItem.recommendationItems.length / widgetItem.carouselData.nofVisible)" :key="index" class="recommendations-navigation-item" @click="navigateTo(index)">
                     </div>
                     <div class="filler"></div>
                 </div>
@@ -48,7 +49,6 @@
                                       :widgetGuid="widgetGuid"></recommendations-item>
             </template>
         </template>
-
     </div>
 </template>
 
@@ -106,18 +106,87 @@
                 itemWidth: 300,
                 itemHeight: 300,
                 filler: 100,
-                showComponent: 0
+                showComponent: 0,
+                positions: {
+                clientX: 0,
+                prevClientX: 0,
+                movementX: 0,
+                direction: null
+                },
+                isMouseDown: false,
+                isNavigationClicked: true,
+                isItemClickable: true
             }
         },
+        created:function() {
+        },
         methods: {
+            onMouseUp: function (event) {
+                this.isMouseDown = false;
+                this.positions.prevClientX = 0
+                this.positions.clientX = 0
+                this.isNavigationClicked = true;
+                this.positions.direction = null
+                setTimeout(() => { this.isItemClickable = true }, 200);
+            },
+            onMouseDown: function (event){
+                this.positions.clientX = event.clientX;
+                this.isMouseDown = true
+                this.isNavigationClicked = false;
+            },
+            dragMouse: function (event) {
+                if (this.isMouseDown == true) {
+                    this.isItemClickable = false
+
+                    if (this.positions.prevClientX == 0){
+                        this.positions.movementX = this.positions.clientX - event.clientX
+                    }
+                    else {
+                        this.positions.movementX = this.positions.prevClientX - event.clientX
+                    }
+
+                    this.positions.prevClientX = event.clientX
+
+                    if (this.positions.movementX < 0) {
+                        this.positions.direction = 'prev'
+                    }
+                    else {
+                        this.positions.direction = "next"
+                    }
+
+                    var absDelta = Math.abs(this.positions.movementX)
+                    var maxSlideOffset = ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)
+
+                    if (this.positions.direction == "prev" && this.slideOffset < 0) {
+                        if(this.slideOffset + absDelta >= 0)
+                            this.slideOffset = 0
+                        else
+                            this.slideOffset += absDelta
+                    }
+                    else if (this.positions.direction == "next" && Math.abs(this.slideOffset) < maxSlideOffset ) {
+                        if(Math.abs(this.slideOffset - absDelta) >= maxSlideOffset)
+                            this.slideOffset = - maxSlideOffset
+                        else
+                            this.slideOffset -= absDelta
+                    }
+                }
+            },
             slide: function (direction) {
                 var delta = (this.widgetItem.carouselData.scrollNumber * this.itemWidth);
+                this.isNavigationClicked = true;
+                var maxSlideOffset = ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)
 
                 if (direction == "prev" && this.slideOffset < 0) {
-                    this.slideOffset += delta;
+                    if(this.slideOffset + delta >= 0)
+                        this.slideOffset = 0
+                    else
+                        this.slideOffset += delta
                 }
-                else if (direction == "next" && Math.abs(this.slideOffset) < ((this.widgetItem.recommendationItems.length - this.widgetItem.carouselData.nofVisible) * this.itemWidth)) {
-                    this.slideOffset -= delta;
+                else if (direction == "next" && Math.abs(this.slideOffset) < maxSlideOffset) {
+                    if(Math.abs(this.slideOffset - delta) >= maxSlideOffset)
+                        this.slideOffset = - maxSlideOffset
+                    else
+                        this.slideOffset -= delta
                 }
             },
             navigateTo: function (index) {
@@ -157,4 +226,7 @@
 </script>
 
 <style scoped lang="scss">
+.recommendations-container:hover {
+    cursor: pointer;
+}
 </style>
