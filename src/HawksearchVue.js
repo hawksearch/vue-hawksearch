@@ -50,6 +50,10 @@ class HawksearchVue {
             itemSelect: true,
             linkField: 'url',
             langIndiffFields: []
+        },
+        suggestionItem: {
+            linkField: 'link',
+            titleFiled: 'title'
         }
     }
 
