@@ -39,7 +39,8 @@
                 cache: [],
                 componentReset: true,
                 rangePrecesion: 2,
-                sliderPrecision: 0
+                sliderPrecision: 0,
+                inputLocked: false
             }
         },
         created: function () {
@@ -58,7 +59,7 @@
                 this.target = 'max';
             },
             onMouseMove: function (e) {
-                if (this.target) {
+                if (this.target && !this.inputLocked) {
                     var temp = (e.clientX - this.wrapper.left);
                     var buttonWidth = this.buttonWidth;
                     var minButtonPosition = (this.minTemp + buttonWidth);
@@ -89,7 +90,7 @@
                 }
             },
             onMouseUp: function (e) {
-                if (this.target) {
+                if (this.target && !this.inputLocked) {
                     if (this.handleAction()) {
                         this.applyFacet();
                     }
@@ -208,7 +209,7 @@
                 return _.round(parseFloat(value), precision);
             },
             updateMinTemp: function () {
-                if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= parseFloat(this.facetValue.RangeMin)) {
+                if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion)) {
                     var temp = this.tempConvert(this.minValue);
 
                     if (this.maxValue == this.minValue && temp >= this.buttonWidth) {
@@ -219,7 +220,7 @@
                 }
             },
             updateMaxTemp: function () {
-                if (parseFloat(this.minValue) <= parseFloat(this.maxValue) && parseFloat(this.maxValue) <= parseFloat(this.facetValue.RangeMax)) {
+                if (parseFloat(this.minValue) <= parseFloat(this.maxValue) && parseFloat(this.maxValue) <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
                     var temp = this.tempConvert(this.maxValue);
 
                     if (this.maxValue == this.minValue && temp <= (this.wrapper.width - this.buttonWidth)) {
@@ -285,6 +286,7 @@
             facetValue: function (n, o) {
                 if (this.userInput) {
                     this.userInput = false;
+                    this.inputLocked = false;
                     this.cacheData();
                 }
                 else if (this.componentReset || o.RangeMax != n.RangeMax || o.RangeMin != n.RangeMin) {
@@ -300,8 +302,19 @@
                         this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecesion);
                     }
 
-                    this.updateMinTemp();
-                    this.updateMaxTemp();
+                    if (this.minValue != this.maxValue) {
+                        this.inputLocked = false;
+                        this.updateMinTemp();
+                        this.updateMaxTemp();
+                    }
+                    else {
+                        this.inputLocked = true;
+
+                        setTimeout(() => {
+                            this.minTemp = 0;
+                            this.maxTemp = this.tempConvert(this.maxValue);
+                        }, 100)
+                    }
                 }
             },
             minValue: function (n, o) {
