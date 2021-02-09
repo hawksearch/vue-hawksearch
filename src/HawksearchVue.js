@@ -1,4 +1,4 @@
-import HawksearchStore from './store';
+import getVueStore from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
 import { parseSearchQueryString, updateUrl } from './QueryString';
@@ -66,7 +66,7 @@ class HawksearchVue {
     }
 
     static generateStoreInstance(appliedConfig) {
-        var store = HawksearchStore();
+        var store = getVueStore();
         var storeId = this.getUniqueIdentifier();
 
         store.commit('updateConfig', appliedConfig);
