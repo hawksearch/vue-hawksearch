@@ -54,6 +54,9 @@ class HawksearchVue {
         suggestionItem: {
             linkField: 'link',
             titleFiled: 'title'
+        },
+        pagination:{
+            type: "dispatch"
         }
     }
 
