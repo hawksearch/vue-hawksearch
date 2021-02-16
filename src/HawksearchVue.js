@@ -65,11 +65,17 @@ class HawksearchVue {
         this.addTemplateOverride();
     }
 
-    static generateStoreInstance(appliedConfig) {
-        var store = getVueStore();
+    static generateStoreInstance(appliedConfig, storeOverrides) {
+        if (!storeOverrides) {
+            storeOverrides = {}
+        }
+
+        var store = getVueStore(storeOverrides);
         var storeId = this.getUniqueIdentifier();
 
-        store.commit('updateConfig', appliedConfig);
+        var config = this.mergeConfig(this.defaultConfig, appliedConfig);
+
+        store.commit('updateConfig', config);
         store.commit('setStoreId', storeId);
 
         this.storeInstances[storeId] = store;

@@ -16,6 +16,4 @@ export * from './components';
 export { default as tConfig } from './i18n';
 export { default as TrackingEvent } from './TrackingEvent';
 
-export { default as getVueStore } from './store';
-
 export default HawksearchVue;
