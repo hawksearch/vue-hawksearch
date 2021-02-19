@@ -53,7 +53,7 @@ class HawksearchVue {
         },
         suggestionItem: {
             linkField: 'link',
-            titleFiled: 'title'
+            titleField: 'title'
         }
     }
 
