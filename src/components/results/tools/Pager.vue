@@ -1,7 +1,7 @@
 <template>
     <div class="hawk-pagination__controls">
         <template v-if="isLink">
-            <a class="hawk-pagination__item" :href="goToPreviousPageLink()">
+            <a class="hawk-pagination__item" :href="previousPageLink">
                 <left-chevron-svg icon-class="hawk-pagination__left" />
             </a>
         </template>
@@ -13,7 +13,7 @@
         <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" min="1" :max="totalPages" />
         <span class="hawk-pagination__total-text"><span class="break"></span> of {{ totalPages }}</span>
         <template v-if="isLink">
-            <a class="hawk-pagination__item" :href="goToNextPageLink()">
+            <a class="hawk-pagination__item" :href="nextPageLink">
                 <right-chevron-svg icon-class="hawk-pagination__right" />
             </a>
         </template>
@@ -38,11 +38,16 @@
             RightChevronSvg
         },
         mounted() {
-
+            this.$root.$on('urlUpdated', ()=>{
+                this.nextPageLink = this.goToNextPageLink();
+                this.previousPageLink = this.goToPreviousPageLink();
+            })
         },
         data() {
             return {
-                hasError: false
+                hasError: false,
+                nextPageLink: '',
+                previousPageLink: ''
             }
         },
         methods: {

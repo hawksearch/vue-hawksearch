@@ -41,13 +41,16 @@ export function parseSearchQueryString(search) {
 }
 
 export function updateUrl(storeState, widget) {
-	const history = createBrowserHistory();
+	return new Promise((resolve, reject) => {
+		const history = createBrowserHistory();
 
-	if (widget.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
-		history.push({
-			search: getSearchQueryString(storeState.pendingSearch),
-		});
-	}
+		if (widget.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
+			history.push({
+				search: getSearchQueryString(storeState.pendingSearch),
+			});
+			resolve();
+		}
+	});
 }
 
 function parseQueryStringToObject(search) {
