@@ -1,13 +1,27 @@
 <template>
     <div class="hawk-pagination__controls">
-        <button class="hawk-pagination__item" @click="goToPreviousPage">
-            <left-chevron-svg icon-class="hawk-pagination__left" />
-        </button>
+        <template v-if="isLink">
+            <a class="hawk-pagination__item" :href="previousPageLink">
+                <left-chevron-svg icon-class="hawk-pagination__left" />
+            </a>
+        </template>
+        <template v-else>
+            <button class="hawk-pagination__item" @click="goToPreviousPage">
+                <left-chevron-svg icon-class="hawk-pagination__left" />
+            </button>
+        </template>
         <input type="number" :value="page" @change="onChange" :class="hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'" min="1" :max="totalPages" />
         <span class="hawk-pagination__total-text"><span class="break"></span> of {{ totalPages }}</span>
-        <button class="hawk-pagination__item" @click="goToNextPage">
-            <right-chevron-svg icon-class="hawk-pagination__right" />
-        </button>
+        <template v-if="isLink">
+            <a class="hawk-pagination__item" :href="nextPageLink">
+                <right-chevron-svg icon-class="hawk-pagination__right" />
+            </a>
+        </template>
+        <template v-else>
+            <button class="hawk-pagination__item" @click="goToNextPage">
+                <right-chevron-svg icon-class="hawk-pagination__right" />
+            </button>
+        </template>
     </div>
 </template>
 
@@ -24,11 +38,16 @@
             RightChevronSvg
         },
         mounted() {
-
+            this.$root.$on('urlUpdated', ()=>{
+                this.nextPageLink = this.goToNextPageLink();
+                this.previousPageLink = this.goToPreviousPageLink();
+            })
         },
         data() {
             return {
-                hasError: false
+                hasError: false,
+                nextPageLink: '',
+                previousPageLink: ''
             }
         },
         methods: {
@@ -40,6 +59,24 @@
             goToNextPage: function () {
                 if (this.page < this.totalPages) {
                     this.goToPage(parseInt(this.page, 10) + 1);
+                }
+            },
+            goToPreviousPageLink: function () {
+                if (this.page > 1) {
+                    var url = new URL(location.href);
+
+                    url.searchParams.set('pg',parseInt(this.page, 10) - 1);
+
+                    return url.toString();
+                }
+            },
+            goToNextPageLink: function () {
+                if (this.page < this.totalPages) {
+                   var url = new URL(location.href);
+
+                    url.searchParams.set('pg',parseInt(this.page, 10) + 1);
+
+                    return url.toString();
                 }
             },
             goToPage: function (page) {
@@ -78,6 +115,11 @@
             },
             totalPages: function () {
                 return this.pagination.NofPages;
+            },
+            isLink: function () {
+                var type = this.$root.config.pagination.type;
+
+                return type == "link";
             }
         }
     }

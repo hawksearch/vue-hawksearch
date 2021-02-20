@@ -53,7 +53,10 @@ class HawksearchVue {
         },
         suggestionItem: {
             linkField: 'link',
-            titleFiled: 'title'
+            titleField: 'title'
+        },
+        pagination:{
+            type: "dispatch"
         }
     }
 
@@ -196,7 +199,9 @@ class HawksearchVue {
                         if (trackingActions.includes(action)) {
                             var storeState = this.$store.state;
 
-                            updateUrl(storeState, this);
+                            updateUrl(storeState, this).then(() => {
+                              this.$emit('urlUpdated');
+                            });
 
                             if (this.trackEvent) {
                                 this.trackEvent.track('searchtracking', {
@@ -723,7 +728,7 @@ class HawksearchVue {
 
                 facetData.Values[0].Selected = true;
 
-                store.dispatch('applyFacets', facetData);
+                widget.dispatchToStore('applyFacets', facetData);
             }
         }
     }
