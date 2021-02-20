@@ -84,18 +84,18 @@ class HawksearchVue {
      * This widget is the wrapping entity that holds all the structural logic
      * @param {HTMLElement} / @param {String} el The target element on which the widget is rendered
      * @param {Object} param1 Object containing the config object or/and Vuex store instance
-     *      
+     *
      *      Examples:
      *          1. HawksearchVue.createWidget(el, { config }): The most basic instance initialization.
      *          It creates a Vue widget based on the passed config object. The config object is initially enriched with
      *          the default values if they are missing. A store instance is created to manage the data handling.
-     *          
-     *          2. HawksearchVue.createWidget(el, { config, store }): This construct also creates a widget instance, but 
+     *
+     *          2. HawksearchVue.createWidget(el, { config, store }): This construct also creates a widget instance, but
      *          instead of creating a store instance, attaches the one provided. The provided store instance is retrivied
      *          from another widget. This way the two or more widgets are using the same data layer and all data driven
-     *          actions are performed on all of them. The provided config object ensures that all widget specific 
+     *          actions are performed on all of them. The provided config object ensures that all widget specific
      *          handling is managed separetely from other synchronized widges.
-     *          
+     *
      *          3. HawksearchVue.createWidget(el, { store }): An edge case of Ex. 2. The created widget is fully synchronized
      *          with the provided data layer. It doesn't have specific context and behavior.
      */
@@ -788,6 +788,10 @@ class HawksearchVue {
         pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value,field) => {return _.includes(this.getFacetFieldNames(store),field)});
 
         store.commit('updatePendingSearch',pendingSearch);
+    }
+
+    static isMobile() {
+        return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 }
 
