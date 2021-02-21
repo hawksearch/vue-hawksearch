@@ -55,16 +55,16 @@
 <script>
     import RecommendationsItem from './RecommendationsItem'
     import PlaceholderItem from '../PlaceholderItem'
-    import LeftChevronSvg from '../../svg/LeftChevronSvg'
-    import RightChevronSvg from '../../svg/RightChevronSvg'
+    import LeftChevronSVG from '../../svg/LeftChevronSVG'
+    import RightChevronSVG from '../../svg/RightChevronSVG'
 
     export default {
         name: 'recommendations',
         components: {
             RecommendationsItem,
             PlaceholderItem,
-            LeftChevronSvg,
-            RightChevronSvg
+            LeftChevronSVG,
+            RightChevronSVG
         },
         props: {
             widgetGuid: {

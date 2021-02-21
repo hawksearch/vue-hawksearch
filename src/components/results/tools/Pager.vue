@@ -13,15 +13,15 @@
 
 <script lang="js">
     import { mapState } from 'vuex';
-    import LeftChevronSvg from '../../svg/LeftChevronSvg'
-    import RightChevronSvg from '../../svg/RightChevronSvg'
+    import LeftChevronSVG from '../../svg/LeftChevronSVG'
+    import RightChevronSVG from '../../svg/RightChevronSVG'
 
     export default {
         name: 'pager',
         props: [],
         components: {
-            LeftChevronSvg,
-            RightChevronSvg
+            LeftChevronSVG,
+            RightChevronSVG
         },
         mounted() {
 
