@@ -5,7 +5,7 @@ Vue.config.devtools = true;
 
 import HawksearchVue from "./HawksearchVue";
 window.HawksearchVue = HawksearchVue;
-window.moment = require('moment');
+window.moment = require('moment-mini');
 
 HawksearchVue.init();
 
