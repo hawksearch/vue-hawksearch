@@ -1,13 +1,11 @@
 import { getCookie, setCookie, getVisitorId, getVisitId, createGuid } from './CookieHandler';
 
-
-
 class TrackingEvent {
     trackingURL;
     trackConfig;
     clientGUID;
 
-     E_T = {
+    EventType = {
         pageLoad: 1,
         search: 2,
         click: 3,
@@ -21,7 +19,7 @@ class TrackingEvent {
         add2CartMultiple: 14
     }
 
-     P_T = {
+    PageType = {
         item: 1,
         landing: 2,
         cart: 3,
@@ -29,12 +27,12 @@ class TrackingEvent {
         custom: 5
     }
 
-    //var SuggestType = {
-    //    PopularSearches: 1,
-    //    TopCategories: 2,
-    //    TopProductMatches: 3,
-    //    TopContentMatches: 4
-    //}
+    SuggestType = {
+        PopularSearches: 1,
+        TopCategories: 2,
+        TopProductMatches: 3,
+        TopContentMatches: 4
+    }
 
      SearchType = {
         Initial: 1,
@@ -78,20 +76,20 @@ class TrackingEvent {
 
     getSearchType(searchParams, responseData) {
         if (searchParams && responseData && searchParams.Keyword == responseData.Keyword) {
-            return SearchType.Refinement;
+            return this.SearchType.Refinement;
         }
         else {
-            return SearchType.Initial;
+            return this.SearchType.Initial;
         }
     }
 
     writePageLoad(pageType) {
         const c = document.documentElement;
         const pl = {
-            EventType: this.E_T.pageLoad,
+            EventType: this.EventType.pageLoad,
             EventData: btoa(
                 JSON.stringify({
-                    PageTypeId: P_T[pageType],
+                    PageTypeId: this.PageType[pageType],
                     RequestPath: window.location.pathname,
                     Qs: window.location.search,
                     ViewportHeight: c.clientHeight,
@@ -105,7 +103,7 @@ class TrackingEvent {
     writeSearchTracking(trackingId, typeId) {
         const guid = createGuid();
 
-        if (typeId === SearchType.Initial) {
+        if (typeId === this.SearchType.Initial) {
             setCookie('hawk_query_id', guid);
         }
 
@@ -113,7 +111,7 @@ class TrackingEvent {
 
         const c = document.documentElement;
         const pl = {
-            EventType: this.E_T.search,
+            EventType: this.EventType.search,
             EventData: btoa(
                 JSON.stringify({
                     QueryId: queryId,
@@ -130,7 +128,7 @@ class TrackingEvent {
     writeClick(event, uniqueId, trackingId, url) {
         const c = document.documentElement;
         const pl = {
-            EventType: this.E_T.click,
+            EventType: this.EventType.click,
             EventData: btoa(
                 JSON.stringify({
                     Url: url,
@@ -148,7 +146,7 @@ class TrackingEvent {
 
     writeBannerClick(bannerId, campaignId, trackingId) {
         const pl = {
-            EventType: this.E_T.bannerClick,
+            EventType: this.EventType.bannerClick,
             EventData: btoa(
                 JSON.stringify({
                     CampaignId: campaignId,
@@ -162,7 +160,7 @@ class TrackingEvent {
 
     writeBannerImpression(bannerId, campaignId, trackingId) {
         const pl = {
-            EventType: this.E_T.bannerImpression,
+            EventType: this.EventType.bannerImpression,
             EventData: btoa(
                 JSON.stringify({
                     CampaignId: campaignId,
@@ -176,7 +174,7 @@ class TrackingEvent {
 
     writeSale(orderNo, itemList, total, subTotal, tax, currency) {
         const pl = {
-            EventType: this.E_T.sale,
+            EventType: this.EventType.sale,
             EventData: btoa(
                 JSON.stringify({
                     OrderNo: orderNo,
@@ -193,7 +191,7 @@ class TrackingEvent {
 
     writeAdd2Cart(uniqueId, price, quantity, currency) {
         const pl = {
-            EventType: this.E_T.addToCart,
+            EventType: this.EventType.addToCart,
             EventData: btoa(
                 JSON.stringify({
                     UniqueId: uniqueId,
@@ -208,7 +206,7 @@ class TrackingEvent {
 
     writeAdd2CartMultiple(args) {
         const pl = {
-            EventType: this.E_T.add2CartMultiple,
+            EventType: this.EventType.add2CartMultiple,
             EventData: btoa(
                 JSON.stringify({
                     ItemsList: args,
@@ -220,7 +218,7 @@ class TrackingEvent {
 
     writeRate(uniqueId, value) {
         const pl = {
-            EventType: this.E_T.rate,
+            EventType: this.EventType.rate,
             EventData: btoa(
                 JSON.stringify({
                     UniqueId: uniqueId,
@@ -233,7 +231,7 @@ class TrackingEvent {
 
     writeRecommendationClick(widgetGuid, uniqueId, itemIndex, requestId) {
         const pl = {
-            EventType: this.E_T.recommendationClick,
+            EventType: this.EventType.recommendationClick,
             EventData: btoa(
                 JSON.stringify({
                     ItemIndex: itemIndex,
@@ -248,7 +246,7 @@ class TrackingEvent {
 
     writeAutoCompleteClick(keyword, suggestType, name, url) {
         const pl = {
-            EventType: this.E_T.autoCompleteClick,
+            EventType: this.EventType.autoCompleteClick,
             EventData: btoa(
                 JSON.stringify({
                     Keyword: encodeURIComponent(keyword),
@@ -274,20 +272,13 @@ class TrackingEvent {
             data
         );
 
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve, reject) => {
             fetch(this.trackingURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pl),
-        })
-        .then(()=>{
-            resolve();
-        })
-        .catch(error => {
-            console.error('Error:', error);
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pl),
+            }).then(resolve, reject)
         });
-    });
-
     }
 
     track(eventName, args) {
