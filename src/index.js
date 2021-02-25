@@ -12,6 +12,8 @@ HawksearchVue.init();
 import 'styles/app.scss';
 
 export * from './components';
+
 export { default as tConfig } from './i18n';
 export { default as TrackingEvent } from './TrackingEvent';
+
 export default HawksearchVue;

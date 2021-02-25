@@ -1,4 +1,4 @@
-import HawksearchStore from './store';
+import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
 import { parseSearchQueryString, updateUrl } from './QueryString';
@@ -68,11 +68,17 @@ class HawksearchVue {
         this.addTemplateOverride();
     }
 
-    static generateStoreInstance(appliedConfig) {
-        var store = HawksearchStore();
+    static generateStoreInstance(appliedConfig, storeOverrides) {
+        if (!storeOverrides) {
+            storeOverrides = {}
+        }
+
+        var store = getVueStore(storeOverrides);
         var storeId = this.getUniqueIdentifier();
 
-        store.commit('updateConfig', appliedConfig);
+        var config = this.mergeConfig(this.defaultConfig, appliedConfig);
+
+        store.commit('updateConfig', config);
         store.commit('setStoreId', storeId);
 
         this.storeInstances[storeId] = store;
