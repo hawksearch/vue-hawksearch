@@ -1,4 +1,4 @@
-import getVueStore from './store';
+import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
 import { parseSearchQueryString, updateUrl } from './QueryString';
