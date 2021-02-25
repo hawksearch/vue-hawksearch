@@ -8,8 +8,8 @@
             <div class="slider" ref="wrapper">
                 <div class="slider-background"></div>
                 <div class="slider-wrapper">
-                    <button type="button" @mousedown="onMouseDownMin" class="slider-button" :style="minRangeStyle"></button>
-                    <button type="button" @mousedown="onMouseDownMax" class="slider-button" :style="maxRangeStyle"></button>
+                    <button type="button" @mousedown="onMouseDownMin" @touchstart="onMouseDownMin" class="slider-button" :style="minRangeStyle"></button>
+                    <button type="button" @mousedown="onMouseDownMax" @touchstart="onMouseDownMax" class="slider-button" :style="maxRangeStyle"></button>
                 </div>
                 <div class="slider-progressbar" :style="sliderStyle"></div>
             </div>
@@ -44,23 +44,45 @@
             }
         },
         created: function () {
-            window.addEventListener('mouseup', (e) => { this.onMouseUp(e) })
-            window.addEventListener('mousemove', (e) => { this.onMouseMove(e) })
+            window.addEventListener('mouseup', this.onMouseUp)
+            window.addEventListener('mousemove', this.onMouseMove)
+
+            if (HawksearchVue.isMobile()) {
+                window.addEventListener('touchend', this.onMouseUp)
+            }
         },
         beforeDestroy: function () {
-            window.removeEventListener('mouseup', (e) => { this.onMouseUp(e) })
-            window.removeEventListener('mousemove', (e) => { this.onMouseMove(e) })
+            window.removeEventListener('mouseup', this.onMouseUp)
+            window.removeEventListener('mousemove', this.onMouseMove)
+
+            if (HawksearchVue.isMobile()) {
+                window.removeEventListener('touchend', this.onMouseUp)
+            }
         },
         methods: {
             onMouseDownMin: function (e) {
                 this.target = 'min';
+
+                if (HawksearchVue.isMobile()) {
+                    window.addEventListener('touchmove', this.onMouseMove, { passive: false })
+                }
             },
             onMouseDownMax: function (e) {
                 this.target = 'max';
+
+                if (HawksearchVue.isMobile()) {
+                    window.addEventListener('touchmove', this.onMouseMove, { passive: false })
+                }
             },
             onMouseMove: function (e) {
+                var clientX = e.clientX;
+
+                if (HawksearchVue.isMobile() && e.changedTouches && e.changedTouches.length == 1) {
+                    clientX = e.changedTouches[0].clientX;
+                }
+
                 if (this.target && !this.inputLocked) {
-                    var temp = (e.clientX - this.wrapper.left);
+                    var temp = (clientX - this.wrapper.left);
                     var buttonWidth = this.buttonWidth;
                     var minButtonPosition = (this.minTemp + buttonWidth);
                     var maxButtonPosition = (this.maxTemp - buttonWidth);
@@ -88,6 +110,9 @@
                         }
                     }
                 }
+
+                e.preventDefault();
+                e.stopPropagation();
             },
             onMouseUp: function (e) {
                 if (this.target && !this.inputLocked) {
@@ -96,6 +121,10 @@
                     }
 
                     this.target = null;
+
+                    if (HawksearchVue.isMobile()) {
+                        window.removeEventListener('touchmove', this.onMouseMove)
+                    }
                 }
             },
             handleAction: function () {
