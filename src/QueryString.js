@@ -90,7 +90,7 @@ function convertObjectToQueryString(queryObj) {
 
 	for (const key in queryObj) {
 		if (queryObj[key]) {
-			params.set(key, queryObj[key])
+			params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
 		}
 	}
 
@@ -112,4 +112,13 @@ function getSearchQueryString(searchRequest) {
 	};
 
 	return convertObjectToQueryString(searchQuery);
+}
+
+function encodeSingleCommaSeparatedValues(arr) {
+	if (_.isArray(arr) && arr.length == 1) {
+		return [arr[0].replace(',', '::')];
+	}
+	else {
+		return arr;
+	}
 }
