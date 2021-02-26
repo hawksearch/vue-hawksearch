@@ -116,7 +116,6 @@
             }
         },
         created() {
-            console.log("abv")
             window.addEventListener("resize", this.isResponsiveMode);
             window.addEventListener('scroll', this.onScroll)
         },
