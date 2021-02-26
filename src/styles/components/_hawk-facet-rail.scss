@@ -2,7 +2,7 @@
 	border: 1px solid $primary;
 	background-color: $grey2;
 	width: 100%;
-
+	
 	@include md {
 		width: auto;
 		min-width: 230px;
@@ -18,10 +18,30 @@
 	}
 }
 
+.hawk-facet-rail__sticky{
+	@include smd {
+		position: fixed;
+    	width: 97%;
+		top: 8px;
+		cursor: pointer;
+	}
+}
+
 .hawk-facet-rail__facet-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	@include smd {
+		display: none;
+	}
+}
+
+.hawk-facet-rail__facet-list-mobile {
+	@include smd {
+		display: block;
+		overflow-y: scroll;
+    	max-height: 400px;
+	}
 }
 
 .hawk-facet-rail__facet-list-item {
@@ -45,6 +65,23 @@
 	font-size: 1.2em;
 	padding: 10px;
 	font-weight: bold;
+	@include smd {
+		position: relative;
+
+		&:after {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			display: block;
+			content: "";
+			border: 15px solid #35200c;
+			border-bottom: 15px solid #f37624;
+			border-right: 0;
+			border-top: 0;
+			height: 0;
+			width: 0;
+		}
+	}
 }
 
 .hawk-facet-rail__selections {
@@ -120,7 +157,7 @@
 			cursor: auto;
 
 			div {
-				font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+				font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
 			}
 
 			i {
@@ -134,7 +171,7 @@
 			}
 
 			i::after {
-				content: '';
+				content: "";
 				position: absolute;
 				width: 12px;
 				height: 12px;
@@ -272,16 +309,16 @@ button.hawk-collapseState {
 	&:after {
 		display: inline-block;
 		position: absolute;
-		content: '\2212';
+		content: "\2212";
 		font-size: 10px;
-		font-family: 'hawksearch';
+		font-family: "hawksearch";
 		color: #b8b8b8;
 		right: 2px;
 		top: 4px;
 	}
 
 	&.collapsed:after {
-		content: '\2b';
+		content: "\2b";
 	}
 }
 
@@ -341,6 +378,6 @@ button.hawk-collapseState {
 
 	.nav-link {
 		display: block;
-		padding: .5rem 1rem;
+		padding: 0.5rem 1rem;
 	}
 }
