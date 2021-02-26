@@ -28,8 +28,10 @@
 	display: flex;
 	align-items: flex-start;
 	margin: 0 0 6px;
+
 	&.hawkFacet-group {
 		flex-direction: column;
+
 		.hawkFacet-group__inline {
 			display: flex;
 			justify-content: space-between;
@@ -64,7 +66,6 @@
 
 .hawk-facet-rail__facet {
 	padding: 10px;
-
 	border-bottom: 1px solid $grey;
 	border-top: 1px solid $white;
 }
@@ -161,7 +162,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		border: 1px solid $grey;
-
 		padding: 5px;
 	}
 
@@ -172,6 +172,14 @@
 	background-color: $white;
 	border: 1px solid $grey;
 	padding: 10px;
+
+	.hawk-facet-rail__facet-values-link {
+		.hawk-facet-rail__facet-list-item {
+			.selected {
+				color: #f47b20;
+			}
+		}
+	}
 }
 
 .hawk-facet-rail__facet-values__checkbox {
@@ -199,10 +207,8 @@
 		}
 
 		float: right;
-
 		margin-top: 5px;
 		margin-right: 5px;
-
 		cursor: pointer;
 	}
 
@@ -226,7 +232,6 @@
 
 .hawk-facet-rail__facet-btn {
 	@include ButtonLink;
-
 	display: flex;
 	align-items: flex-start;
 	line-height: 1.3;
@@ -247,6 +252,10 @@
 		word-break: break-all;
 	}
 
+	.hawk-facet-rail__facet-name.checked {
+		color: #f47b20;
+	}
+
 	&:focus,
 	&:active {
 		box-shadow: none;
@@ -256,6 +265,7 @@
 			box-shadow: 0 0 0 3px #5bc0de;
 		}
 	}
+
 	&:hover {
 		color: $orange1;
 	}
@@ -285,13 +295,21 @@ button.hawk-collapseState {
 	}
 }
 
+.hawk-linklist.hawk-collapseState {
+	position: relative;
+
+	&:after {
+		font-size: 20px;
+		top: -5px;
+	}
+}
+
 .hawk-facet-rail__facet-btn-exclude {
 	@include ButtonLink;
 }
 
 .hawk-facet-rail__facet-btn-include {
 	@include ButtonLink;
-
 	color: $primary;
 }
 
@@ -316,31 +334,13 @@ button.hawk-collapseState {
 	height: 1em;
 }
 
-.hawk-facet-rail_empty {
-	height: 250px;
+.hawk-date-value-start,
+.hawk-date-value-end {
+	width: 215px !important;
+	float: left;
+	margin: 5px;
 }
 
-.hawk-preview__results_tabs {
-	.nav-tabs {
-		border-bottom: 1px solid #dee2e6;
-	}
-
-	.nav {
-		display: -ms-flexbox;
-		display: flex;
-		-ms-flex-wrap: wrap;
-		flex-wrap: wrap;
-		padding-left: 0;
-		margin-bottom: 0;
-		list-style: none;
-	}
-
-	.nav-item {
-		margin: 0.5rem;
-	}
-
-	.nav-link {
-		display: block;
-		padding: .5rem 1rem;
-	}
+.hawk-date-value-end {
+	float: right;
 }
