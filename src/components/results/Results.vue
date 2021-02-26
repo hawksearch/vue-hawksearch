@@ -11,7 +11,7 @@
         <template v-if="searchError">
             <span>{{ $t('response_error_generic') }}</span>
         </template>
-        <template v-else-if="searchOutput && searchOutput.Results && searchOutput.Results.length == 0">
+        <template v-else-if="results && results.length == 0">
             <span>{{ $t('No Results') }}</span>
         </template>
         <template v-else-if="!waitingForInitialSearch">
@@ -78,7 +78,10 @@
             ]),
             ...mapGetters([
                 'tabSelection'
-            ])
+            ]),
+            results: function () {
+                return this.searchOutput ? this.searchOutput.Results : null;
+            }
         }
     }
 

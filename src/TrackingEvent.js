@@ -1,72 +1,72 @@
 import { getCookie, setCookie, getVisitorId, getVisitId, createGuid } from './CookieHandler';
 
-const E_T = {
-    pageLoad: 1,
-    search: 2,
-    click: 3,
-    addToCart: 4,
-    rate: 5,
-    sale: 6,
-    bannerClick: 7,
-    bannerImpression: 8,
-    recommendationClick: 10,
-    autoCompleteClick: 11,
-    add2CartMultiple: 14
-}
-
-const P_T = {
-    item: 1,
-    landing: 2,
-    cart: 3,
-    order: 4,
-    custom: 5
-}
-
-//var SuggestType = {
-//    PopularSearches: 1,
-//    TopCategories: 2,
-//    TopProductMatches: 3,
-//    TopContentMatches: 4
-//}
-
-const SearchType = {
-    Initial: 1,
-    Refinement: 2
-}
-
-const TrackEventNameMapping = {
-    'Click': 'click',
-    'Cart': '',
-    'CopyRequestTracking': '',
-    'RequestTracking': '',
-    'Search': 'searchtracking',
-    'Sale': 'sale',
-    'RecommendationImpression': '',
-    'RecommendationClick': 'recommendationclick',
-    'Rate': 'rate',
-    'PageLoad': 'pageload',
-    'Identify': '',
-    'BannerImpression': 'bannerimpression',
-    'BannerClick': 'bannerclick',
-    'AutocompleteClick': 'autocompleteclick',
-    'Add2CartMultiple': 'add2cartmultiple',
-    'Add2Cart': 'add2cart'
-}
-
-const AvailableEvents = [
-    'click',
-    'recommendationclick',
-    'pageload',
-    'searchtracking',
-    'autocompleteclick',
-    'bannerclick',
-    'bannerimpression'
-]
-
 class TrackingEvent {
     trackingURL;
     trackConfig;
     clientGUID;
+
+    EventType = {
+        pageLoad: 1,
+        search: 2,
+        click: 3,
+        addToCart: 4,
+        rate: 5,
+        sale: 6,
+        bannerClick: 7,
+        bannerImpression: 8,
+        recommendationClick: 10,
+        autoCompleteClick: 11,
+        add2CartMultiple: 14
+    }
+
+    PageType = {
+        item: 1,
+        landing: 2,
+        cart: 3,
+        order: 4,
+        custom: 5
+    }
+
+    SuggestType = {
+        PopularSearches: 1,
+        TopCategories: 2,
+        TopProductMatches: 3,
+        TopContentMatches: 4
+    }
+
+     SearchType = {
+        Initial: 1,
+        Refinement: 2
+    }
+
+     TrackEventNameMapping = {
+        'Click': 'click',
+        'Cart': '',
+        'CopyRequestTracking': '',
+        'RequestTracking': '',
+        'Search': 'searchtracking',
+        'Sale': 'sale',
+        'RecommendationImpression': '',
+        'RecommendationClick': 'recommendationclick',
+        'Rate': 'rate',
+        'PageLoad': 'pageload',
+        'Identify': '',
+        'BannerImpression': 'bannerimpression',
+        'BannerClick': 'bannerclick',
+        'AutocompleteClick': 'autocompleteclick',
+        'Add2CartMultiple': 'add2cartmultiple',
+        'Add2Cart': 'add2cart'
+    }
+
+     AvailableEvents = [
+        'click',
+        'recommendationclick',
+        'pageload',
+        'searchtracking',
+        'autocompleteclick',
+        'bannerclick',
+        'bannerimpression'
+    ]
 
     constructor(config) {
         this.trackingURL = config.trackEventUrl;
@@ -76,20 +76,20 @@ class TrackingEvent {
 
     getSearchType(searchParams, responseData) {
         if (searchParams && responseData && searchParams.Keyword == responseData.Keyword) {
-            return SearchType.Refinement;
+            return this.SearchType.Refinement;
         }
         else {
-            return SearchType.Initial;
+            return this.SearchType.Initial;
         }
     }
 
     writePageLoad(pageType) {
         const c = document.documentElement;
         const pl = {
-            EventType: E_T.pageLoad,
+            EventType: this.EventType.pageLoad,
             EventData: btoa(
                 JSON.stringify({
-                    PageTypeId: P_T[pageType],
+                    PageTypeId: this.PageType[pageType],
                     RequestPath: window.location.pathname,
                     Qs: window.location.search,
                     ViewportHeight: c.clientHeight,
@@ -97,13 +97,13 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeSearchTracking(trackingId, typeId) {
         const guid = createGuid();
 
-        if (typeId === SearchType.Initial) {
+        if (typeId === this.SearchType.Initial) {
             setCookie('hawk_query_id', guid);
         }
 
@@ -111,7 +111,7 @@ class TrackingEvent {
 
         const c = document.documentElement;
         const pl = {
-            EventType: E_T.search,
+            EventType: this.EventType.search,
             EventData: btoa(
                 JSON.stringify({
                     QueryId: queryId,
@@ -122,13 +122,13 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeClick(event, uniqueId, trackingId, url) {
         const c = document.documentElement;
         const pl = {
-            EventType: E_T.click,
+            EventType: this.EventType.click,
             EventData: btoa(
                 JSON.stringify({
                     Url: url,
@@ -141,12 +141,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeBannerClick(bannerId, campaignId, trackingId) {
         const pl = {
-            EventType: E_T.bannerClick,
+            EventType: this.EventType.bannerClick,
             EventData: btoa(
                 JSON.stringify({
                     CampaignId: campaignId,
@@ -155,12 +155,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeBannerImpression(bannerId, campaignId, trackingId) {
         const pl = {
-            EventType: E_T.bannerImpression,
+            EventType: this.EventType.bannerImpression,
             EventData: btoa(
                 JSON.stringify({
                     CampaignId: campaignId,
@@ -169,12 +169,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeSale(orderNo, itemList, total, subTotal, tax, currency) {
         const pl = {
-            EventType: E_T.sale,
+            EventType: this.EventType.sale,
             EventData: btoa(
                 JSON.stringify({
                     OrderNo: orderNo,
@@ -186,12 +186,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+       return this.makeRequest(pl);
     }
 
     writeAdd2Cart(uniqueId, price, quantity, currency) {
         const pl = {
-            EventType: E_T.addToCart,
+            EventType: this.EventType.addToCart,
             EventData: btoa(
                 JSON.stringify({
                     UniqueId: uniqueId,
@@ -201,24 +201,24 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeAdd2CartMultiple(args) {
         const pl = {
-            EventType: E_T.add2CartMultiple,
+            EventType: this.EventType.add2CartMultiple,
             EventData: btoa(
                 JSON.stringify({
                     ItemsList: args,
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeRate(uniqueId, value) {
         const pl = {
-            EventType: E_T.rate,
+            EventType: this.EventType.rate,
             EventData: btoa(
                 JSON.stringify({
                     UniqueId: uniqueId,
@@ -226,12 +226,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeRecommendationClick(widgetGuid, uniqueId, itemIndex, requestId) {
         const pl = {
-            EventType: E_T.recommendationClick,
+            EventType: this.EventType.recommendationClick,
             EventData: btoa(
                 JSON.stringify({
                     ItemIndex: itemIndex,
@@ -241,12 +241,12 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
     writeAutoCompleteClick(keyword, suggestType, name, url) {
         const pl = {
-            EventType: E_T.autoCompleteClick,
+            EventType: this.EventType.autoCompleteClick,
             EventData: btoa(
                 JSON.stringify({
                     Keyword: encodeURIComponent(keyword),
@@ -256,10 +256,10 @@ class TrackingEvent {
                 })
             ),
         };
-        this.mr(pl);
+        return this.makeRequest(pl);
     }
 
-    mr(data) {
+    makeRequest(data) {
         let visitId = getVisitId();
         let visitorId = getVisitorId();
 
@@ -272,14 +272,13 @@ class TrackingEvent {
             data
         );
 
-        fetch(this.trackingURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pl),
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        }); 
+        return new Promise((resolve, reject) => {
+            fetch(this.trackingURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pl),
+            }).then(resolve, reject)
+        });
     }
 
     track(eventName, args) {
@@ -325,7 +324,7 @@ class TrackingEvent {
     }
 
     isEnabled(eventName) {
-        return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(e => TrackEventNameMapping[e] == eventName)));
+        return Boolean(this.AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(e => this.TrackEventNameMapping[e] == eventName)));
     }
 }
 

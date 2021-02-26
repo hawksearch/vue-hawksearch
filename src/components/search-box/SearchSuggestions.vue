@@ -53,7 +53,7 @@
                 if (this.trackEvent) {
                     this.trackEvent.track('autocompleteclick', {
                         keyword: this.$parent.keyword,
-                        suggestType: 3,
+                        suggestType: this.trackEvent.SuggestType.TopProductMatches,
                         name: item.ProductName,
                         url: item.Url,
                     });
