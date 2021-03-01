@@ -1,3 +1,7 @@
+div[data-component="hawksearch-facets"]{
+	width: 100%;
+}
+
 .hawk-facet-rail {
 	border: 1px solid $primary;
 	background-color: $grey2;
@@ -21,9 +25,10 @@
 .hawk-facet-rail__sticky{
 	@include smd {
 		position: fixed;
-    	width: 97%;
+    	width: 95% !important;
 		top: 8px;
 		cursor: pointer;
+		z-index: 101;
 	}
 }
 
