@@ -86,6 +86,7 @@
                     this.updateNavigationWidth(e);
                 }else{
                     this.isInResponsiveMode = false;
+                    this.stickyNavStyles = {}
                 }
             },
             onScroll: function (e) {
@@ -96,9 +97,12 @@
 
                 if (facetNavCurrentPosition <= windowPosition) {
                    this.isNavSticky = true;
-                   this.updateNavigationWidth();
+                   if (this.isInResponsiveMode) {
+                       this.updateNavigationWidth(e);
+                   }
                 }else{
                     this.isNavSticky = false;
+                    this.stickyNavStyles = {}
                 }
             },
             facetRailWrapperClass: function () {
@@ -124,7 +128,7 @@
                     let facetsNavDOMRect = this.$el.getBoundingClientRect();
                     let currentWidth = window.innerWidth - (facetsNavDOMRect.x + facetsNavDOMRect.y + 2);
                     this.stickyNavStyles = { width: currentWidth + 'px' };
-                }else{
+                } else {
                     this.stickyNavStyles = {};
                 }
             }
