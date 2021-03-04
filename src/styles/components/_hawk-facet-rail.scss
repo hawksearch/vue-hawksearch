@@ -334,6 +334,35 @@ button.hawk-collapseState {
 	height: 1em;
 }
 
+.hawk-facet-rail_empty {
+	height: 250px;
+}
+
+.hawk-preview__results_tabs {
+	.nav-tabs {
+		border-bottom: 1px solid #dee2e6;
+	}
+
+	.nav {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		padding-left: 0;
+		margin-bottom: 0;
+		list-style: none;
+	}
+
+	.nav-item {
+		margin: 0.5rem;
+	}
+
+	.nav-link {
+		display: block;
+		padding: .5rem 1rem;
+	}
+}
+
 .hawk-date-value-start,
 .hawk-date-value-end {
 	width: 215px !important;
