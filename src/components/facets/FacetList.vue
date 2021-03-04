@@ -1,21 +1,15 @@
 <template>
   <div
     v-if="!waitingForInitialSearch"
-    class="hawk-facet-rail"
-    :class="{ 'hawk-facet-rail__sticky': isNavSticky && isInResponsiveMode }"
-    @scroll="onScroll"
-  >
+    :class="facetRailWrapperClass()"
+    :style="stickyNavStyles"
+    @scroll="onScroll">
+
     <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
       {{ $t("Filter By") }}
     </div>
 
-    <div
-      class="hawk-facet-rail__facet-list"
-      :class="{
-        'hawk-facet-rail__facet-list-mobile':
-          isMobileMenuActive && isInResponsiveMode,
-      }"
-    >
+    <div :class="facetListWrapperClass()">
       <template v-if="facets && facets.length">
         <facet
           v-for="facetData in facets"
@@ -54,7 +48,8 @@
                  isMobileMenuActive: false,
                  isInResponsiveMode: false,
                  mobileMaxWidth: 768,
-                 isNavSticky: false
+                 isNavSticky: false,
+                 stickyNavStyles:{}
             }
         },
         methods: {
@@ -88,6 +83,7 @@
                 let displaySize = window.innerWidth;
                 if (this.mobileMaxWidth > displaySize){
                     this.isInResponsiveMode = true;
+                    this.updateNavigationWidth(e);
                 }else{
                     this.isInResponsiveMode = false;
                 }
@@ -96,12 +92,40 @@
                 let facetsNav = this.$el;
                 let facetsNavDOMRect = facetsNav.getBoundingClientRect();
                 let facetNavCurrentPosition = facetsNavDOMRect.y;
-                let windowPosition = window.pageYOffset
-                
+                let windowPosition = window.pageYOffset;
+
                 if (facetNavCurrentPosition <= windowPosition) {
                    this.isNavSticky = true;
+                   this.updateNavigationWidth();
                 }else{
                     this.isNavSticky = false;
+                }
+            },
+            facetRailWrapperClass: function () {
+                let wrapperClasses = ["hawk-facet-rail"];
+
+                if (this.isNavSticky && this.isInResponsiveMode) {
+                    wrapperClasses.push("hawk-facet-rail__sticky");
+                }
+
+                return wrapperClasses.join(' ');
+            },
+            facetListWrapperClass: function () {
+                let wrapperClasses = ["hawk-facet-rail__facet-list"];
+
+                if (this.isMobileMenuActive && this.isInResponsiveMode) {
+                    wrapperClasses.push("hawk-facet-rail__facet-list-mobile");
+                }
+
+                return wrapperClasses.join(' ');
+            },
+            updateNavigationWidth: function (e) {
+                if (this.isNavSticky) {
+                    let facetsNavDOMRect = this.$el.getBoundingClientRect();
+                    let currentWidth = window.innerWidth - (facetsNavDOMRect.x + facetsNavDOMRect.y + 2);
+                    this.stickyNavStyles = { width: currentWidth + 'px' };
+                }else{
+                    this.stickyNavStyles = {};
                 }
             }
         },
