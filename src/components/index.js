@@ -10,6 +10,8 @@ export { default as NestedItem } from './facets/types/NestedItem';
 export { default as OpenRange } from './facets/types/OpenRange';
 export { default as Search } from './facets/types/Search';
 export { default as Slider } from './facets/types/Slider';
+export { default as NestedLinkItem } from './facets/types/NestedLinkItem';
+export { default as NestedLinkList } from './facets/types/NestedLinkList';
 export { default as Swatch } from './facets/types/Swatch';
 export { default as SwatchItem } from './facets/types/SwatchItem';
 export { default as ResultImage } from './results/ResultImage';
