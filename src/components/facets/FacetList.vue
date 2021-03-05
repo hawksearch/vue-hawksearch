@@ -6,7 +6,7 @@
     @scroll="onScroll">
 
     <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
-      {{ $t("Filter By") }}
+      {{ $t("Narrow Results") }}
     </div>
 
     <div :class="facetListWrapperClass()">
@@ -92,12 +92,11 @@
             onScroll: function (e) {
                 let facetsNav = this.$el;
                 let facetsNavDOMRect = facetsNav.getBoundingClientRect();
-                let facetNavCurrentPosition = facetsNavDOMRect.y;
+                let facetNavCurrentPosition = facetsNavDOMRect.y || facetsNavDOMRect.top;
                 let windowPosition = window.pageYOffset;
 
                 if (facetNavCurrentPosition <= windowPosition) {
                    this.isNavSticky = true;
-                   
                    if (this.isInResponsiveMode)
                        this.updateNavigationWidth(e);
                    
@@ -126,7 +125,8 @@
             },
             updateNavigationWidth: function (e) {
                 let facetsNavDOMRect = this.$el.getBoundingClientRect();
-                let currentWidth = window.innerWidth - (facetsNavDOMRect.x*2 + 2);
+                let facetNavOffset = facetsNavDOMRect.x || facetsNavDOMRect.left;
+                let currentWidth = window.innerWidth - (facetNavOffset*2 + 2);
                 if (this.isNavSticky) {
                     this.stickyNavStyles = { width: currentWidth + 'px' };
                 } else {

@@ -6,7 +6,7 @@ Vue.use(VueI18n);
 const messages = {
     en: {
         "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator.",
-        "Narrow Resutls": "Filter By"
+        "Narrow Results": "Filter By"
     }
 };
 
