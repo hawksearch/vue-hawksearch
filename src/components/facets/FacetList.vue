@@ -97,9 +97,10 @@
 
                 if (facetNavCurrentPosition <= windowPosition) {
                    this.isNavSticky = true;
-                   if (this.isInResponsiveMode) {
+                   
+                   if (this.isInResponsiveMode)
                        this.updateNavigationWidth(e);
-                   }
+                   
                 }else{
                     this.isNavSticky = false;
                     this.stickyNavStyles = {}
@@ -124,9 +125,9 @@
                 return wrapperClasses.join(' ');
             },
             updateNavigationWidth: function (e) {
+                let facetsNavDOMRect = this.$el.getBoundingClientRect();
+                let currentWidth = window.innerWidth - (facetsNavDOMRect.x*2 + 2);
                 if (this.isNavSticky) {
-                    let facetsNavDOMRect = this.$el.getBoundingClientRect();
-                    let currentWidth = window.innerWidth - (facetsNavDOMRect.x + facetsNavDOMRect.y + 2);
                     this.stickyNavStyles = { width: currentWidth + 'px' };
                 } else {
                     this.stickyNavStyles = {};
