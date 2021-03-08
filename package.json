@@ -52,7 +52,8 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-loader": "^15.7.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "peerDependencies": {
     "vue": "^2.6.11",
