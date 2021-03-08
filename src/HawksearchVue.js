@@ -263,7 +263,7 @@ class HawksearchVue {
 
         var searchParams = parseSearchQueryString(location.search);
 
-        this.handleLanguageParameters(widget, searchParams);
+        this.handleLanguageParameters(widget);
 
         store.dispatch('fetchResults', searchParams).then(() => {
             this.truncateFacetSelections(store);
@@ -688,29 +688,26 @@ class HawksearchVue {
         }
     }
 
-    static handleLanguageParameters(widget, searchParams) {
-        var store = this.getWidgetStore(widget);
-        var language = searchParams['Language'];
+    static handleLanguageParameters(widget) {
+        var store =  this.getWidgetStore(widget);
+        var urlParams = this.getUrlParams();
+        var language = this.getWidgetStore(widget).state.language || widget.config.language;
 
-        delete searchParams['Language'];
-
-        if (language) {
-            var config = _.cloneDeep(widget.config);
-            config.language = language;
-            store.commit('updateConfig', config);
+        if(urlParams.get("language")){
+            language = urlParams.get("language");
         }
+        store.commit("updateLanguage", language);
     }
 
     static getClientData(store) {
-        var config = store.state.config;
         var visitorId = getVisitorId()
         var clientData = {
             "VisitorId": visitorId
         };
 
-        if (config.language && visitorId) {
+        if (store.state.language && visitorId) {
             clientData["Custom"] = {
-                "language": config.language
+                "language": store.state.language
             };
         }
 

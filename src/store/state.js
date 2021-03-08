@@ -14,5 +14,6 @@ export default {
     loadingSuggestions: false,
     waitingForInitialSearch: true,
     searchCancelation: null,
-    autocompleteCancelation: null
+    autocompleteCancelation: null,
+    language: "en"
 };

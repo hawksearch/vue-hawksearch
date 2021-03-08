@@ -52,10 +52,11 @@
         methods: {
             getField: function (fieldName, options) {
                 var config = this.$root.$store.state.config;
+                var storeState = this.$root.$store.state;
                 var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
                
                 if (config && config.language && !_.includes(langIndiffFields, fieldName)) {
-                    fieldName += `_${config.language}`;
+                    fieldName += `_${storeState.language}`;
                 }
 
                 if (this.result &&
