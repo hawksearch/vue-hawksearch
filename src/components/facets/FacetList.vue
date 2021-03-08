@@ -1,19 +1,31 @@
 <template>
-    <div v-if="!waitingForInitialSearch" class="hawk-facet-rail">
-        <div class="hawk-facet-rail__heading">{{ $t('Narrow Results') }}</div>
+  <div
+    v-if="!waitingForInitialSearch"
+    :class="facetRailWrapperClass()"
+    :style="stickyNavStyles"
+    @scroll="onScroll">
 
-        <div class="hawk-facet-rail__facet-list">
-            <template v-if="facets && facets.length">
-                <facet v-for="facetData in facets" :key="facetData.FacetId" :facet-data="facetData" @expand="onExpand"></facet>
-            </template>
-            <template v-else-if="loadingResults">
-                <placeholder-facet v-for="index in 4" :key="index"></placeholder-facet>
-            </template>
-            <template v-else>
-                <div class="hawk-facet-rail_empty"></div>
-            </template>
-        </div>
+    <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
+      {{ $t("Narrow Results") }}
     </div>
+
+    <div :class="facetListWrapperClass()">
+      <template v-if="facets && facets.length">
+        <facet
+          v-for="facetData in facets"
+          :key="facetData.FacetId"
+          :facet-data="facetData"
+          @expand="onExpand"
+        ></facet>
+      </template>
+      <template v-else-if="loadingResults">
+        <placeholder-facet v-for="index in 4" :key="index"></placeholder-facet>
+      </template>
+      <template v-else>
+        <div class="hawk-facet-rail_empty"></div>
+      </template>
+    </div>
+  </div>
 </template>
 
 <script lang="js">
@@ -29,11 +41,15 @@
             PlaceholderFacet
         },
         mounted() {
-
+            this.isInResponsiveMode = this.mobileMaxWidth > window.innerWidth;
         },
         data() {
             return {
-
+                 isMobileMenuActive: false,
+                 isInResponsiveMode: false,
+                 mobileMaxWidth: 768,
+                 isNavSticky: false,
+                 stickyNavStyles:{}
             }
         },
         methods: {
@@ -59,6 +75,63 @@
                         f.isCollapsed = false;
                     }
                 })
+            },
+            toggleFacetMobileMenu: function (e) {  
+                this.isMobileMenuActive = !this.isMobileMenuActive;
+            },
+            isResponsiveMode:function (e) {
+                let displaySize = window.innerWidth;
+                if (this.mobileMaxWidth > displaySize){
+                    this.isInResponsiveMode = true;
+                    this.updateNavigationWidth(e);
+                }else{
+                    this.isInResponsiveMode = false;
+                    this.stickyNavStyles = {}
+                }
+            },
+            onScroll: function (e) {
+                let facetsNav = this.$el;
+                let facetsNavDOMRect = facetsNav.getBoundingClientRect();
+                let facetNavCurrentPosition = facetsNavDOMRect.y || facetsNavDOMRect.top;
+                let windowPosition = window.pageYOffset;
+
+                if (facetNavCurrentPosition <= windowPosition) {
+                   this.isNavSticky = true;
+                   if (this.isInResponsiveMode)
+                       this.updateNavigationWidth(e);
+                   
+                }else{
+                    this.isNavSticky = false;
+                    this.stickyNavStyles = {}
+                }
+            },
+            facetRailWrapperClass: function () {
+                let wrapperClasses = ["hawk-facet-rail"];
+
+                if (this.isNavSticky && this.isInResponsiveMode) {
+                    wrapperClasses.push("hawk-facet-rail__sticky");
+                }
+
+                return wrapperClasses.join(' ');
+            },
+            facetListWrapperClass: function () {
+                let wrapperClasses = ["hawk-facet-rail__facet-list"];
+
+                if (this.isMobileMenuActive && this.isInResponsiveMode) {
+                    wrapperClasses.push("hawk-facet-rail__facet-list-mobile");
+                }
+
+                return wrapperClasses.join(' ');
+            },
+            updateNavigationWidth: function (e) {
+                let facetsNavDOMRect = this.$el.getBoundingClientRect();
+                let facetNavOffset = facetsNavDOMRect.x || facetsNavDOMRect.left;
+                let currentWidth = window.innerWidth - (facetNavOffset*2 + 2);
+                if (this.isNavSticky) {
+                    this.stickyNavStyles = { width: currentWidth + 'px' };
+                } else {
+                    this.stickyNavStyles = {};
+                }
             }
         },
         computed: {
@@ -70,9 +143,16 @@
             facets: function () {
                 return (this.extendedSearchParams && this.extendedSearchParams.Facets) ? this.extendedSearchParams.Facets.filter(facet => facet.FieldType != 'tab') : null;
             }
+        },
+        created() {
+            window.addEventListener("resize", this.isResponsiveMode);
+            window.addEventListener('scroll', this.onScroll)
+        },
+        destroyed() {
+            window.removeEventListener("resize", this.isResponsiveMode);
+            window.removeEventListener('scroll', this.onScroll)
         }
     }
-
 </script>
 
 <style scoped lang="scss">
