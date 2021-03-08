@@ -55,7 +55,7 @@
                 var storeState = this.$root.$store.state;
                 var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
                
-                if (config && config.language && !_.includes(langIndiffFields, fieldName)) {
+                if (config && storeState.language && !_.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${storeState.language}`;
                 }
 

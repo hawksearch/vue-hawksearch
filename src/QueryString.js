@@ -107,6 +107,7 @@ function getSearchQueryString(searchRequest) {
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 		indexName: searchRequest.IndexName,
+		language: (searchRequest.ClientData && searchRequest.ClientData.Custom)  ? searchRequest.ClientData.Custom.language : undefined ,
 
 		...searchRequest.FacetSelections,
 	};
