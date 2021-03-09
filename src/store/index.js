@@ -16,7 +16,7 @@ export default ({ state, mutations, actions, getters }) => {
     getters = Object.assign(defaultGetters, getters);
 
     return new Vuex.Store({
-        plugins: [createPersistedState()],
+        //plugins: [createPersistedState()],
         state,
         mutations,
         actions,

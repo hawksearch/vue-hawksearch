@@ -46,7 +46,7 @@ export function updateUrl(storeState, widget) {
 
 		if (widget.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
 			history.push({
-				search: getSearchQueryString(storeState.pendingSearch),
+				search: getSearchQueryString(storeState),
 			});
 			resolve();
 		}
@@ -97,7 +97,9 @@ function convertObjectToQueryString(queryObj) {
 	return '?' + params.toString();
 }
 
-function getSearchQueryString(searchRequest) {
+function getSearchQueryString(storeState) {
+	var searchRequest = storeState.pendingSearch;
+
 	const searchQuery = {
 		keyword: searchRequest.Keyword,
 
@@ -107,7 +109,7 @@ function getSearchQueryString(searchRequest) {
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 		indexName: searchRequest.IndexName,
-		language: (searchRequest.ClientData && searchRequest.ClientData.Custom)  ? searchRequest.ClientData.Custom.language : undefined ,
+		language: storeState.language,
 
 		...searchRequest.FacetSelections,
 	};

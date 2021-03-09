@@ -15,5 +15,5 @@ export default {
     waitingForInitialSearch: true,
     searchCancelation: null,
     autocompleteCancelation: null,
-    language: "en"
+    language: null
 };
