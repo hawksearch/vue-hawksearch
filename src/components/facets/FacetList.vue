@@ -6,7 +6,7 @@
     @scroll="onScroll">
 
     <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
-      {{ $t("Narrow Results") }}
+      {{ $t("Filter By") }}
     </div>
 
     <div :class="facetListWrapperClass()">
