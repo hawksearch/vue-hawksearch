@@ -55,7 +55,7 @@ class HawksearchVue {
             linkField: 'link',
             titleField: 'title'
         },
-        pagination:{
+        pagination: {
             type: "dispatch"
         }
     }
@@ -185,45 +185,46 @@ class HawksearchVue {
             },
             methods: {
                 dispatchToStore: function (action, params) {
-                    this.$store.dispatch(action, params).then(() => {
-                        var trackingActions = [
-                            'fetchResults',
-                            'applyFacets',
-                            'applyPageNumber',
-                            'applyPageSize',
-                            'applySort',
-                            'applySearchWithin',
-                            'clearFacet',
-                        ];
-
-                        if (trackingActions.includes(action)) {
+                    return new Promise((resolve, reject) => {
+                        this.$store.dispatch(action, params).then(() => {
                             var storeState = this.$store.state;
 
                             updateUrl(storeState, this).then(() => {
-                              this.$emit('urlUpdated');
+                                this.$emit('urlUpdated');
+                                resolve();
                             });
 
-                            if (this.trackEvent) {
+                            var trackingActions = [
+                                'fetchResults',
+                                'applyFacets',
+                                'applyPageNumber',
+                                'applyPageSize',
+                                'applySort',
+                                'applySearchWithin',
+                                'clearFacet',
+                            ];
+
+                            if (trackingActions.includes(action) && this.trackEvent) {
                                 this.trackEvent.track('searchtracking', {
                                     trackingId: storeState.searchOutput.TrackingId,
                                     typeId: this.trackEvent.getSearchType(storeState.pendingSearch, storeState.prevSearchOutput)
                                 });
                             }
-                        }
 
-                        var pageLoadingActions = [
-                            'fetchResults',
-                            'applyFacets',
-                            'applyPageNumber',
-                            'applyPageSize',
-                            'applySort',
-                            'applySearchWithin',
-                            'clearFacet',
-                        ];
+                            var pageLoadingActions = [
+                                'fetchResults',
+                                'applyFacets',
+                                'applyPageNumber',
+                                'applyPageSize',
+                                'applySort',
+                                'applySearchWithin',
+                                'clearFacet',
+                            ];
 
-                        if (pageLoadingActions.includes(action)) {
-                            HawksearchVue.scrollToBeginning(this);
-                        }
+                            if (pageLoadingActions.includes(action)) {
+                                HawksearchVue.scrollToBeginning(this);
+                            }
+                        });
                     });
                 }
             }
@@ -263,9 +264,9 @@ class HawksearchVue {
 
         var searchParams = parseSearchQueryString(location.search);
 
-        this.handleLanguageParameters(widget, searchParams);
+        this.handleLanguageParameters(widget);
 
-        store.dispatch('fetchResults', searchParams).then(() => {
+        widget.dispatchToStore('fetchResults', searchParams).then(() => {
             this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
@@ -331,23 +332,23 @@ class HawksearchVue {
 
         var config = store.state.config;
         var params = {
-                ClientGuid: config.clientGuid,
-                IndexName: this.getIndexName(config),
-                DisplayFullResponse: true,
-                visitId: getVisitId(),
-                visitorId: getVisitorId(),
-                enablePreview: true,
-                widgetUids: [
-                   {
-                      widgetGuid: widgetParams.widgetGuid || config.widgetGuid,
-                      uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
-                   }
-                ],
-                contextProperties: {
-                   uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
-                },
-                renderHTML: false
-             }
+            ClientGuid: config.clientGuid,
+            IndexName: this.getIndexName(config),
+            DisplayFullResponse: true,
+            visitId: getVisitId(),
+            visitorId: getVisitorId(),
+            enablePreview: true,
+            widgetUids: [
+                {
+                    widgetGuid: widgetParams.widgetGuid || config.widgetGuid,
+                    uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
+                }
+            ],
+            contextProperties: {
+                uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
+            },
+            renderHTML: false
+        }
 
         axios.post(config.recommendationUrl, params).then(response => {
             if (response.status == '200' && response.data) {
@@ -520,6 +521,7 @@ class HawksearchVue {
             case 'checkbox':
             case 'link':
             case 'nestedcheckbox':
+            case 'nestedlinklist':
             case 'swatch':
                 handleCheckboxes(facet.Values);
 
@@ -658,7 +660,7 @@ class HawksearchVue {
         }
 
         if (!String.prototype.replaceAll) {
-            String.prototype.replaceAll = function(str, newStr){
+            String.prototype.replaceAll = function (str, newStr) {
 
                 if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
                     return this.replace(str, newStr);
@@ -687,29 +689,26 @@ class HawksearchVue {
         }
     }
 
-    static handleLanguageParameters(widget, searchParams) {
+    static handleLanguageParameters(widget) {
         var store = this.getWidgetStore(widget);
-        var language = searchParams['Language'];
+        var urlParams = this.getUrlParams();
+        var language = this.getWidgetStore(widget).state.language || widget.config.language;
 
-        delete searchParams['Language'];
-
-        if (language) {
-            var config = _.cloneDeep(widget.config);
-            config.language = language;
-            store.commit('updateConfig', config);
+        if (urlParams.get("language")) {
+            language = urlParams.get("language");
         }
+        store.commit("updateLanguage", language);
     }
 
     static getClientData(store) {
-        var config = store.state.config;
         var visitorId = getVisitorId()
         var clientData = {
             "VisitorId": visitorId
         };
 
-        if (config.language && visitorId) {
+        if (store.state.language && visitorId) {
             clientData["Custom"] = {
-                "language": config.language
+                "language": store.state.language
             };
         }
 
@@ -794,11 +793,11 @@ class HawksearchVue {
         return fields;
     }
 
-    static truncateFacetSelections(store){
+    static truncateFacetSelections(store) {
         var pendingSearch = _.cloneDeep(store.state.pendingSearch);
-        pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value,field) => {return _.includes(this.getFacetFieldNames(store),field)});
+        pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value, field) => { return _.includes(this.getFacetFieldNames(store), field) });
 
-        store.commit('updatePendingSearch',pendingSearch);
+        store.commit('updatePendingSearch', pendingSearch);
     }
 
     static isMobile() {

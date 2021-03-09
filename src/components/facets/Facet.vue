@@ -54,6 +54,7 @@
     import Checkbox from './types/Checkbox';
     import FacetLink from './types/FacetLink';
     import NestedCheckbox from './types/NestedCheckbox';
+    import NestedLinkList from './types/NestedLinkList';
     import Search from './types/Search';
     import OpenRange from './types/OpenRange';
     import Swatch from './types/Swatch';
@@ -69,6 +70,7 @@
             Checkbox,
             FacetLink,
             NestedCheckbox,
+            NestedLinkList,
             Search,
             OpenRange,
             Swatch,
@@ -184,6 +186,10 @@
 
                     case "nestedcheckbox":
                         return "nested-checkbox";
+                        break;
+
+                    case "nestedlinklist":
+                        return "nested-link-list";
                         break;
 
                     case "search":

@@ -37,5 +37,8 @@ export default {
     },
     updateAutocompleteCancelation(state, value) {
         state.autocompleteCancelation = value;
+    },
+    updateLanguage(state, value){
+        state.language = value;
     }
 };
