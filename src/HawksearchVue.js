@@ -771,6 +771,16 @@ class HawksearchVue {
         return configIndexName || urlIndexName || "";
     }
 
+    static getFacetFieldNames(store) {
+        var fields = [];
+
+        store.state.searchOutput.Facets.forEach(facet => {
+            fields.push(this.getFacetParamName(facet));
+        })
+
+        return fields;
+    }
+
     static getTabField(store) {
         var field;
 
@@ -781,16 +791,6 @@ class HawksearchVue {
         })
 
         return field;
-    }
-
-    static getFacetFieldNames(store) {
-        var fields = [];
-
-        store.state.searchOutput.Facets.forEach(facet => {
-            fields.push(this.getFacetParamName(facet));
-        })
-
-        return fields;
     }
 
     static truncateFacetSelections(store) {

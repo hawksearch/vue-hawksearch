@@ -45,18 +45,10 @@
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
-                    var store = this.$root.$store;
-                    var facetSelections = {};
-
-                    if (this.$root.config.tabConfig.alwaysOn) {
-                        facetSelections = _.pickBy(store.state.pendingSearch.FacetSelections, (value, field) => field == HawksearchVue.getTabField(store));
-                    }
-
-                    this.$root.dispatchToStore('fetchResults', {
-                        Keyword: this.keyword || "",
-                        FacetSelections: facetSelections,
-                        PageNo: 1
-                    });
+                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 }).then(() => {
+                            var widget = this.$root;
+                            HawksearchVue.applyTabSelection(widget);
+                    });;
                 }
             },
             onKeyDown: function (e) {
