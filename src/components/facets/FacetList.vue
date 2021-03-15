@@ -78,6 +78,9 @@
             },
             toggleFacetMobileMenu: function (e) {  
                 this.isMobileMenuActive = !this.isMobileMenuActive;
+                this.$nextTick(() => {
+                    this.$root.$emit('toggleFacetMenu',this.isMobileMenuActive);
+                })
             },
             isResponsiveMode:function (e) {
                 let displaySize = window.innerWidth;

@@ -25,6 +25,10 @@
         props: ['facetData'],
         mounted() {
             this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+            
+            this.$root.$on('toggleFacetMenu', (isActive) => { 
+                    this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+            });
         },
         data() {
             return {
@@ -46,6 +50,7 @@
         created: function () {
             window.addEventListener('mouseup', this.onMouseUp)
             window.addEventListener('mousemove', this.onMouseMove)
+            window.addEventListener('resize', this.onResize);
 
             if (HawksearchVue.isMobile()) {
                 window.addEventListener('touchend', this.onMouseUp)
@@ -54,6 +59,7 @@
         beforeDestroy: function () {
             window.removeEventListener('mouseup', this.onMouseUp)
             window.removeEventListener('mousemove', this.onMouseMove)
+            window.removeEventListener('resize', this.onResize);
 
             if (HawksearchVue.isMobile()) {
                 window.removeEventListener('touchend', this.onMouseUp)
@@ -126,6 +132,11 @@
                         window.removeEventListener('touchmove', this.onMouseMove)
                     }
                 }
+            },
+            onResize: function(){
+                this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+                this.updateMaxTemp();
+                this.updateMinTemp();
             },
             handleAction: function () {
                 var minValue = this.valueConvert(this.minTemp);
@@ -321,7 +332,7 @@
                 else if (this.componentReset || o.RangeMax != n.RangeMax || o.RangeMin != n.RangeMin) {
                     this.componentReset = false;
                     var cache = this.fetchCache();
-
+                    
                     if (cache) {
                         this.minValue = cache.minValue;
                         this.maxValue = cache.maxValue;
