@@ -33,13 +33,16 @@ div[data-component="hawksearch-facets"]{
 	}
 }
 
+.hawk-facet-rail__facet-list-wpr{
+	@include smd {
+		display: none;
+	}
+}
+
 .hawk-facet-rail__facet-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
-	@include smd {
-		display: none;
-	}
 }
 
 .hawk-facet-rail__facet-list-mobile {
