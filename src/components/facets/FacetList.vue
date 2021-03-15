@@ -78,6 +78,9 @@
             },
             toggleFacetMobileMenu: function (e) {  
                 this.isMobileMenuActive = !this.isMobileMenuActive;
+                this.$nextTick(() => {
+                    this.$root.$emit('toggleFacetMenu',this.isMobileMenuActive);
+                })
             },
             isResponsiveMode:function (e) {
                 let displaySize = window.innerWidth;
@@ -115,7 +118,7 @@
                 return wrapperClasses.join(' ');
             },
             facetListWrapperClass: function () {
-                let wrapperClasses = ["hawk-facet-rail__facet-list"];
+                let wrapperClasses = ["hawk-facet-rail__facet-list", "hawk-facet-rail__facet-list-wpr"];
 
                 if (this.isMobileMenuActive && this.isInResponsiveMode) {
                     wrapperClasses.push("hawk-facet-rail__facet-list-mobile");
