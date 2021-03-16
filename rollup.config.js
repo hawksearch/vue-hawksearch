@@ -2,7 +2,9 @@ import pkg from './package.json';
 import resolve from '@rollup/plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import vuePlugin from 'rollup-plugin-vue';
-import scss from 'rollup-plugin-scss'
+import sass from 'node-sass'
+import autoprefixer from 'autoprefixer'
+import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser';
 
 const extensions = ['.mjs', '.web.js', '.js', '.json', '.vue'];
@@ -60,9 +62,19 @@ const config = {
 		vuePlugin({
 			css: false
 		}),
-		scss({
-			outputStyle: 'compressed'
-		}),
+		postcss({
+			preprocessor: (content, id) => new Promise((resolve, reject) => {
+			  const result = sass.renderSync({ file: id })
+			  resolve({ code: result.css.toString() })
+			}),
+			plugins: [
+			  autoprefixer({grid: 'autoplace'})
+			],
+			sourceMap: false,
+			extract: true,
+			minimize: false,
+			extensions: ['.sass','.css']
+		  }),
 		terser()
 	],
 };
