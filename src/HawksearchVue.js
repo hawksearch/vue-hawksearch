@@ -154,10 +154,6 @@ class HawksearchVue {
             mounted() {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
-
-                    if (this.trackEvent) {
-                        this.trackEvent.track('pageload', { pageType: (this.config.additionalParameters && this.config.additionalParameters.CustomUrl) ? 'landing' : 'custom' });
-                    }
                 }
                 catch (e) { }
             },
@@ -802,6 +798,21 @@ class HawksearchVue {
 
     static isMobile() {
         return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    static trackPageLoad(){
+        var widgets = Object.values(HawksearchVue.widgetInstances);
+
+        if(widgets.length){
+            var widget = widgets[0];
+
+            if (widget && widget.trackEvent) {
+                var additionalParams =  HawksearchVue.getWidgetStore(widget).state.config.additionalParameters;
+                var additionalParamsCustomUrl = additionalParams.CustomUrl;
+
+                widget.trackEvent.track('pageload', { pageType: (additionalParams && additionalParamsCustomUrl) ? 'landing' : 'custom' });
+            }
+        }
     }
 }
 
