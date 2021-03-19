@@ -154,6 +154,7 @@ class HawksearchVue {
             mounted() {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
+                    HawksearchVue.handleLanguageParameters(this);
                 }
                 catch (e) { }
             },
@@ -259,8 +260,6 @@ class HawksearchVue {
         this.handleAdditionalParameters(widget);
 
         var searchParams = parseSearchQueryString(location.search);
-
-        this.handleLanguageParameters(widget);
 
         widget.dispatchToStore('fetchResults', searchParams).then(() => {
             this.truncateFacetSelections(store);
@@ -688,11 +687,12 @@ class HawksearchVue {
     static handleLanguageParameters(widget) {
         var store = this.getWidgetStore(widget);
         var urlParams = this.getUrlParams();
-        var language = this.getWidgetStore(widget).state.language || widget.config.language;
+        var language = store.state.language || widget.config.language;
 
         if (urlParams.get("language")) {
             language = urlParams.get("language");
         }
+
         store.commit("updateLanguage", language);
     }
 
