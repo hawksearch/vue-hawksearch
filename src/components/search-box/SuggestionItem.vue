@@ -1,14 +1,29 @@
 <template>
     <li @click="onClick">
-        <div v-html="item.Thumb"></div>
-        <p class="p-name">{{ item.ProductName }}</p>
+        <div v-if="getThumb()">
+            <img class="hawk-sqItemImage-thumb" :src="getThumb()" />
+        </div>
+        <span class="p-name">{{ getTitle() }}</span>
     </li>
 </template>
 
 <script>
     export default {
         name: 'suggestion-item',
-        props: ['item'],
+        props: {
+            item: {
+                default: null
+            },
+            titleField: {
+                default: null
+            },
+            linkField: {
+                default: null
+            },
+            thumbField: {
+                default: null
+            }
+        },
         mounted() {
 
         },
@@ -20,7 +35,7 @@
         methods: {
             getField: function (fieldName) {
                 var storeState = this.$root.$store.state;
-                var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
+                var langIndiffFields = (this.$root.config.suggestionItem && this.$root.config.suggestionItem.langIndiffFields && this.$root.config.suggestionItem.langIndiffFields.length) ? this.$root.config.suggestionItem.langIndiffFields : [];
 
                 if (storeState.language && !_.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${storeState.language}`;
@@ -44,8 +59,37 @@
                     console.log('Property parsing to JSON failed');
                 }
             },
+            getTitle: function (fieldName) {
+                if (!fieldName) {
+                    fieldName = this.getConfigurationField('titleField');
+                }
+
+                return _.cloneDeep(this.item.ProductName || this.getField(fieldName));
+            },
+            getLink: function (fieldName) {
+                if (!fieldName) {
+                    fieldName = this.getConfigurationField('linkField');
+                }
+
+                return _.cloneDeep(this.item.Url || this.getField(fieldName));
+            },
+            getThumb: function (fieldName) {
+                if (!fieldName) {
+                    fieldName = this.getConfigurationField('thumbField');
+                }
+
+                return _.cloneDeep((this.item.Thumb && this.item.Thumb.Url) || this.getField(fieldName));
+            },
+            getConfigurationField: function (field) {
+                if (this[field]) {
+                    return this[field]
+                }
+                else if (this.$root.config.suggestionItem) {
+                    return this.$root.config.suggestionItem[field];
+                }
+            },
             onClick: function () {
-                this.$emit('itemselected', this.item);
+                this.$emit('itemselected', this);
             }
         },
         computed: {

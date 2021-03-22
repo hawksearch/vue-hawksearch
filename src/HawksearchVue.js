@@ -47,13 +47,18 @@ class HawksearchVue {
             scrollUpOnRefresh: true
         },
         resultItem: {
-            itemSelect: true,
+            titleField: 'itemname',
             linkField: 'url',
+            thumbField: 'thumb',
+            itemSelect: true,
             langIndiffFields: []
         },
         suggestionItem: {
+            titleField: 'title',
             linkField: 'link',
-            titleField: 'title'
+            thumbField: 'thumb',
+            itemSelect: true,
+            langIndiffFields: []
         },
         pagination: {
             type: "dispatch"

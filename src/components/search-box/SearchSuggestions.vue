@@ -50,16 +50,18 @@
         },
         methods: {
             onItemSeleted: function (item) {
-                if (this.trackEvent) {
+                if (this.trackEvent && item.getTitle() && item.getLink() && this.$parent.keyword) {
                     this.trackEvent.track('autocompleteclick', {
                         keyword: this.$parent.keyword,
                         suggestType: this.trackEvent.SuggestType.TopProductMatches,
-                        name: item.ProductName,
-                        url: item.Url,
+                        name: item.getTitle(),
+                        url: item.getLink(),
                     });
                 }
 
-                location.assign(item.Url);
+                if (item.getLink()) {
+                    location.assign(item.getLink());
+                }
             }
         },
         computed: {
