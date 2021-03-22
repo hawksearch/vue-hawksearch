@@ -1794,7 +1794,8 @@ button.hawk-collapseState {
 .hawk-selections__item-name {
   margin-right: 5px;
   color: #3f4044;
-  font-size: 14px; }
+  font-size: 14px;
+  word-break: break-all; }
 
 .hawk-selections__item-name--negated {
   text-decoration: line-through; }
