@@ -1,127 +1,118 @@
 import { createBrowserHistory } from 'History';
 
-const allowedParams = [
-	"keyword",
-	"sort",
-	"pg",
-	"lp",
-	"PageId",
-	"lpurl",
-	"mpp",
-	"searchWithin",
-	"is100Coverage",
-	"indexName",
-	"language"
-];
-
-export function parseSearchQueryString(search) {
-	const queryObj = parseQueryStringToObject(search);
-
-	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, indexName, language } = queryObj;
-	let { ...facetSelections } = queryObj;
-	facetSelections = _.mapValues(facetSelections, (value) => { return _.isArray(value) ? value : [value]});
-
-	// ignore landing pages if keyword is passed
-	const pageId = lp || PageId;
-
-	return {
-		Keyword: lpurl || pageId ? '' : keyword,
-		SortBy: sort,
-		PageNo: pg ? Number(pg) : undefined,
-		MaxPerPage: mpp ? Number(mpp) : undefined,
-		PageId: pageId ? Number(pageId) : undefined,
-		CustomUrl: lpurl,
-		SearchWithin: searchWithin,
-		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-		FacetSelections: facetSelections,
-		IndexName: indexName,
-		Language: language
-	};
+const stateToURLParam = {
+    Keyword: 'keyword',
+    SortBy: 'sort',
+    PageNo: 'pg',
+    MaxPerPage: 'mpp',
+    CustomUrl: 'lpurl',
+    SearchWithin: 'searchWithin',
+    IndexName: 'indexName'
 }
 
-export function updateUrl(storeState, widget) {
-	return new Promise((resolve, reject) => {
-		const history = createBrowserHistory();
+export function getParamName(paramName, widget, reverse) {
+    var mappingTable = widget.config.paramsMapping;
 
-		if (widget.config.urlUpdate.enabled && !storeState.waitingForInitialSearch) {
-			history.push({
-				search: getSearchQueryString(storeState),
-			});
-			resolve();
-		}
-	});
+    for (let [mKey, mValue] of Object.entries(mappingTable)) {
+        if (reverse) {
+            [mKey, mValue] = [mValue, mKey];
+        }
+
+        if (mKey == paramName) {
+            paramName = mValue;
+        }
+    }
+
+    return paramName;
 }
 
-function parseQueryStringToObject(search) {
-	const params = new URLSearchParams(search);
+export function parseURLparams(widget) {
+    var params = new URLSearchParams(location.search);
+    var paramList = Object.keys(Object.fromEntries(params.entries()));
+    var pendingSearch = {};
 
-	const parsed = {};
+    let mappedStateToURLParam = _.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
 
-	params.forEach((value, key) => {
-		if (allowedParams.includes(key)) {
-			// `keyword` is special and should never be turned into an array
-			parsed[key] = value;
-		} else {
-			// everything else should be turned into an array
+    //console.log(mappedStateToURLParam)
+    console.log(getParamName('keyword', widget))
 
-			if (!value) {
-				// no useful value for this query param, so skip it
-				return;
-			}
+    for (let [key, value] of Object.entries(mappedStateToURLParam)) {
+        pendingSearch[key] = params.get(value);
+        _.pull(paramList, value)
+    }
 
-			// multiple selections are split by commas, so split into an array
-			const multipleValues = value.split(',');
+    if (paramList.length) {
+        pendingSearch.FacetSelections = {};
 
-			// and now handle any comma escaping - any single value that contained a comma is escaped to '::'
-			for (let x = 0; x < multipleValues.length; ++x) {
-				multipleValues[x] = multipleValues[x].replace('::', ',');
-			}
+        paramList.forEach(param => {
+            pendingSearch.FacetSelections[getParamName(param, widget, true)] = params.get(param);
+        });
+    }
 
-			parsed[key] = multipleValues;
-		}
-	});
+    return _.pickBy(pendingSearch);
+}
 
-	return parsed;
+export function updateUrl(widget) {
+    return new Promise((resolve, reject) => {
+        const history = createBrowserHistory();
+
+        if (widget.config.urlUpdate.enabled) {
+            history.push({
+                search: getSearchQueryString(widget),
+            });
+            resolve();
+        }
+    });
+}
+
+function getSearchQueryString(widget) {
+    var storeState = HawksearchVue.getWidgetStore(widget).state;
+    var pendingSearch = storeState.pendingSearch;
+
+    var paramEntries = [];
+
+    for (let [stateField, urlParam] of Object.entries(stateToURLParam)) {
+        paramEntries.push([urlParam, pendingSearch[stateField]])
+    }
+
+    var searchQuery = {
+        ...Object.fromEntries(paramEntries),
+        language: storeState.language,
+        ...pendingSearch.FacetSelections
+    };
+
+    searchQuery = _.pickBy(searchQuery);
+    searchQuery = _.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
+
+    return convertObjectToQueryString(searchQuery);
 }
 
 function convertObjectToQueryString(queryObj) {
-	var params = new URLSearchParams();
+    var params = new URLSearchParams();
 
-	for (const key in queryObj) {
-		if (queryObj[key]) {
-			params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
-		}
-	}
+    for (const key in queryObj) {
+        if (queryObj[key]) {
+            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
+        }
+    }
 
-	return '?' + params.toString();
-}
-
-function getSearchQueryString(storeState) {
-	var searchRequest = storeState.pendingSearch;
-
-	const searchQuery = {
-		keyword: searchRequest.Keyword,
-
-		sort: searchRequest.SortBy,
-		pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-		mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-		searchWithin: searchRequest.SearchWithin,
-		indexName: searchRequest.IndexName,
-		language: storeState.language,
-
-		...searchRequest.FacetSelections,
-	};
-
-	return convertObjectToQueryString(searchQuery);
+    return '?' + params.toString();
 }
 
 function encodeSingleCommaSeparatedValues(arr) {
-	if (_.isArray(arr) && arr.length == 1) {
-		return [arr[0].replace(',', '::')];
-	}
-	else {
-		return arr;
-	}
+    if (_.isArray(arr) && arr.length == 1) {
+        return [arr[0].replace(',', '::')];
+    }
+    else {
+        return arr;
+    }
+}
+
+function decodeSingleCommaSeparatedValues(value) {
+    if (value && value.replace) {
+        return value.replace('::', ',');
+    }
+    else {
+        return value;
+    }
 }

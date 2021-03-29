@@ -1,7 +1,7 @@
 import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
-import { parseSearchQueryString, updateUrl } from './QueryString';
+import { getParamName, parseURLparams, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
@@ -62,7 +62,8 @@ class HawksearchVue {
         },
         pagination: {
             type: "dispatch"
-        }
+        },
+        paramsMapping: {}
     }
 
     static widgetInstances = {}
@@ -191,7 +192,7 @@ class HawksearchVue {
                         this.$store.dispatch(action, params).then(() => {
                             var storeState = this.$store.state;
 
-                            updateUrl(storeState, this).then(() => {
+                            updateUrl(this).then(() => {
                                 this.$emit('urlUpdated');
                                 resolve();
                             });
@@ -243,12 +244,6 @@ class HawksearchVue {
         }
     }
 
-    static getUrlParams() {
-        var urlObj = new URL(location.href);
-
-        return urlObj.searchParams;
-    }
-
     static initialSearch(widget) {
         if (!widget) {
             console.error('Widget not supplied');
@@ -264,7 +259,7 @@ class HawksearchVue {
 
         this.handleAdditionalParameters(widget);
 
-        var searchParams = parseSearchQueryString(location.search);
+        var searchParams = parseURLparams(widget);
 
         widget.dispatchToStore('fetchResults', searchParams).then(() => {
             this.truncateFacetSelections(store);
@@ -673,12 +668,12 @@ class HawksearchVue {
 
     static handleAdditionalParameters(widget) {
         var store = this.getWidgetStore(widget);
-        var urlParams = this.getUrlParams();
+        var urlParams = new URLSearchParams(location.search);
         var additionalParameters = {};
 
         this.paramWhitelist.forEach(key => {
-            if (urlParams.get(key)) {
-                additionalParameters[key] = urlParams.get(key);
+            if (urlParams.get(getParamName(key, widget))) {
+                additionalParameters[key] = urlParams.get(getParamName(key, widget));
             }
         });
 
@@ -691,11 +686,12 @@ class HawksearchVue {
 
     static handleLanguageParameters(widget) {
         var store = this.getWidgetStore(widget);
-        var urlParams = this.getUrlParams();
         var language = store.state.language || widget.config.language;
+        var urlParams = new URLSearchParams(location.search);
+        var urlLanguage = urlParams.get(getParamName('language', widget))
 
-        if (urlParams.get("language")) {
-            language = urlParams.get("language");
+        if (urlLanguage) {
+            language = urlLanguage;
         }
 
         store.commit("updateLanguage", language);
