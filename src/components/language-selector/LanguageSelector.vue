@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
 import { parseSearchQueryString } from '../../QueryString';
 export default {
   name: "language-selector",
@@ -34,9 +33,8 @@ export default {
   methods: {
     updateUrl: function (language) {
         this.$root.$store.commit("updateLanguage", language);
-        var searchQuery = this.indexName != null && this.indexName !="" ? "?language=" + language : "?language="+ language +"&indexName="+this.indexName;
-        var searchParams = parseSearchQueryString(searchQuery);
-        this.$root.dispatchToStore('fetchResults', searchParams).then(() => {
+        var searchQuery = this.indexName != null && this.indexName !="" ? "?language=" + language : "?language=" + language + "&indexName=" + this.indexName;
+        this.$root.dispatchToStore('fetchResults', searchQuery).then(() => {
             HawksearchVue.truncateFacetSelections(this.$root.$store);
             HawksearchVue.applyTabSelection(this.$root);
         });
@@ -48,11 +46,7 @@ export default {
       }
       return languagesArray;
     },
-  },
-  computed: {
-    ...mapState([]),
-    ...mapGetters([]),
-  },
+  }
 };
 </script>
 
