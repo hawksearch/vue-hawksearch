@@ -296,7 +296,7 @@ class HawksearchVue {
 
         var config = store.state.config;
         var clientData = this.getClientData(store);
-        console.log(searchParams)
+        
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
