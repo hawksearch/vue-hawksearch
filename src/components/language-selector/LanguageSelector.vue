@@ -33,8 +33,8 @@ export default {
   methods: {
     updateUrl: function (language) {
         this.$root.$store.commit("updateLanguage", language);
-        var searchQuery = this.indexName != null && this.indexName !="" ? "?language=" + language : "?language=" + language + "&indexName=" + this.indexName;
-        this.$root.dispatchToStore('fetchResults', searchQuery).then(() => {
+        
+        this.$root.dispatchToStore('fetchResults', {}).then(() => {
             HawksearchVue.truncateFacetSelections(this.$root.$store);
             HawksearchVue.applyTabSelection(this.$root);
         });
