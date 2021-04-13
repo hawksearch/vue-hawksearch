@@ -194,6 +194,7 @@
 }
 
 
+
 /*
 * Utils
 *
@@ -2430,4 +2431,12 @@ ul.hawk-facet-rail__facet-list.colors {
       font-size: 14px; }
   .hawk-facet-rail__facet-values-size ul li.selected {
     border: 2px solid #f37624; }
+
+div[data-component="hawksearch-language-selector"] {
+  margin: 16px 0; }
+  div[data-component="hawksearch-language-selector"] .language-selector .language {
+    color: #007bff; }
+    div[data-component="hawksearch-language-selector"] .language-selector .language:hover {
+      text-decoration: underline;
+      cursor: pointer; }
 
