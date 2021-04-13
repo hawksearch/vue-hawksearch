@@ -5,6 +5,7 @@ import { parseSearchQueryString, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
+import LanguageSelector from './components/language-selector/LanguageSelector';
 import PageContent from './components/results/PageContent.vue';
 import Recommendations from './components/results/recommendations/Recommendations.vue';
 import TrackingEvent from './TrackingEvent';
@@ -29,6 +30,7 @@ class HawksearchVue {
         indexName: null,
         indexNameRequired: false,
         language: null,
+        langauges: null,
         additionalParameters: {},
         searchBoxConfig: {
             reloadOnEmpty: false,
@@ -144,7 +146,7 @@ class HawksearchVue {
             // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
             config = this.mergeConfig(this.defaultConfig, store.state.config);
         }
-
+        
         var widget = new Vue({
             el,
             store,
@@ -153,6 +155,7 @@ class HawksearchVue {
                 SearchBox,
                 FacetList,
                 Results,
+                LanguageSelector,
                 PageContent,
                 Recommendations
             },
@@ -293,6 +296,7 @@ class HawksearchVue {
 
         var config = store.state.config;
         var clientData = this.getClientData(store);
+        
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,

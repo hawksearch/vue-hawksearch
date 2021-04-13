@@ -28,6 +28,7 @@ export { default as CustomResultsLabel } from './results/tools/CustomResultsLabe
 export { default as ItemsPerPage } from './results/tools/ItemsPerPage';
 export { default as Pager } from './results/tools/Pager';
 export { default as LoadMore } from './results/tools/LoadMore';
+export { default as LanguageSelector } from './language-selector/LanguageSelector';
 export { default as Pagination } from './results/tools/Pagination';
 export { default as Sorting } from './results/tools/Sorting';
 export { default as AutocorrectSuggestions } from './results/AutocorrectSuggestions';
