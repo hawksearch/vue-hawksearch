@@ -30,7 +30,6 @@
             return {
                 searchTermBuffer: null,
                 keyword: '',
-                keywordEnter: '',
             }
         },
         methods: {
@@ -67,7 +66,6 @@
                         HawksearchVue.redirectSearch(this.keyword, this.$root, location.href);
                     }
                     else if (searchBoxConfig.reloadOnEmpty) {
-                        this.keywordEnter = this.keyword;
                         this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 }).then(() => {
                                 var widget = this.$root;
                                 HawksearchVue.applyTabSelection(widget);
