@@ -50,26 +50,26 @@
             search: function () {
                 var value = this.searchTermBuffer;
                 var searchBoxConfig = this.$root.config.searchBoxConfig;
-
-                if (value) {
+              
+                if (value || value == "") {
                     switch (this.mode) {
                         case 'search':
-                            this.$root.dispatchToStore('fetchResults', { Keyword: value, PageNo: 1 });
+                            console.log("IN search")
+                            if(searchBoxConfig && value == ""){
+                                if (searchBoxConfig.redirectToCurrentPage) {
+                                    HawksearchVue.redirectSearch(value, this.$root, location.href);
+                                }else if (searchBoxConfig.reloadOnEmpty) {
+                                    this.$root.dispatchToStore('fetchResults', { Keyword: value || "", PageNo: 1 })
+                                }
+                            }else{
+                                this.$root.dispatchToStore('fetchResults', { Keyword: value, PageNo: 1 });
+                            }
                             break;
 
                         case 'searchWithin':
                         default:
-                            this.$root.dispatchToStore('applySearchWithin', value);
-                    }
-                }else if(searchBoxConfig){
-                    if (searchBoxConfig.redirectToCurrentPage) {
-                        HawksearchVue.redirectSearch(this.keyword, this.$root, location.href);
-                    }
-                    else if (searchBoxConfig.reloadOnEmpty) {
-                        this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 }).then(() => {
-                                var widget = this.$root;
-                                HawksearchVue.applyTabSelection(widget);
-                        });;
+                            if (value)    
+                                this.$root.dispatchToStore('applySearchWithin', value);
                     }
                 }
             },
