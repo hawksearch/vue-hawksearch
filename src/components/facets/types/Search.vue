@@ -50,11 +50,10 @@
             search: function () {
                 var value = this.searchTermBuffer;
                 var searchBoxConfig = this.$root.config.searchBoxConfig;
-              
+                
                 if (value || value == "") {
                     switch (this.mode) {
                         case 'search':
-                            console.log("IN search")
                             if(searchBoxConfig && value == ""){
                                 if (searchBoxConfig.redirectToCurrentPage) {
                                     HawksearchVue.redirectSearch(value, this.$root, location.href);
