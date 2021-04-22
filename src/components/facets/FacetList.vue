@@ -3,7 +3,9 @@
     v-if="!waitingForInitialSearch"
     :class="facetRailWrapperClass()"
     :style="stickyNavStyles"
-    @scroll="onScroll">
+    @scroll="onScroll"
+    @focusout="handleFocusOut"
+    tabindex="0">
 
     <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
       {{ $t("Filter By") }}
@@ -15,6 +17,8 @@
           v-for="facetData in facets"
           :key="facetData.FacetId"
           :facet-data="facetData"
+          :facet-settings="facetSettingsConfig"
+          :facets="facetsElements"
           @expand="onExpand"
         ></facet>
       </template>
@@ -42,6 +46,7 @@
         },
         mounted() {
             this.isInResponsiveMode = this.mobileMaxWidth > window.innerWidth;
+            this.facetSettingsConfig = this.$root.config.facetConfig;
         },
         data() {
             return {
@@ -49,7 +54,8 @@
                  isInResponsiveMode: false,
                  mobileMaxWidth: 768,
                  isNavSticky: false,
-                 stickyNavStyles:{}
+                 stickyNavStyles:{},
+                 facetSettingsConfig: null
             }
         },
         methods: {
@@ -135,6 +141,11 @@
                 } else {
                     this.stickyNavStyles = {};
                 }
+            },
+            handleFocusOut:function () {
+                if (this.facetSettingsConfig && this.facetSettingsConfig.collapseOnDefocus) {
+                    this.collapseAll();
+                }
             }
         },
         computed: {
@@ -145,6 +156,9 @@
             ]),
             facets: function () {
                 return (this.extendedSearchParams && this.extendedSearchParams.Facets) ? this.extendedSearchParams.Facets.filter(facet => facet.FieldType != 'tab') : null;
+            },
+            facetsElements: function () {
+                return this.$children;
             }
         },
         created() {
