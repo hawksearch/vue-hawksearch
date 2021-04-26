@@ -28,7 +28,8 @@
         },
         data() {
             return {
-                searchTermBuffer: null
+                searchTermBuffer: null,
+                keyword: '',
             }
         },
         methods: {
@@ -48,16 +49,26 @@
             },
             search: function () {
                 var value = this.searchTermBuffer;
-
-                if (value) {
+                var searchBoxConfig = this.$root.config.searchBoxConfig;
+                
+                if (value || value == "") {
                     switch (this.mode) {
                         case 'search':
-                            this.$root.dispatchToStore('fetchResults', { Keyword: value, PageNo: 1 });
+                            if(searchBoxConfig && value == ""){
+                                if (searchBoxConfig.redirectToCurrentPage) {
+                                    HawksearchVue.redirectSearch(value, this.$root, location.href);
+                                }else if (searchBoxConfig.reloadOnEmpty) {
+                                    this.$root.dispatchToStore('fetchResults', { Keyword: value || "", PageNo: 1 })
+                                }
+                            }else{
+                                this.$root.dispatchToStore('fetchResults', { Keyword: value, PageNo: 1 });
+                            }
                             break;
 
                         case 'searchWithin':
                         default:
-                            this.$root.dispatchToStore('applySearchWithin', value);
+                            if (value)    
+                                this.$root.dispatchToStore('applySearchWithin', value);
                     }
                 }
             },
