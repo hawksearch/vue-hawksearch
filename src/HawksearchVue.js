@@ -573,16 +573,16 @@ class HawksearchVue {
         var config = widget.config;
 
         if (keyword) {
-            redirect.searchParams.set('keyword', keyword);
+            redirect.searchParams.set(getParamName('keyword', widget), keyword);
         }
 
         if (config.indexName) {
-            redirect.searchParams.set('indexName', config.indexName);
+            redirect.searchParams.set(getParamName('indexName', widget), config.indexName);
         }
 
         for (let [key, value] of Object.entries(config.additionalParameters)) {
             if (this.isWhitelistedParam(key)) {
-                redirect.searchParams.set(key, value);
+                redirect.searchParams.set(getParamName(key, widget), value);
             }
         }
 

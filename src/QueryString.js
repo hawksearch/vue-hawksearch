@@ -33,9 +33,6 @@ export function parseURLparams(widget) {
 
     let mappedStateToURLParam = _.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
 
-    //console.log(mappedStateToURLParam)
-    console.log(getParamName('keyword', widget))
-
     for (let [key, value] of Object.entries(mappedStateToURLParam)) {
         pendingSearch[key] = params.get(value);
         _.pull(paramList, value)
@@ -45,7 +42,7 @@ export function parseURLparams(widget) {
         pendingSearch.FacetSelections = {};
 
         paramList.forEach(param => {
-            pendingSearch.FacetSelections[getParamName(param, widget, true)] = params.get(param);
+            pendingSearch.FacetSelections[getParamName(param, widget, true)] = decodeSingleCommaSeparatedValues(params.get(param)); // decode
         });
     }
 
@@ -109,8 +106,15 @@ function encodeSingleCommaSeparatedValues(arr) {
 }
 
 function decodeSingleCommaSeparatedValues(value) {
-    if (value && value.replace) {
-        return value.replace('::', ',');
+    if (value && _.isString(value)) {
+        value = decodeURIComponent(value);
+
+        if (value.includes('::')) {
+            return [value.replace('::', ',')];
+        }
+        else {
+            return value.split(',');
+        }
     }
     else {
         return value;
