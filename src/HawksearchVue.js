@@ -193,7 +193,7 @@ class HawksearchVue {
                             var storeState = this.$store.state;
 
                             updateUrl(this).then(() => {
-                                this.$emit('urlUpdated');
+                                HawksearchVue.emitToAll('urlUpdated');
                                 resolve();
                             });
 
@@ -814,6 +814,12 @@ class HawksearchVue {
 
                 widget.trackEvent.track('pageload', { pageType: (additionalParams && additionalParamsCustomUrl) ? 'landing' : 'custom' });
             }
+        }
+    }
+
+    static emitToAll(eventType) {
+        for (let [id, widget] of Object.entries(HawksearchVue.widgetInstances)) {
+            widget.$emit(eventType);
         }
     }
 }
