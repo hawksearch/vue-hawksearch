@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="!waitingForInitialSearch"
+    ref="facetMenu"
     :class="facetRailWrapperClass()"
     :style="stickyNavStyles"
     @scroll="onScroll"
@@ -19,7 +20,9 @@
           :facet-data="facetData"
           :facet-settings="facetSettingsConfig"
           :facets="facetsElements"
-          @expand="onExpand"
+          @expand="expandFacet"
+          @collapse="collapseFacet"
+          @collapseAllExceptCurrent="collapseAllExceptCurrent($event)"
         ></facet>
       </template>
       <template v-else-if="loadingResults">
@@ -45,6 +48,7 @@
             PlaceholderFacet
         },
         mounted() {
+            this.focusFacetMenuOnLoad();
             this.isInResponsiveMode = this.mobileMaxWidth > window.innerWidth;
             this.facetSettingsConfig = this.$root.config.facetConfig;
         },
@@ -71,8 +75,17 @@
             collapseAll: function () {
                 this.$children.forEach(f => {
                     if (f.hasOwnProperty('isCollapsed')) {
-                        f.isCollapsed = true;
+                        this.collapseFacet(f);
                     }
+                    sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
+                })
+            },
+            collapseAllExceptCurrent:function (facet) {
+                this.$children.forEach(f => {
+                    if (f.hasOwnProperty('isCollapsed') && f != facet) {
+                        this.collapseFacet(f);
+                    }
+                    sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
                 })
             },
             expandAll: function () {
@@ -100,7 +113,7 @@
             },
             onScroll: function (e) {
                 let facetsNav = this.$el;
-                let facetsNavDOMRect = facetsNav.getBoundingClientRect();
+                let facetsNavDOMRect = facetsNav.getBoundingClientRect() || null;
                 let facetNavCurrentPosition = facetsNavDOMRect.y || facetsNavDOMRect.top;
                 let windowPosition = window.pageYOffset;
 
@@ -146,6 +159,20 @@
                 if (this.facetSettingsConfig && this.facetSettingsConfig.collapseOnDefocus) {
                     this.collapseAll();
                 }
+            },
+            collapseFacet: function (element) {
+                element.isCollapsed = true;
+                sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
+            },
+            expandFacet: function(element){
+                element.isCollapsed = false;
+                sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
+            },
+            focusFacetMenuOnLoad: function () {
+                this.$nextTick(() => {
+                    const facetMenu = this.$refs.facetMenu;
+                    facetMenu.focus();
+                });
             }
         },
         computed: {

@@ -35,7 +35,11 @@ class HawksearchVue {
             redirectOnEmpty: false,
             redirectToCurrentPage: false
         },
-        facetConfig: {},
+        facetConfig: {
+            collapsedByDefault: false,
+            collapseAllExceptCurrentTarget: false,
+            collapseOnDefocus: false
+        },
         tabConfig: {
             alwaysOn: true
         },

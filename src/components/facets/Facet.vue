@@ -112,31 +112,28 @@ export default {
       }
     },
     toggleCollapse: function (event) {
-      let currentTarget = this;
-      this.isInitialLoad = false;
-
-      if (this.facetSettings.collapseAllExceptCurrentTarget) {
-        this.collapsAllWithoutCurrentTarget(this.facets, currentTarget);
-      }
-
       this.isCollapsed = !this.isCollapsed;
 
-      if (this.isPersistent()) {
-        sessionStorage.setItem(this.getStorageName(), this.isCollapsed);
+      if (!this.isCollapsed) {
+        this.$emit('expand', this);
+      }
+      else {
+       this.$emit('collapse', this);
       }
 
-      if (!this.isCollapsed) {
-        this.$emit("expand", this);
-      } else {
-        this.$emit("collapse", this);
+      if (this.facetSettings.collapseAllExceptCurrentTarget) {
+        this.collapsAllWithoutCurrentTarget();
       }
+
+       if (this.isPersistent()) {
+        sessionStorage.setItem(this.getStorageName(), this.isCollapsed);
+      }
+      
+      this.isInitialLoad = false;
     },
-    collapsAllWithoutCurrentTarget: function (facets, currentTarget) {
-      facets.forEach((facet) => {
-        if (facet != currentTarget) {
-          facet.isCollapsed = true;
-        }
-      });
+    collapsAllWithoutCurrentTarget: function () {
+      var self = this;
+      this.$emit('collapseAllExceptCurrent', self);
     },
     setFilter: function () {
       if (this.filteredData && this.filter) {
@@ -171,14 +168,17 @@ export default {
           ? this.facetSettings.collapsedByDefault
           : this.facetData.IsCollapsedDefault;
 
-      if (this.isCollapsed && this.isInitialLoad) {
-        this.$emit("collapse", this);
-      }
+      try {
+            if (this.isPersistent() && sessionStorage.getItem(this.getStorageName())) {
+                  this.isCollapsed = JSON.parse(sessionStorage.getItem(this.getStorageName()))
+                }
+            }
+      catch (e) { }
     },
     getStorageName: function () {
       let facetName = HawksearchVue.getFacetParamName(this.facetData);
       let pathName = location.pathname.replaceAll("/", "_");
-
+      
       return "hs_facet_" + pathName + "_" + facetName;
     },
     isPersistent: function () {
@@ -191,7 +191,8 @@ export default {
       } else {
         return true;
       }
-    },
+    }
+    
   },
   watch: {
     facetData: {
