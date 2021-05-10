@@ -48,7 +48,6 @@
             PlaceholderFacet
         },
         mounted() {
-            this.focusFacetMenuOnLoad();
             this.isInResponsiveMode = this.mobileMaxWidth > window.innerWidth;
             this.facetSettingsConfig = this.$root.config.facetConfig;
         },
@@ -167,12 +166,6 @@
             expandFacet: function(element){
                 element.isCollapsed = false;
                 sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
-            },
-            focusFacetMenuOnLoad: function () {
-                this.$nextTick(() => {
-                    const facetMenu = this.$refs.facetMenu;
-                    facetMenu.focus();
-                });
             }
         },
         computed: {
