@@ -696,6 +696,10 @@ class HawksearchVue {
         }
 
         store.commit("updateLanguage", language);
+
+        if (widget.trackEvent) {
+            widget.trackEvent.setLanguage(language);
+        }
     }
 
     static getClientData(store) {

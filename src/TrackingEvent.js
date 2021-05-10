@@ -4,6 +4,7 @@ class TrackingEvent {
     trackingURL;
     trackConfig;
     clientGUID;
+    language;
 
     EventType = {
         pageLoad: 1,
@@ -72,6 +73,24 @@ class TrackingEvent {
         this.trackingURL = config.trackEventUrl;
         this.trackConfig = config.trackConfig;
         this.clientGUID = config.clientGuid;
+    }
+
+    setLanguage(language) {
+        this.language = language;
+    }
+
+    getLanguageParams() {
+        let params = {};
+
+        if (this.language) {
+            params = {
+                "CustomDictionary": {
+                    "language": this.language
+                }
+            }
+        }
+
+        return params;
     }
 
     getSearchType(searchParams, responseData) {
@@ -262,6 +281,7 @@ class TrackingEvent {
     makeRequest(data) {
         let visitId = getVisitId();
         let visitorId = getVisitorId();
+        let languageParams = this.getLanguageParams();
 
         const pl = Object.assign(
             {
@@ -269,7 +289,8 @@ class TrackingEvent {
                 VisitId: visitId,
                 VisitorId: visitorId,
             },
-            data
+            data,
+            languageParams
         );
 
         return new Promise((resolve, reject) => {
