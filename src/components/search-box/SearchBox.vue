@@ -39,9 +39,10 @@
                 this.cancelSuggestions();
 
                 var searchBoxConfig = this.$root.config.searchBoxConfig;
+                let searchPage = this.searchPage || location.pathname;
 
-                if (this.searchPage && (this.searchPage != location.pathname || searchBoxConfig.redirectToCurrentPage)) {
-                    HawksearchVue.redirectSearch(this.keyword, this.$root, this.searchPage);
+                if (searchBoxConfig.redirectToCurrentPage || ((this.searchPage || this.searchPage=="" ) && this.searchPage != location.pathname)) {
+                    HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage);
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
