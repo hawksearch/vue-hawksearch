@@ -38,10 +38,10 @@
             search: function () {
                 this.cancelSuggestions();
 
-                var searchBoxConfig = this.$root.config.searchBoxConfig;
+                let searchBoxConfig = this.$root.config.searchBoxConfig;
                 let searchPage = this.searchPage || location.pathname;
-
-                if (searchBoxConfig.redirectToCurrentPage || ((this.searchPage || this.searchPage=="" ) && this.searchPage != location.pathname)) {
+                
+                if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage != location.pathname)) {
                     HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage);
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
