@@ -1494,6 +1494,35 @@ button.hawk-collapseState {
 .hawk-date-value-end {
   float: right; }
 
+_:-ms-fullscreen,
+:root,
+.hawkFacet-group__inline {
+  position: relative; }
+
+_:-ms-fullscreen,
+:root,
+button.hawk-collapseState {
+  left: -6px !important; }
+
+_:-ms-fullscreen,
+:root,
+button.hawk-collapseState::after {
+  left: 0 !important; }
+
+_:-ms-fullscreen,
+:root,
+.hawk-facet-rail__facet-btn-exclude {
+  max-height: 24px !important; }
+
+_:-ms-fullscreen,
+:root,
+.hawk-facet-rail__facet-btn-include {
+  max-height: 24px !important; }
+
+_:-ms-fullscreen,
+:root, .hawk-collapseState:focus {
+  outline: none !important; }
+
 .hawk-pagination__left {
   height: 15px;
   cursor: pointer; }
