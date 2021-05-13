@@ -572,6 +572,7 @@ class HawksearchVue {
     static redirectSearch(keyword, widget, searchPageUrl) {
         var redirect = new URL(searchPageUrl, location.href);
         var config = widget.config;
+        var store = this.getWidgetStore(widget);
 
         if (keyword) {
             redirect.searchParams.set(getParamName('keyword', widget), keyword);
@@ -579,6 +580,10 @@ class HawksearchVue {
 
         if (config.indexName) {
             redirect.searchParams.set(getParamName('indexName', widget), config.indexName);
+        }
+
+        if (store.state.language) {
+            redirect.searchParams.set(getParamName('language', widget), store.state.language);
         }
 
         for (let [key, value] of Object.entries(config.additionalParameters)) {
