@@ -1,4 +1,4 @@
-div[data-component="hawksearch-facets"]{
+div[data-component="hawksearch-facets"] {
 	@include smd {
 		width: 100%;
 	}
@@ -8,7 +8,7 @@ div[data-component="hawksearch-facets"]{
 	border: 1px solid $primary;
 	background-color: $grey2;
 	width: 100%;
-	
+
 	@include md {
 		width: auto;
 		min-width: 230px;
@@ -24,7 +24,7 @@ div[data-component="hawksearch-facets"]{
 	}
 }
 
-.hawk-facet-rail__sticky{
+.hawk-facet-rail__sticky {
 	@include smd {
 		position: fixed;
 		top: 8px;
@@ -33,7 +33,7 @@ div[data-component="hawksearch-facets"]{
 	}
 }
 
-.hawk-facet-rail__facet-list-wpr{
+.hawk-facet-rail__facet-list-wpr {
 	@include smd {
 		display: none;
 	}
@@ -49,7 +49,7 @@ div[data-component="hawksearch-facets"]{
 	@include smd {
 		display: block;
 		overflow-y: scroll;
-    	max-height: 400px;
+		max-height: 400px;
 	}
 }
 
@@ -418,4 +418,38 @@ button.hawk-collapseState {
 
 .hawk-date-value-end {
 	float: right;
+}
+
+_:-ms-fullscreen,
+:root,
+.hawkFacet-group__inline {
+	position: relative;
+}
+_:-ms-fullscreen,
+:root,
+button.hawk-collapseState {
+	left: -6px !important;
+}
+
+_:-ms-fullscreen,
+:root,
+button.hawk-collapseState::after {
+	left: 0 !important;
+}
+
+_:-ms-fullscreen,
+:root,
+.hawk-facet-rail__facet-btn-exclude {
+	max-height: 24px !important;
+}
+
+_:-ms-fullscreen,
+:root,
+.hawk-facet-rail__facet-btn-include {
+	max-height: 24px !important;
+}
+
+_:-ms-fullscreen,
+:root,.hawk-collapseState:focus{
+	outline: none!important;
 }
