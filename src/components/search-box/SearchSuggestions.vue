@@ -9,6 +9,7 @@
                     <ul class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
                         <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
+                        <div @click="viewAllMatches" class="view-matches">View all matches</div>
                     </ul>
                     <!--<div class="autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
                         <categories-container :suggestions="suggestions"></categories-container>
@@ -61,6 +62,11 @@
 
                 if (item.getLink()) {
                     location.assign(item.getLink());
+                }
+            },
+            viewAllMatches: function () {
+                if (this.$parent.search) {
+                    this.$parent.search();
                 }
             }
         },
