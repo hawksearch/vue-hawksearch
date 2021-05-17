@@ -15,7 +15,9 @@
         name: 'tabs',
         props: [],
         mounted() {
-
+            if (this.searchOutput) {
+                this.updateTabs(this.facet);
+            }
         },
         data() {
             return {
@@ -49,6 +51,10 @@
 
                     this.$root.dispatchToStore('applyFacets', facetData);
                 }
+            },
+            updateTabs: function (facet) {
+                var tabs = facet.Values;
+                this.tabs = tabs;
             }
         },
         computed: {
@@ -65,8 +71,7 @@
         watch: {
             facet: function (n, o) {
                 if (n) {
-                    var tabs = n.Values;
-                    this.tabs = tabs;
+                   this.updateTabs(n) 
                 }
             }
         }
