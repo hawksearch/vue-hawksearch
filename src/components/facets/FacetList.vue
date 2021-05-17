@@ -5,7 +5,7 @@
     :class="facetRailWrapperClass()"
     :style="stickyNavStyles"
     @scroll="onScroll"
-    @focusout="handleFocusOut"
+    @focusout="handleFocusOut($event)"
     tabindex="0">
 
     <div class="hawk-facet-rail__heading" @click="toggleFacetMobileMenu">
@@ -154,8 +154,9 @@
                     this.stickyNavStyles = {};
                 }
             },
-            handleFocusOut:function () {
-                if (this.facetSettingsConfig && this.facetSettingsConfig.collapseOnDefocus) {
+            handleFocusOut:function (event) {
+                console.log(event)
+                if (this.facetSettingsConfig && this.facetSettingsConfig.collapseOnDefocus && event.relatedTarget == null) {
                     this.collapseAll();
                 }
             },
