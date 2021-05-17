@@ -123,7 +123,12 @@
 
                 headers.FacetSelections = _.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !_.isEmpty(a) });
 
-                this.$root.dispatchToStore('fetchResults', headers);
+                this.$root.dispatchToStore('fetchResults', headers).then(() => {
+                            var widget = this.$root;
+                            var store = HawksearchVue.getWidgetStore(widget);
+                            HawksearchVue.truncateFacetSelections(store);
+                            HawksearchVue.applyTabSelection(widget);
+                });
             },
             getFacetType: function (field) {
                 if (this.searchOutput && this.searchOutput.Facets.length) {
