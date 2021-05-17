@@ -155,7 +155,6 @@
                 }
             },
             handleFocusOut:function (event) {
-                console.log(event)
                 if (this.facetSettingsConfig && this.facetSettingsConfig.collapseOnDefocus && event.relatedTarget == null) {
                     this.collapseAll();
                 }
