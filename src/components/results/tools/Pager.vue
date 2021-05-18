@@ -38,6 +38,9 @@
             RightChevronSvg
         },
         mounted() {
+            this.nextPageLink = this.goToNextPageLink();
+            this.previousPageLink = this.goToPreviousPageLink();
+
             this.$root.$on('urlUpdated', () => {
                 this.nextPageLink = this.goToNextPageLink();
                 this.previousPageLink = this.goToPreviousPageLink();
