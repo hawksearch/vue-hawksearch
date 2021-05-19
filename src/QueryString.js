@@ -112,19 +112,10 @@ function encodeSingleCommaSeparatedValues(arr) {
 function decodeSingleCommaSeparatedValues(value) {
     if (value && _.isString(value)) {
         value = decodeURIComponent(value);
-        if(value.trim().indexOf(' ') != -1){
+
+        if(!isSingleWordString(value)){
             value = value.split(',');
-            let selections = []
-            for (let selection = 0; selection < value.length; selection++) {
-                if (value[selection].includes('::')) {
-                      let str = value[selection].replace('::', ',');
-                      selections.push(str);
-                }else{
-                    selections.push(value[selection]);
-                }
-                
-            }  
-            return selections;
+            return decodeMultipleSelections(value);
         }else{
             if (value.includes('::')) {
                 return [value.replace('::', ',')];
@@ -137,4 +128,22 @@ function decodeSingleCommaSeparatedValues(value) {
     else {
         return value;
     }
+}
+
+function isSingleWordString(str) {
+    return str.trim().indexOf(' ') == -1;
+}
+
+function decodeMultipleSelections(value) {
+    let selections = [];
+    for (let selection = 0; selection < value.length; selection++) {
+        if (value[selection].includes('::')) {
+              let str = value[selection].replace('::', ',');
+              selections.push(str);
+        }else{
+            selections.push(value[selection]);
+        }
+        
+    }  
+    return selections;
 }
