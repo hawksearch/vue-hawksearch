@@ -27,7 +27,7 @@ export function getParamName(paramName, widget, reverse) {
 }
 
 export function parseURLparams(widget) {
-    var params = new URLSearchParams(location.search);
+    var params = new URLSearchParams(decodeURIComponent(location.search));
     var paramList = Object.keys(Object.fromEntries(params.entries()));
     var pendingSearch = {};
 
@@ -89,7 +89,7 @@ function convertObjectToQueryString(queryObj) {
 
     for (const key in queryObj) {
         if (queryObj[key]) {
-            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
+            params.set(key, encodeURIComponent(encodeSingleCommaSeparatedValues(queryObj[key])))
         }
     }
 
@@ -101,19 +101,37 @@ function encodeSingleCommaSeparatedValues(arr) {
         return [arr[0].replace(',', '::')];
     }
     else {
-        return arr;
+        let result = [];
+        for (let facet = 0; facet < arr.length; facet++) {
+            result.push(arr[facet].replace(',', '::'))
+        }
+        
+        return result;
     }
 }
-
 function decodeSingleCommaSeparatedValues(value) {
     if (value && _.isString(value)) {
         value = decodeURIComponent(value);
-
-        if (value.includes('::')) {
-            return [value.replace('::', ',')];
-        }
-        else {
-            return value.split(',');
+        if(value.trim().indexOf(' ') != -1){
+            value = value.split(',');
+            let selections = []
+            for (let selection = 0; selection < value.length; selection++) {
+                if (value[selection].includes('::')) {
+                      let str = value[selection].replace('::', ',');
+                      selections.push(str);
+                }else{
+                    selections.push(value[selection]);
+                }
+                
+            }  
+            return selections;
+        }else{
+            if (value.includes('::')) {
+                return [value.replace('::', ',')];
+            }
+            else {
+                return value.split(',');
+            }
         }
     }
     else {
