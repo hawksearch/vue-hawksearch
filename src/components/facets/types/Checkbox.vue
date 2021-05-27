@@ -77,7 +77,11 @@
                 this.applyFacets();
             },
             applyFacets: function () {
-                this.$root.dispatchToStore('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
+                    var widget = this.$root;
+
+                    HawksearchVue.applyTabSelection(widget);
+                });
             },
             clearSelections: function (exception) {
                 if (this.getCheckboxType() == 'single') {
