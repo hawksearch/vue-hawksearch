@@ -57,6 +57,7 @@
         },
         methods: {
             selectFacet: function (value) {
+                console.log("Clear Selections")
                 this.clearSelections(value);
 
                 if (value.Negated) {
@@ -77,9 +78,14 @@
                 this.applyFacets();
             },
             applyFacets: function () {
-                this.$root.dispatchToStore('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
+                    var widget = this.$root;
+
+                    HawksearchVue.applyTabSelection(widget);
+                });
             },
             clearSelections: function (exception) {
+                console.log(exception);
                 if (this.getCheckboxType() == 'single') {
                     this.items = this.items.map(item => {
                         if (_.isEqual(item, exception)) {

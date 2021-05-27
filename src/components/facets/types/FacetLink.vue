@@ -29,7 +29,11 @@
         methods: {
             selectFacet: function (value) {
                 value.Selected = !value.Selected;
-                this.$root.dispatchToStore('applyFacets', this.facetData);
+                this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
+                    var widget = this.$root;
+
+                    HawksearchVue.applyTabSelection(widget);
+                });
             }
         },
         computed: {
