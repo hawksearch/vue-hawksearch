@@ -57,7 +57,6 @@
         },
         methods: {
             selectFacet: function (value) {
-                console.log("Clear Selections")
                 this.clearSelections(value);
 
                 if (value.Negated) {
@@ -85,7 +84,6 @@
                 });
             },
             clearSelections: function (exception) {
-                console.log(exception);
                 if (this.getCheckboxType() == 'single') {
                     this.items = this.items.map(item => {
                         if (_.isEqual(item, exception)) {
