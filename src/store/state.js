@@ -16,4 +16,5 @@ export default {
     searchCancelation: null,
     autocompleteCancelation: null,
     language: null
+    // sliderMinValue: null
 };

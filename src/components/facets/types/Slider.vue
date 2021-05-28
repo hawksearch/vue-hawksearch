@@ -29,6 +29,10 @@
             this.$root.$on('toggleFacetMenu', (isActive) => { 
                     this.wrapper = this.$refs.wrapper.getBoundingClientRect();
             });
+            
+            this.$nextTick(function () {
+                this.updateCurrentValues();
+            });
         },
         data() {
             return {
@@ -171,12 +175,15 @@
             applyFacet: function () {
                 var minValue = this.valueRound(this.minValue, this.rangePrecesion);
                 var maxValue = this.valueRound(this.maxValue, this.rangePrecesion);
-
+                
                 if (this.validSelection({ minValue, maxValue })) {
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
                     this.$root.dispatchToStore('applyFacets', facetData);
+                   
+                    this.updateValuesInSessionStorage(facetData, this.minValue, this.maxValue);
+                    //this.updateMinValueState(this.minValue);
                 }
             },
             validSelection: function ({ minValue, maxValue }) {
@@ -270,14 +277,38 @@
                     this.maxTemp = temp;
                 }
             },
+            updateValuesInSessionStorage:function (facetData, minValue, maxValue) {
+                // let widget = this.$root;
+                // let store = HawksearchVue.getWidgetStore(widget);
+               
+                // store.commit("updateSliderMinValue", value);
+                let rangeList = [];
+                rangeList.push({"facetId": facetData.FacetId, "minValue": minValue, "maxValue": maxValue});
+                sessionStorage.setItem("rangeFacetList", JSON.stringify(rangeList));
+            },
+            updateCurrentValues: function () {
+                // let currentValue = this.sliderMinValue;
+                // if (this.minValue != currentValue && currentValue != null) {
+                //     this.minValue = currentValue;
+                // }
+               let rangeFacetValues = JSON.parse(sessionStorage.getItem("rangeFacetList"));
+               let curreFacet = rangeFacetValues.find(item => item.facetId == this.facetData.FacetId)
+               if (this.minValue != curreFacet.minValue) {
+                   this.minValue = curreFacet.minValue;
+               }
+               if(this.maxValue != curreFacet.maxValue){
+                   this.maxValue = curreFacet.maxValue;
+               }
+            },
             reset: function () {
                 this.cache = [];
                 this.componentReset = true;
-            }
+            } 
         },
         computed: {
             ...mapState([
-                'pendingSearch'
+                'pendingSearch',
+                // 'sliderMinValue'
             ]),
             facetValue: function () {
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length && this.wrapper) {
