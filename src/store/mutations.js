@@ -41,7 +41,4 @@ export default {
     updateLanguage(state, value){
         state.language = value;
     }
-    // updateSliderMinValue(state, value){
-    //     state.sliderMinValue = value;
-    // }
 };

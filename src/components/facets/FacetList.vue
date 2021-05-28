@@ -166,6 +166,20 @@
             expandFacet: function(element){
                 element.isCollapsed = false;
                 sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
+            },
+            createRangeListInSessionStorage: function () {
+                if (this.extendedSearchParams && this.extendedSearchParams.Facets && !("rangeFacetValues" in sessionStorage)) {
+                    let rangeFacetList = this.extendedSearchParams.Facets.filter(facet => facet.FieldType == 'range');
+                    let valuesList = [];
+                    for (let facet = 0; facet < rangeFacetList.length; facet++) {
+                        valuesList.push({
+                                "facetId": rangeFacetList[facet].FacetId,
+                                "minValue": rangeFacetList[facet].Values[0].RangeMax,
+                                "maxValue":rangeFacetList[facet].Values[0].RangeMin
+                        });
+                    }
+                    sessionStorage.setItem("rangeFacetValues", JSON.stringify(valuesList));
+                }
             }
         },
         computed: {
@@ -175,6 +189,7 @@
                 'loadingResults'
             ]),
             facets: function () {
+                this.createRangeListInSessionStorage();
                 return (this.extendedSearchParams && this.extendedSearchParams.Facets) ? this.extendedSearchParams.Facets.filter(facet => facet.FieldType != 'tab') : null;
             },
             facetsElements: function () {
