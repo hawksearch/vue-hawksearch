@@ -165,6 +165,21 @@
                         this.searchWithinLabel = searchWithin.Name;
                     }
                 }
+            },
+            updateRangeFacetValues:function (selections) {
+                let widget = this.$root;
+                    let store = HawksearchVue.getWidgetStore(widget);
+
+                    let sliderFacets = [];
+                    for (const key in selections) {
+                        if (this.getFacetType(key) == "range") {
+                            let facetValues = selections[key].Items[0].Value.split(',')
+                            let minValue = facetValues[0];
+                            let maxValue =  facetValues[1];
+                            sliderFacets.push({'fieldName': key,'minValue': minValue, 'maxValue': maxValue})
+                        }
+                    }
+                    store.commit('updateSlidersValues', sliderFacets);
             }
         },
         computed: {
@@ -185,7 +200,6 @@
                     var selections = {};
                     var facets = n.Selections;
                     var search = this.pendingSearch.SearchWithin;
-
                     this.setSearchWithinLabel();
 
                     if (Object.keys(facets).length) {
@@ -196,7 +210,9 @@
                         selections = Object.assign({}, selections, { 'searchWithin': { Items: [{ Value: search, Label: search }], Label: this.searchWithinLabel } });
                     }
 
-                    this.selections = selections
+                    this.selections = selections;
+
+                    this.updateRangeFacetValues(this.selections)
 
                     return selections;
                 }

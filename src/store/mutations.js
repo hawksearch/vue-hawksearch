@@ -40,5 +40,8 @@ export default {
     },
     updateLanguage(state, value){
         state.language = value;
+    },
+    updateSlidersValues(state, value){
+        state.slidersValues = value;
     }
 };

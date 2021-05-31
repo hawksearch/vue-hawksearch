@@ -180,9 +180,7 @@
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
-                    this.$root.dispatchToStore('applyFacets', facetData);
-                    
-                    this.updateValuesInSessionStorage(facetData, this.minValue, this.maxValue);                    
+                    this.$root.dispatchToStore('applyFacets', facetData);                 
                 }
             },
             validSelection: function ({ minValue, maxValue }) {
@@ -276,19 +274,9 @@
                     this.maxTemp = temp;
                 }
             },
-            updateValuesInSessionStorage:function (facetData, minValue, maxValue) {
-                let rangeFacetValuesList = JSON.parse(sessionStorage.getItem('rangeFacetValues'));
-                for (let index = 0; index < rangeFacetValuesList.length; index++) {
-                    if (rangeFacetValuesList[index].facetId == facetData.FacetId) {
-                        rangeFacetValuesList[index].minValue = minValue;
-                        rangeFacetValuesList[index].maxValue = maxValue;
-                    }
-                }
-                sessionStorage.setItem('rangeFacetValues', JSON.stringify(rangeFacetValuesList));
-            },
             updateCurrentValues: function () {
-               let rangeFacetValues = JSON.parse(sessionStorage.getItem("rangeFacetValues"));
-               let currentFacet = rangeFacetValues.find(item => item.facetId == this.facetData.FacetId);
+                let rangeFacetValues = this.$root.$store.state.slidersValues;
+                let currentFacet = rangeFacetValues.find(item => item.fieldName == this.facetData.ParamName);
                if (this) {
                    if (this.minValue && currentFacet && this.minValue != currentFacet.minValue ) {
                         this.minValue = currentFacet.minValue;
