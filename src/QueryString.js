@@ -80,7 +80,6 @@ function getSearchQueryString(widget) {
 
     searchQuery = _.pickBy(searchQuery);
     searchQuery = _.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
-
     return convertObjectToQueryString(searchQuery);
 }
 
@@ -89,31 +88,57 @@ function convertObjectToQueryString(queryObj) {
 
     for (const key in queryObj) {
         if (queryObj[key]) {
-            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
+            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]));
         }
     }
-
     return '?' + params.toString();
 }
 
 function encodeSingleCommaSeparatedValues(arr) {
     if (_.isArray(arr) && arr.length == 1) {
-        return [arr[0].replace(',', '::')];
-    }
-    else {
+        if(arr[0].trim().indexOf(' ') != -1){
+            return [arr[0].replace(',', '::')];
+        }
         return arr;
     }
-}
+    else {
+        let result = [];
+        if(typeof arr == "string"){
+            return [arr.replace(',', '::')]
+        }else{
+            for (let facet = 0; facet < arr.length; facet++) {
+                result.push(arr[facet].replace(',', '::'));
+            }
 
+            return result;
+        }
+    }
+}
 function decodeSingleCommaSeparatedValues(value) {
-    if (value && _.isString(value)) {
+    if (value && _.isString(value) && value.length > 1) {
         value = decodeURIComponent(value);
 
-        if (value.includes('::')) {
-            return [value.replace('::', ',')];
-        }
-        else {
-            return value.split(',');
+        if(value.trim().indexOf(' ') != -1){
+            value = value.split(',');
+            let selections = []
+            for (let selection = 0; selection < value.length; selection++) {
+                if (value[selection].includes('::')) {
+                      let str = value[selection].replace('::', ',');
+                      selections.push(str);
+                }else{
+                    selections.push(value[selection]);
+                }
+                
+            }  
+            return selections;
+        }else{
+            if (value.includes('::')) {
+                return [value.replace('::', ',')];
+            }
+            else {
+                return value.split(',');
+                
+            }
         }
     }
     else {
