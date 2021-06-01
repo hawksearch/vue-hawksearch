@@ -170,8 +170,7 @@
             },
             applyFacet: function () {
                 var minValue = this.valueRound(this.minValue, this.rangePrecesion);
-                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion);
-                
+                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion); 
                 if (this.validSelection({ minValue, maxValue })) {
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
