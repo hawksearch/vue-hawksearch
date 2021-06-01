@@ -170,13 +170,12 @@
             },
             applyFacet: function () {
                 var minValue = this.valueRound(this.minValue, this.rangePrecesion);
-                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion);
-
+                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion); 
                 if (this.validSelection({ minValue, maxValue })) {
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
-                    this.$root.dispatchToStore('applyFacets', facetData);
+                    this.$root.dispatchToStore('applyFacets', facetData);                 
                 }
             },
             validSelection: function ({ minValue, maxValue }) {
@@ -273,7 +272,7 @@
             reset: function () {
                 this.cache = [];
                 this.componentReset = true;
-            }
+            } 
         },
         computed: {
             ...mapState([
