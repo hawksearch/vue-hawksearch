@@ -147,7 +147,6 @@
                     else {
                         type = this.facetType[field];
                     }
-                   
                     return type;
                 }
                 else if (this.facetType.hasOwnProperty(field)) {
