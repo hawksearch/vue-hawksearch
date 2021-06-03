@@ -46,5 +46,8 @@ export default {
     },
     updateInitialSearchUrl(state,value){
         state.initialSearchUrl = value;
+    },
+    updateIsSearchBoxMounted(state,value){
+        state.isSearchBoxMounted = value;
     }
 };

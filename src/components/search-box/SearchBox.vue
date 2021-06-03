@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState } from 'vuex';
     import SearchSuggestions from "./SearchSuggestions";
     import CustomResultsLabel from "../results/tools/CustomResultsLabel";
 
@@ -20,10 +20,15 @@
             CustomResultsLabel
         },
         mounted() {
-            this.$root.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
+            let widget = this.$root;
+            let store = HawksearchVue.getWidgetStore(widget);
+
+            widget.$on('selectAutocorrectSuggestion', (selectedSuggestion) => {
                 this.keyword = selectedSuggestion;
                 this.search();
-            })
+            });
+
+            store.commit('updateIsSearchBoxMounted', true);
         },
         data() {
             return {
@@ -61,8 +66,10 @@
             },
             onInput: function (e) {
                 let keyword = e.target.value;
+                let widget = this.$root;
+                let store = HawksearchVue.getWidgetStore(widget);
 
-                if (keyword) {
+                if (keyword && !store.state.isSearchBoxMounted) {
                     this.fieldFocused = true;
 
                     this.$root.$store.commit('updateLoadingSuggestions', true);
@@ -71,10 +78,12 @@
                     this.suggestionDelay = setTimeout(() => {
                         this.$root.dispatchToStore('fetchSuggestions', { Keyword: keyword });
                     }, 250);
+                    
                 }
                 else {
                     this.cancelSuggestions()
                 }
+                store.commit('updateIsSearchBoxMounted', false);
             },
             onBlur: function () {
                 setTimeout(() => {

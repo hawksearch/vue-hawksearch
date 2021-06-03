@@ -17,5 +17,6 @@ export default {
     autocompleteCancelation: null,
     language: null,
     isFirstInitialSearch: true,
-    initialSearchUrl: null
+    initialSearchUrl: null,
+    isSearchBoxMounted: false
 };
