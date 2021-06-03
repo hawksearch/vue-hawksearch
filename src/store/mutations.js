@@ -40,5 +40,11 @@ export default {
     },
     updateLanguage(state, value){
         state.language = value;
+    },
+    updateIsFirstInitialSearch(state,value){
+        state.isFirstInitialSearch = value;
+    },
+    updateInitialSearchUrl(state,value){
+        state.initialSearchUrl = value;
     }
 };
