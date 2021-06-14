@@ -31,11 +31,11 @@ export function parseURLparams(widget) {
     var paramList = Object.keys(Object.fromEntries(params.entries()));
     var pendingSearch = {};
 
-    let mappedStateToURLParam = _.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
+    let mappedStateToURLParam = lodash.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
 
     for (let [key, value] of Object.entries(mappedStateToURLParam)) {
         pendingSearch[key] = params.get(value);
-        _.pull(paramList, value)
+        lodash.pull(paramList, value)
     }
 
     if (paramList.length) {
@@ -46,7 +46,7 @@ export function parseURLparams(widget) {
         });
     }
 
-    return _.pickBy(pendingSearch);
+    return lodash.pickBy(pendingSearch);
 }
 
 export function updateUrl(widget) {
@@ -78,8 +78,8 @@ function getSearchQueryString(widget) {
         ...pendingSearch.FacetSelections
     };
 
-    searchQuery = _.pickBy(searchQuery);
-    searchQuery = _.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
+    searchQuery = lodash.pickBy(searchQuery);
+    searchQuery = lodash.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
 
     return convertObjectToQueryString(searchQuery);
 }
@@ -97,7 +97,7 @@ function convertObjectToQueryString(queryObj) {
 }
 
 function encodeSingleCommaSeparatedValues(arr) {
-    if (_.isArray(arr) && arr.length == 1) {
+    if (lodash.isArray(arr) && arr.length == 1) {
         return [arr[0].replace(',', '::')];
     }
     else {
@@ -106,7 +106,7 @@ function encodeSingleCommaSeparatedValues(arr) {
 }
 
 function decodeSingleCommaSeparatedValues(value) {
-    if (value && _.isString(value)) {
+    if (value && lodash.isString(value)) {
         value = decodeURIComponent(value);
 
         if (value.includes('::')) {

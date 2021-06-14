@@ -58,7 +58,11 @@
             AutocorrectSuggestions
         },
         mounted() {
+            var widget = this.$root;
 
+            if (widget.config.searchConfig.initialSearch) {
+                HawksearchVue.initialSearch(widget);
+            }
         },
         data() {
             return {

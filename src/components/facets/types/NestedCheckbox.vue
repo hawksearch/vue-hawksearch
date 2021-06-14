@@ -34,7 +34,7 @@
                             clearValues(item.Children);
                         }
 
-                        if (!_.isEqual(item, exception)) {
+                        if (!lodash.isEqual(item, exception)) {
                             item.Negated = false;
                             item.Selected = false;
                         }

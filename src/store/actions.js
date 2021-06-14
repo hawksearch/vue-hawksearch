@@ -12,7 +12,7 @@ export default {
 
                 if (searchOutput) {
                     commit('setSearchError', false);
-                    commit('updatePrevResults', _.clone(state.searchOutput));
+                    commit('updatePrevResults', lodash.clone(state.searchOutput));
                     commit('updateResults', searchOutput);
 
                     HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
@@ -116,10 +116,10 @@ export default {
                     commit('updateLoadingResults', false);
 
                     if (searchOutput) {
-                        var currentSearchOutput = _.clone(state.searchOutput);
-                        var newSearchOutput = _.clone(searchOutput);
+                        var currentSearchOutput = lodash.clone(state.searchOutput);
+                        var newSearchOutput = lodash.clone(searchOutput);
 
-                        newSearchOutput.Results = _.concat(currentSearchOutput.Results, newSearchOutput.Results);
+                        newSearchOutput.Results = lodash.concat(currentSearchOutput.Results, newSearchOutput.Results);
 
                         commit('setSearchError', false);
                         commit('updatePrevResults', currentSearchOutput);

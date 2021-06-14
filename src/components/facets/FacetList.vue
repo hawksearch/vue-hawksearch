@@ -94,7 +94,7 @@
                     }
                 })
             },
-            toggleFacetMobileMenu: function (e) {  
+            toggleFacetMobileMenu: function (e) {
                 this.isMobileMenuActive = !this.isMobileMenuActive;
                 this.$nextTick(() => {
                     this.$root.$emit('toggleFacetMenu',this.isMobileMenuActive);
@@ -112,18 +112,21 @@
             },
             onScroll: function (e) {
                 let facetsNav = this.$el;
-                let facetsNavDOMRect = facetsNav.getBoundingClientRect() || null;
-                let facetNavCurrentPosition = facetsNavDOMRect.y || facetsNavDOMRect.top;
-                let windowPosition = window.pageYOffset;
 
-                if (facetNavCurrentPosition <= windowPosition) {
-                   this.isNavSticky = true;
-                   if (this.isInResponsiveMode)
-                       this.updateNavigationWidth(e);
-                   
-                }else{
-                    this.isNavSticky = false;
-                    this.stickyNavStyles = {}
+                if (facetsNav && facetsNav.getBoundingClientRect) {
+                    let facetsNavDOMRect = facetsNav.getBoundingClientRect() || null;
+                    let facetNavCurrentPosition = facetsNavDOMRect.y || facetsNavDOMRect.top;
+                    let windowPosition = window.pageYOffset;
+
+                    if (facetNavCurrentPosition <= windowPosition) {
+                       this.isNavSticky = true;
+                       if (this.isInResponsiveMode)
+                           this.updateNavigationWidth(e);
+
+                    }else{
+                        this.isNavSticky = false;
+                        this.stickyNavStyles = {}
+                    }
                 }
             },
             facetRailWrapperClass: function () {
@@ -145,13 +148,17 @@
                 return wrapperClasses.join(' ');
             },
             updateNavigationWidth: function (e) {
-                let facetsNavDOMRect = this.$el.getBoundingClientRect();
-                let facetNavOffset = facetsNavDOMRect.x || facetsNavDOMRect.left;
-                let currentWidth = window.innerWidth - (facetNavOffset*2 + 2);
-                if (this.isNavSticky) {
-                    this.stickyNavStyles = { width: currentWidth + 'px' };
-                } else {
-                    this.stickyNavStyles = {};
+                let facetsNavDOMRect = (this.$el && this.$el.getBoundingClientRect) ? this.$el.getBoundingClientRect() : null;
+
+                if (facetsNavDOMRect) {
+                    let facetNavOffset = facetsNavDOMRect.x || facetsNavDOMRect.left;
+                    let currentWidth = window.innerWidth - (facetNavOffset*2 + 2);
+
+                    if (this.isNavSticky) {
+                        this.stickyNavStyles = { width: currentWidth + 'px' };
+                    } else {
+                        this.stickyNavStyles = {};
+                    }
                 }
             },
             handleFocusOut:function (event) {
