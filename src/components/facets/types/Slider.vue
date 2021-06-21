@@ -19,6 +19,7 @@
 
 <script>
     import { mapState } from 'vuex';
+    import { addToRangeFacets } from '../../../QueryString';
 
     export default {
         name: 'slider',
@@ -27,8 +28,10 @@
             this.wrapper = this.$refs.wrapper.getBoundingClientRect();
             
             this.$root.$on('toggleFacetMenu', (isActive) => { 
-                    this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+                this.wrapper = this.$refs.wrapper.getBoundingClientRect();
             });
+
+            addToRangeFacets(HawksearchVue.getFacetParamName(this.facetData));
         },
         data() {
             return {
@@ -280,11 +283,24 @@
             ]),
             facetValue: function () {
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length && this.wrapper) {
-                    if (!this.pendingSearch.FacetSelections.hasOwnProperty(HawksearchVue.getFacetParamName(this.facetData))) {
+                    var selection = this.pendingSearch.FacetSelections[HawksearchVue.getFacetParamName(this.facetData)];
+                    var facetValue = this.facetData.Values[0];
+
+                    if (!selection) {
                         this.reset();
                     }
+                    else {
+                        try {
+                            if (facetValue.RangeStart !== selection[0].split(',')[0]) {
+                                facetValue.RangeStart = selection[0].split(',')[0];
+                            }
 
-                    var facetValue = this.facetData.Values[0];
+                            if (facetValue.RangeEnd !== selection[0].split(',')[1]) {
+                                facetValue.RangeEnd = selection[0].split(',')[1];
+                            }
+                        }
+                        catch (e) { console.log(e) }
+                    }
 
                     return facetValue;
                 }

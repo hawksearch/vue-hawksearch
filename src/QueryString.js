@@ -10,6 +10,12 @@ const stateToURLParam = {
     IndexName: 'indexName'
 }
 
+const rangeFacets = [];
+
+export function addToRangeFacets(facetName) {
+    rangeFacets.push(facetName);
+}
+
 export function getParamName(paramName, widget, reverse) {
     var mappingTable = widget.config.paramsMapping;
 
@@ -42,7 +48,7 @@ export function parseURLparams(widget) {
         pendingSearch.FacetSelections = {};
 
         paramList.forEach(param => {
-            pendingSearch.FacetSelections[getParamName(param, widget, true)] = decodeSingleCommaSeparatedValues(params.get(param)); // decode
+            pendingSearch.FacetSelections[getParamName(param, widget, true)] = decodeURIParam(params.get(param)); // decode
         });
     }
 
@@ -57,6 +63,7 @@ export function updateUrl(widget) {
             history.push({
                 search: getSearchQueryString(widget),
             });
+
             resolve();
         }
     });
@@ -85,61 +92,52 @@ function getSearchQueryString(widget) {
 
 function convertObjectToQueryString(queryObj) {
     var params = new URLSearchParams();
+    var queryArray = [];
+    var value;
 
     for (const key in queryObj) {
-        if (queryObj[key]) {
-            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]));
-        }
-    }
-    return '?' + params.toString();
-}
+        value = queryObj[key];
 
-function encodeSingleCommaSeparatedValues(arr) {
-    if (_.isArray(arr) && arr.length == 1) {
-        if(arr[0].trim().indexOf(' ') != -1){
-            return [arr[0].replace(',', '::')];
+        if (value) {
+            if (rangeFacets.includes(key)) {
+                if (_.isArray(value)) {
+                    value = value.map(i => i.replace(',', '::'));
+                }
+                else {
+                    value = value.replace(',', '::');
+                }
+            }
+
+            if (_.isArray(value)) {
+                value = value.map(i => encodeURIComponent(i));
+            }
         }
-        return arr;
+
+        params.set(key, value);
+    }
+
+    for (let [paramKey, paramValue] of params.entries()) {
+        queryArray.push(paramKey + '=' + paramValue);
+    }
+
+    if (queryArray.length) {
+        return '?' + queryArray.join('&');
     }
     else {
-        let result = [];
-        if(typeof arr == "string"){
-            return [arr.replace(',', '::')]
-        }else{
-            for (let facet = 0; facet < arr.length; facet++) {
-                result.push(arr[facet].replace(',', '::'));
-            }
-
-            return result;
-        }
+        return '';
     }
 }
-function decodeSingleCommaSeparatedValues(value) {
-    if (value && _.isString(value) && value.length > 1) {
-        value = decodeURIComponent(value);
 
-        if(value.trim().indexOf(' ') != -1){
-            value = value.split(',');
-            let selections = []
-            for (let selection = 0; selection < value.length; selection++) {
-                if (value[selection].includes('::')) {
-                      let str = value[selection].replace('::', ',');
-                      selections.push(str);
-                }else{
-                    selections.push(value[selection]);
-                }
-                
-            }  
-            return selections;
-        }else{
-            if (value.includes('::')) {
-                return [value.replace('::', ',')];
-            }
-            else {
-                return value.split(',');
-                
-            }
+function decodeURIParam(value) {
+    if (value && _.isString(value) && value.length > 1) {
+        value = value.split(',');
+        value = value.map(i => decodeURIComponent(i));
+
+        if (value.length == 1) {
+            value = value.map(i => i.replace('::', ','));
         }
+
+        return value;
     }
     else {
         return value;
