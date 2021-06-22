@@ -33,7 +33,6 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
-    import history from 'history/browser';
     import { parseURLparams } from '../../QueryString';
     import SearchResultsLabel from '../facets/SearchResultsLabel'
     import Selections from '../facets/Selections'
@@ -61,20 +60,7 @@
         },
 
         mounted() {
-            let widget = this.$root;
-            history.listen(({ action, location }) => {
-                if (action == "POP") {
-                    if(!location.search == widget.$store.state.initialSearchUrl){
-                        let searchParams = parseURLparams(widget);
-                        widget.dispatchToStore('fetchResults', searchParams, true).then(() =>{
-                            this.applyTabSelection(widget);
-                        });
-                    }else{
-                        history.back();
-                    }
-                }
-                   
-            });
+
         },
         data() {
             return {

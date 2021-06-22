@@ -9,6 +9,7 @@ import PageContent from './components/results/PageContent.vue';
 import Recommendations from './components/results/recommendations/Recommendations.vue';
 import TrackingEvent from './TrackingEvent';
 import { getVisitorId, getVisitId } from './CookieHandler';
+import history from 'history/browser';
 
 var _ = require('lodash');
 var axios = require('axios').default;
@@ -165,6 +166,16 @@ class HawksearchVue {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
                     HawksearchVue.handleLanguageParameters(this);
+
+                    history.listen(({ action, location }) => {
+                        if (action == "POP") {
+                            this.$store.commit('updatePendingSearch', {
+                                Keyword: "",
+                                FacetSelections: {}
+                            });
+                            this.dispatchToStore('fetchResults', parseURLparams(this), true);
+                        }
+                    });
                 }
                 catch (e) { }
             },
@@ -191,12 +202,12 @@ class HawksearchVue {
                 }
             },
             methods: {
-                dispatchToStore: function (action, params,isBack) {
+                dispatchToStore: function (action, params, isBack) {
                     return new Promise((resolve, reject) => {
                         this.$store.dispatch(action, params).then(() => {
                             var storeState = this.$store.state;
 
-                            if(!isBack){
+                            if (!isBack) {
                                 updateUrl(this).then(() => {
                                     HawksearchVue.emitToAll('urlUpdated');
                                     resolve();
