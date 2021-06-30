@@ -101,7 +101,7 @@ function convertObjectToQueryString(queryObj) {
 
         if (value) {
             if (rangeFacets.includes(key)) {
-                if (_.isArray(value)) {
+                if (lodash.isArray(value)) {
                     value = value.map(i => i.replace(',', '::'));
                 }
                 else {
@@ -109,7 +109,7 @@ function convertObjectToQueryString(queryObj) {
                 }
             }
 
-            if (_.isArray(value)) {
+            if (lodash.isArray(value)) {
                 value = value.map(i => encodeURIComponent(i));
             }
         }
@@ -130,7 +130,7 @@ function convertObjectToQueryString(queryObj) {
 }
 
 function decodeURIParam(value) {
-    if (value && _.isString(value) && value.length > 1) {
+    if (value && lodash.isString(value) && value.length > 1) {
         value = value.split(',');
         value = value.map(i => decodeURIComponent(i));
 
