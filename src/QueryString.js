@@ -37,11 +37,11 @@ export function parseURLparams(widget) {
     var paramList = Object.keys(Object.fromEntries(params.entries()));
     var pendingSearch = {};
 
-    let mappedStateToURLParam = _.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
+    let mappedStateToURLParam = lodash.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
 
     for (let [key, value] of Object.entries(mappedStateToURLParam)) {
         pendingSearch[key] = params.get(value);
-        _.pull(paramList, value)
+        lodash.pull(paramList, value)
     }
 
     if (paramList.length) {
@@ -52,7 +52,7 @@ export function parseURLparams(widget) {
         });
     }
 
-    return _.pickBy(pendingSearch);
+    return lodash.pickBy(pendingSearch);
 }
 
 export function updateUrl(widget) {
@@ -85,8 +85,9 @@ function getSearchQueryString(widget) {
         ...pendingSearch.FacetSelections
     };
 
-    searchQuery = _.pickBy(searchQuery);
-    searchQuery = _.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
+    searchQuery = lodash.pickBy(searchQuery);
+    searchQuery = lodash.mapKeys(searchQuery, (value, paramName) => getParamName(paramName, widget))
+
     return convertObjectToQueryString(searchQuery);
 }
 
@@ -100,7 +101,7 @@ function convertObjectToQueryString(queryObj) {
 
         if (value) {
             if (rangeFacets.includes(key)) {
-                if (_.isArray(value)) {
+                if (lodash.isArray(value)) {
                     value = value.map(i => i.replace(',', '::'));
                 }
                 else {
@@ -108,7 +109,7 @@ function convertObjectToQueryString(queryObj) {
                 }
             }
 
-            if (_.isArray(value)) {
+            if (lodash.isArray(value)) {
                 value = value.map(i => encodeURIComponent(i));
             }
         }
@@ -129,7 +130,7 @@ function convertObjectToQueryString(queryObj) {
 }
 
 function decodeURIParam(value) {
-    if (value && _.isString(value) && value.length > 1) {
+    if (value && lodash.isString(value) && value.length > 1) {
         value = value.split(',');
         value = value.map(i => decodeURIComponent(i));
 

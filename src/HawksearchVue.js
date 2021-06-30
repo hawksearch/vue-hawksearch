@@ -12,6 +12,8 @@ import { getVisitorId, getVisitId } from './CookieHandler';
 import history from 'history/browser';
 
 var _ = require('lodash');
+window.lodash = _.noConflict();
+
 var axios = require('axios').default;
 const CancelToken = axios.CancelToken;
 
@@ -49,6 +51,7 @@ class HawksearchVue {
             parameters: null
         },
         searchConfig: {
+            initialSearch: false,
             scrollUpOnRefresh: true
         },
         resultItem: {
@@ -68,12 +71,15 @@ class HawksearchVue {
         pagination: {
             type: "dispatch"
         },
-        paramsMapping: {}
+        paramsMapping: {},
+        generateTemplateOverrides: false
     }
 
     static widgetInstances = {}
 
     static storeInstances = {}
+
+    static dataLayers = {}
 
     static init() {
         this.addTemplateOverride();
@@ -119,12 +125,20 @@ class HawksearchVue {
      *          3. HawksearchVue.createWidget(el, { store }): An edge case of Ex. 2. The created widget is fully synchronized
      *          with the provided data layer. It doesn't have specific context and behavior.
      */
-    static createWidget(el, { config, store }) {
+    static createWidget(el, { config, store, dataLayer, components }) {
         if (!el || (!config && !store)) {
             return false;
         }
 
         var widgetId = this.getUniqueIdentifier();
+
+        if (dataLayer && this.dataLayers.hasOwnProperty(dataLayer)) {
+            var dataLayerStore = this.storeInstances[this.dataLayers[dataLayer]];
+
+            if (dataLayerStore) {
+                store = dataLayerStore;
+            }
+        }
 
         // Generate a store instance to attach to widget
         // This is the base create sequence
@@ -135,6 +149,10 @@ class HawksearchVue {
             config = this.mergeConfig(this.defaultConfig, config);
 
             store = this.generateStoreInstance(config);
+
+            if (dataLayer) {
+                this.dataLayers[dataLayer] = store.state.storeId;
+            }
         }
         // If store instance is avalable, update it with the new config, if provided
         else if (config) {
@@ -150,18 +168,21 @@ class HawksearchVue {
             // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
             config = this.mergeConfig(this.defaultConfig, store.state.config);
         }
-        
+
+        // Merge passed components with defaults
+        components = Object.assign({}, {
+            SearchBox,
+            FacetList,
+            Results,
+            PageContent,
+            Recommendations
+        }, components);
+
         var widget = new Vue({
             el,
             store,
             i18n,
-            components: {
-                SearchBox,
-                FacetList,
-                Results,
-                PageContent,
-                Recommendations
-            },
+            components,
             mounted() {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
@@ -190,7 +211,7 @@ class HawksearchVue {
                     'pendingSearch'
                 ]),
                 config: function () {
-                    return _.cloneDeep(this.appliedConfig);
+                    return lodash.cloneDeep(this.appliedConfig);
                 }
             },
             watch: {
@@ -310,7 +331,7 @@ class HawksearchVue {
 
         var config = store.state.config;
         var clientData = this.getClientData(store);
-        
+
         var params = Object.assign({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
@@ -627,8 +648,8 @@ class HawksearchVue {
                 params = [params];
             }
 
-            if (_.isArray(params)) {
-                this.paramWhitelist = _.union(this.paramWhitelist, params);
+            if (lodash.isArray(params)) {
+                this.paramWhitelist = lodash.union(this.paramWhitelist, params);
             }
         }
     }
@@ -646,7 +667,7 @@ class HawksearchVue {
     }
 
     static getUniqueIdentifier() {
-        return _.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
+        return lodash.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
     }
 
     static getAbsoluteUrl(path, store) {
@@ -706,8 +727,8 @@ class HawksearchVue {
         });
 
         if (Object.keys(additionalParameters).length) {
-            var config = _.cloneDeep(widget.config);
-            config.additionalParameters = _.merge({}, config.additionalParameters, additionalParameters);
+            var config = lodash.cloneDeep(widget.config);
+            config.additionalParameters = lodash.merge({}, config.additionalParameters, additionalParameters);
             store.commit('updateConfig', config);
         }
     }
@@ -762,14 +783,14 @@ class HawksearchVue {
     }
 
     static mergeConfig(configA, configB) {
-        var a = _.cloneDeep(configA);
-        var b = _.cloneDeep(configB);
+        var a = lodash.cloneDeep(configA);
+        var b = lodash.cloneDeep(configB);
 
-        var mergedConfig = _.merge({}, a, b);
+        var mergedConfig = lodash.merge({}, a, b);
 
         Object.keys(mergedConfig).forEach((key) => {
-            if (_.isArray(mergedConfig[key]) && a[key] && _.isArray(a[key]) && b[key] && _.isArray(b[key])) {
-                mergedConfig[key] = _.union(a[key], b[key]);
+            if (lodash.isArray(mergedConfig[key]) && a[key] && lodash.isArray(a[key]) && b[key] && lodash.isArray(b[key])) {
+                mergedConfig[key] = lodash.union(a[key], b[key]);
             }
         });
 
@@ -823,8 +844,8 @@ class HawksearchVue {
     }
 
     static truncateFacetSelections(store) {
-        var pendingSearch = _.cloneDeep(store.state.pendingSearch);
-        pendingSearch.FacetSelections = _.pickBy(pendingSearch.FacetSelections, (value, field) => { return _.includes(this.getFacetFieldNames(store), field) });
+        var pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
+        pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => { return lodash.includes(this.getFacetFieldNames(store), field) });
 
         store.commit('updatePendingSearch', pendingSearch);
     }

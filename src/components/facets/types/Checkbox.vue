@@ -86,7 +86,7 @@
             clearSelections: function (exception) {
                 if (this.getCheckboxType() == 'single') {
                     this.items = this.items.map(item => {
-                        if (_.isEqual(item, exception)) {
+                        if (lodash.isEqual(item, exception)) {
                             return item;
                         }
                         else {

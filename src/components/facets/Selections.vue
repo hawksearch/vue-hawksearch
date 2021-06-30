@@ -121,7 +121,7 @@
                     facetHeaders[key] = facetHeaders[key].Items.map(item => item.Value);
                 });
 
-                headers.FacetSelections = _.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !_.isEmpty(a) });
+                headers.FacetSelections = lodash.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !lodash.isEmpty(a) });
 
                 this.$root.dispatchToStore('fetchResults', headers).then(() => {
                             var widget = this.$root;

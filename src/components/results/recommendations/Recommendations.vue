@@ -76,25 +76,27 @@
         },
         mounted() {
             setTimeout(() => {
-                this.componentWidth = this.$refs['recommendations-wrapper'].getBoundingClientRect().width;
+                if (this.$refs['recommendations-wrapper'] && this.$refs['recommendations-wrapper'].getBoundingClientRect) {
+                    this.componentWidth = this.$refs['recommendations-wrapper'].getBoundingClientRect().width;
 
-                this.$root.$store.dispatch('fetchRecommendations', { widgetGuid: this.widgetGuid, widgetUniqueid: this.widgetUniqueid })
-                    .then(response => {
-                        var widgetItem = response.widgetItems.length ? response.widgetItems[0] : {};
+                    this.$root.$store.dispatch('fetchRecommendations', { widgetGuid: this.widgetGuid, widgetUniqueid: this.widgetUniqueid })
+                        .then(response => {
+                            var widgetItem = response.widgetItems.length ? response.widgetItems[0] : {};
 
-                        if (widgetItem.recommendationItems && widgetItem.recommendationItems.length) {
-                            if (!this.widgetGuid) {
-                                this.widgetGuid = widgetItem.widgetGuid;
+                            if (widgetItem.recommendationItems && widgetItem.recommendationItems.length) {
+                                if (!this.widgetGuid) {
+                                    this.widgetGuid = widgetItem.widgetGuid;
+                                }
+
+                                if (widgetItem.carouselData) {
+                                    this.itemWidth = Math.floor((this.componentWidth - (2 * this.filler)) / widgetItem.carouselData.nofVisible);
+                                }
+
+                                this.requestId = response.requestId;
+                                this.widgetItem = widgetItem;
                             }
-
-                            if (widgetItem.carouselData) {
-                                this.itemWidth = Math.floor((this.componentWidth - (2 * this.filler)) / widgetItem.carouselData.nofVisible);
-                            }
-
-                            this.requestId = response.requestId;
-                            this.widgetItem = widgetItem;
-                        }
-                    }, error => { })
+                        }, error => { })
+                }
             }, 2000)
         },
         data() {

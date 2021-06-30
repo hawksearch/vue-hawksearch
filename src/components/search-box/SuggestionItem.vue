@@ -37,7 +37,7 @@
                 var storeState = this.$root.$store.state;
                 var langIndiffFields = (this.$root.config.suggestionItem && this.$root.config.suggestionItem.langIndiffFields && this.$root.config.suggestionItem.langIndiffFields.length) ? this.$root.config.suggestionItem.langIndiffFields : [];
 
-                if (storeState.language && !_.includes(langIndiffFields, fieldName)) {
+                if (storeState.language && !lodash.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${storeState.language}`;
                 }
 
@@ -64,21 +64,21 @@
                     fieldName = this.getConfigurationField('titleField');
                 }
 
-                return _.cloneDeep(this.item.ProductName || this.getField(fieldName));
+                return lodash.cloneDeep(this.item.ProductName || this.getField(fieldName));
             },
             getLink: function (fieldName) {
                 if (!fieldName) {
                     fieldName = this.getConfigurationField('linkField');
                 }
 
-                return _.cloneDeep(this.item.Url || this.getField(fieldName));
+                return lodash.cloneDeep(this.item.Url || this.getField(fieldName));
             },
             getThumb: function (fieldName) {
                 if (!fieldName) {
                     fieldName = this.getConfigurationField('thumbField');
                 }
 
-                return _.cloneDeep((this.item.Thumb && this.item.Thumb.Url) || this.getField(fieldName));
+                return lodash.cloneDeep((this.item.Thumb && this.item.Thumb.Url) || this.getField(fieldName));
             },
             getConfigurationField: function (field) {
                 if (this[field]) {

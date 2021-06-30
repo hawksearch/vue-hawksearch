@@ -21,6 +21,7 @@
 <script>
     import { mapState, mapGetters } from 'vuex';
     import ResultImage from './ResultImage';
+    import AddToCart from './AddToCart';
 
     export default {
         name: "ResultItem",
@@ -28,7 +29,8 @@
             return {}
         },
         components: {
-            ResultImage
+            ResultImage,
+            AddToCart
         },
         props: {
             result: {
@@ -53,8 +55,8 @@
             getField: function (fieldName, options) {
                 var storeState = this.$root.$store.state;
                 var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
-               
-                if (storeState.language && !_.includes(langIndiffFields, fieldName)) {
+
+                if (storeState.language && !lodash.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${storeState.language}`;
                 }
 

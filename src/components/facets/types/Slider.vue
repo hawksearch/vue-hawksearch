@@ -25,10 +25,10 @@
         name: 'slider',
         props: ['facetData'],
         mounted() {
-            this.wrapper = this.$refs.wrapper.getBoundingClientRect();
-            
-            this.$root.$on('toggleFacetMenu', (isActive) => { 
-                this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+            this.wrapper =  (this.$refs && this.$refs.wrapper.getBoundingClientRect) ? this.$refs.wrapper.getBoundingClientRect() : null;
+
+            this.$root.$on('toggleFacetMenu', (isActive) => {
+                    this.wrapper = this.$refs.wrapper.getBoundingClientRect();
             });
 
             addToRangeFacets(HawksearchVue.getFacetParamName(this.facetData));
@@ -137,9 +137,11 @@
                 }
             },
             onResize: function(){
-                this.wrapper = this.$refs.wrapper.getBoundingClientRect();
-                this.updateMaxTemp();
-                this.updateMinTemp();
+                if (this.$refs && this.$refs.wrapper.getBoundingClientRect) {
+                    this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+                    this.updateMaxTemp();
+                    this.updateMinTemp();
+                }
             },
             handleAction: function () {
                 var minValue = this.valueConvert(this.minTemp);
@@ -244,11 +246,11 @@
                     this.cache.push(newCache);
                 }
                 else {
-                    this.cache = this.cache.map(item => _.isEqual(item, existingCache) ? newCache : existingCache);
+                    this.cache = this.cache.map(item => lodash.isEqual(item, existingCache) ? newCache : existingCache);
                 }
             },
             valueRound: function (value, precision) {
-                return _.round(parseFloat(value), precision);
+                return lodash.round(parseFloat(value), precision);
             },
             updateMinTemp: function () {
                 if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion)) {
@@ -311,7 +313,7 @@
             minRangeStyle: function () {
                 var left = this.minTemp;
                 var diff = this.maxTemp - this.minTemp;
-                var offset = _.ceil((this.buttonWidth - diff) / 2);
+                var offset = lodash.ceil((this.buttonWidth - diff) / 2);
 
                 if (diff < this.buttonWidth && this.minTemp >= offset) {
                     left -= offset;
@@ -322,7 +324,7 @@
             maxRangeStyle: function () {
                 var left = this.maxTemp;
                 var diff = this.maxTemp - this.minTemp;
-                var offset = _.ceil((this.buttonWidth - diff) / 2);
+                var offset = lodash.ceil((this.buttonWidth - diff) / 2);
 
                 if (diff < this.buttonWidth && this.maxTemp <= (this.wrapper.width - offset)) {
                     left += offset;
@@ -347,7 +349,7 @@
                 else if (this.componentReset || o.RangeMax != n.RangeMax || o.RangeMin != n.RangeMin) {
                     this.componentReset = false;
                     var cache = this.fetchCache();
-                    
+
                     if (cache) {
                         this.minValue = cache.minValue;
                         this.maxValue = cache.maxValue;
