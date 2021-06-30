@@ -1471,10 +1471,10 @@ button.hawk-collapseState {
 .hawk-facet-rail_empty {
   height: 250px; }
 
-.hawk-preview__results_tabs .nav-tabs {
+.hawk-preview__results_tabs .hawk-preview__results_tabs__nav-tabs {
   border-bottom: 1px solid #dee2e6; }
 
-.hawk-preview__results_tabs .nav {
+.hawk-preview__results_tabs .hawk-preview__results_tabs__nav {
   display: -ms-flexbox;
   display: -webkit-box;
   display: flex;
@@ -1484,10 +1484,10 @@ button.hawk-collapseState {
   margin-bottom: 0;
   list-style: none; }
 
-.hawk-preview__results_tabs .nav-item {
+.hawk-preview__results_tabs .hawk-preview__results_tabs__nav-item {
   margin: 0.5rem; }
 
-.hawk-preview__results_tabs .nav-link {
+.hawk-preview__results_tabs .hawk-preview__results_tabs__nav-link {
   display: block;
   padding: 0.5rem 1rem; }
 
@@ -1659,10 +1659,10 @@ _:-ms-fullscreen,
   .hawk-results__contentItem .hawk-results__hawk-contentTitle {
     margin-bottom: 10px; }
 
-.hawk-preview__results_tabs .nav-tabs {
+.hawk-preview__results_tabs .hawk-preview__results_tabs__nav-tabs {
   background: #f7f7f7; }
 
-.hawk-preview__results_tabs ul .nav-item {
+.hawk-preview__results_tabs ul .hawk-preview__results_tabs__nav-item {
   position: relative;
   font-size: 0.938em;
   font-weight: bold;
@@ -1670,13 +1670,13 @@ _:-ms-fullscreen,
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   background-color: #e3e0df;
   cursor: pointer; }
-  .hawk-preview__results_tabs ul .nav-item.active {
+  .hawk-preview__results_tabs ul .hawk-preview__results_tabs__nav-item.active {
     color: white;
     background-color: #f37622; }
-  .hawk-preview__results_tabs ul .nav-item a {
+  .hawk-preview__results_tabs ul .hawk-preview__results_tabs__nav-item a {
     border: 0;
     cursor: pointer; }
-    .hawk-preview__results_tabs ul .nav-item a:hover, .hawk-preview__results_tabs ul .nav-item a:focus {
+    .hawk-preview__results_tabs ul .hawk-preview__results_tabs__nav-item a:hover, .hawk-preview__results_tabs ul .hawk-preview__results_tabs__nav-item a:focus {
       border: 0; }
 
 .hawk-results__top-tool-row {
