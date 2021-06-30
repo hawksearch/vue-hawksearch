@@ -9,6 +9,7 @@ import PageContent from './components/results/PageContent.vue';
 import Recommendations from './components/results/recommendations/Recommendations.vue';
 import TrackingEvent from './TrackingEvent';
 import { getVisitorId, getVisitId } from './CookieHandler';
+import history from 'history/browser';
 
 var _ = require('lodash');
 window.lodash = _.noConflict();
@@ -187,6 +188,16 @@ class HawksearchVue {
                 try {
                     this.trackEvent = HawksearchVue.createTrackEvent(this.config);
                     HawksearchVue.handleLanguageParameters(this);
+
+                    history.listen(({ action, location }) => {
+                        if (action == "POP") {
+                            this.$store.commit('updatePendingSearch', {
+                                Keyword: "",
+                                FacetSelections: {}
+                            });
+                            this.dispatchToStore('fetchResults', parseURLparams(this), true);
+                        }
+                    });
                 }
                 catch (e) { }
             },
@@ -213,16 +224,18 @@ class HawksearchVue {
                 }
             },
             methods: {
-                dispatchToStore: function (action, params) {
+                dispatchToStore: function (action, params, isBack) {
                     return new Promise((resolve, reject) => {
                         this.$store.dispatch(action, params).then(() => {
                             var storeState = this.$store.state;
 
-                            updateUrl(this).then(() => {
-                                HawksearchVue.emitToAll('urlUpdated');
-                                resolve();
-                            });
-
+                            if (!isBack) {
+                                updateUrl(this).then(() => {
+                                    HawksearchVue.emitToAll('urlUpdated');
+                                    resolve();
+                                });
+                            }
+                            
                             var trackingActions = [
                                 'fetchResults',
                                 'applyFacets',
@@ -291,6 +304,11 @@ class HawksearchVue {
             this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
+        
+        if(store.state.isFirstInitialSearch){
+            store.commit('updateInitialSearchUrl', location.search);
+            store.commit('updateIsFirstInitialSearch', false);
+        }
     }
 
     static fetchResults(searchParams, store, callback) {
@@ -751,7 +769,7 @@ class HawksearchVue {
     static applyTabSelection(widget) {
         var store = this.getWidgetStore(widget);
         var data = store.state.searchOutput;
-
+        
         if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
             var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
 

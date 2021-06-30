@@ -10,12 +10,13 @@
 </template>
 
 <script lang="js">
+    import { addToRangeFacets } from '../../../QueryString';
 
     export default {
         name: 'open-range',
         props: ['facetData'],
         mounted() {
-
+            addToRangeFacets(HawksearchVue.getFacetParamName(this.facetData));
         },
         data() {
             return {

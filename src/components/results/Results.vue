@@ -33,6 +33,7 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
+    import { parseURLparams } from '../../QueryString';
     import SearchResultsLabel from '../facets/SearchResultsLabel'
     import Selections from '../facets/Selections'
     import ToolRow from './ToolRow'
@@ -57,6 +58,7 @@
             Recommendations,
             AutocorrectSuggestions
         },
+
         mounted() {
             var widget = this.$root;
 

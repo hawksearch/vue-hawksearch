@@ -39,6 +39,9 @@
 .hawk-results__listing {
 	display: flex;
 	flex-wrap: wrap;
+	h1,h2,h3,h4,h5,h6,p,a,ul,ol{
+		word-break: break-all;
+	}
 }
 
 .hawk-results__top-tool-row {
@@ -151,4 +154,7 @@
 
 .hawk-preview__banner-container .hawk-results__item-image img {
 	width: initial;
+}
+.hawk-img-override{
+	width: 120px;
 }

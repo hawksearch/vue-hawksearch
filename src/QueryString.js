@@ -10,6 +10,12 @@ const stateToURLParam = {
     IndexName: 'indexName'
 }
 
+const rangeFacets = [];
+
+export function addToRangeFacets(facetName) {
+    rangeFacets.push(facetName);
+}
+
 export function getParamName(paramName, widget, reverse) {
     var mappingTable = widget.config.paramsMapping;
 
@@ -42,7 +48,7 @@ export function parseURLparams(widget) {
         pendingSearch.FacetSelections = {};
 
         paramList.forEach(param => {
-            pendingSearch.FacetSelections[getParamName(param, widget, true)] = decodeSingleCommaSeparatedValues(params.get(param)); // decode
+            pendingSearch.FacetSelections[getParamName(param, widget, true)] = decodeURIParam(params.get(param)); // decode
         });
     }
 
@@ -57,6 +63,7 @@ export function updateUrl(widget) {
             history.push({
                 search: getSearchQueryString(widget),
             });
+
             resolve();
         }
     });
@@ -86,35 +93,52 @@ function getSearchQueryString(widget) {
 
 function convertObjectToQueryString(queryObj) {
     var params = new URLSearchParams();
+    var queryArray = [];
+    var value;
 
     for (const key in queryObj) {
-        if (queryObj[key]) {
-            params.set(key, encodeSingleCommaSeparatedValues(queryObj[key]))
+        value = queryObj[key];
+
+        if (value) {
+            if (rangeFacets.includes(key)) {
+                if (_.isArray(value)) {
+                    value = value.map(i => i.replace(',', '::'));
+                }
+                else {
+                    value = value.replace(',', '::');
+                }
+            }
+
+            if (_.isArray(value)) {
+                value = value.map(i => encodeURIComponent(i));
+            }
         }
+
+        params.set(key, value);
     }
 
-    return '?' + params.toString();
-}
+    for (let [paramKey, paramValue] of params.entries()) {
+        queryArray.push(paramKey + '=' + paramValue);
+    }
 
-function encodeSingleCommaSeparatedValues(arr) {
-    if (lodash.isArray(arr) && arr.length == 1) {
-        return [arr[0].replace(',', '::')];
+    if (queryArray.length) {
+        return '?' + queryArray.join('&');
     }
     else {
-        return arr;
+        return '';
     }
 }
 
-function decodeSingleCommaSeparatedValues(value) {
-    if (value && lodash.isString(value)) {
-        value = decodeURIComponent(value);
+function decodeURIParam(value) {
+    if (value && _.isString(value) && value.length > 1) {
+        value = value.split(',');
+        value = value.map(i => decodeURIComponent(i));
 
-        if (value.includes('::')) {
-            return [value.replace('::', ',')];
+        if (value.length == 1) {
+            value = value.map(i => i.replace('::', ','));
         }
-        else {
-            return value.split(',');
-        }
+
+        return value;
     }
     else {
         return value;
