@@ -1,8 +1,8 @@
 <template>
     <div v-if="facet" class="hawk-preview__results_tabs">
-        <ul class="nav nav-tabs">
+        <ul class="hawk-preview__results_tabs__nav hawk-preview__results_tabs__nav-tabs">
             <li v-for="tab in tabs" :key="tab.Value" :class="tabClasses(tab)" @click="onClick(tab)">
-                <a class="nav-link">{{ tab.Label }}</a>
+                <a class="hawk-preview__results_tabs__nav-link">{{ tab.Label }}</a>
             </li>
         </ul>
     </div>
@@ -26,7 +26,7 @@
         },
         methods: {
             tabClasses: function (tab) {
-                var tabClass = 'nav-item';
+                var tabClass = 'hawk-preview__results_tabs__nav-item';
 
                 if (tab.Selected) {
                     tabClass += ' active';

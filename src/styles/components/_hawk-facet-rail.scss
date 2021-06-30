@@ -385,11 +385,11 @@ button.hawk-collapseState {
 }
 
 .hawk-preview__results_tabs {
-	.nav-tabs {
+	.hawk-preview__results_tabs__nav-tabs {
 		border-bottom: 1px solid #dee2e6;
 	}
 
-	.nav {
+	.hawk-preview__results_tabs__nav {
 		display: -ms-flexbox;
 		display: flex;
 		-ms-flex-wrap: wrap;
@@ -399,11 +399,11 @@ button.hawk-collapseState {
 		list-style: none;
 	}
 
-	.nav-item {
+	.hawk-preview__results_tabs__nav-item {
 		margin: 0.5rem;
 	}
 
-	.nav-link {
+	.hawk-preview__results_tabs__nav-link {
 		display: block;
 		padding: 0.5rem 1rem;
 	}
