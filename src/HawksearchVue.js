@@ -82,7 +82,6 @@ class HawksearchVue {
     static dataLayers = {}
 
     static init() {
-        console.log('banica pak')
         this.addTemplateOverride();
     }
 
