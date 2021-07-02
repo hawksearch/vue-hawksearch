@@ -117,9 +117,7 @@ function convertObjectToQueryString(queryObj) {
         params.set(key, value);
     }
 
-    for (let [paramKey, paramValue] of params.entries()) {
-        queryArray.push(paramKey + '=' + paramValue);
-    }
+    params.forEach((paramValue, paramKey) => queryArray.push(paramKey + '=' + paramValue));
 
     if (queryArray.length) {
         return '?' + queryArray.join('&');
