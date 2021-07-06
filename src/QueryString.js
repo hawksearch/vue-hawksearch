@@ -33,7 +33,7 @@ export function getParamName(paramName, widget, reverse) {
 }
 
 export function parseURLparams(widget) {
-    var params = new URLSearchParams(location.search);
+    var params = new URLSearchParams(urlStringToParamEntries(location.search));
     var paramList = Object.keys(Object.fromEntries(params.entries()));
     var pendingSearch = {};
 
@@ -140,5 +140,18 @@ function decodeURIParam(value) {
     }
     else {
         return value;
+    }
+}
+
+function urlStringToParamEntries(searchQuery) {
+    if (searchQuery && typeof searchQuery == 'string' && searchQuery.length) {
+        if (searchQuery[0] == '?') {
+            searchQuery = searchQuery.slice(1);
+        }
+
+        return searchQuery.split('&').map(i => i.split('='));
+    }
+    else {
+        return searchQuery
     }
 }
