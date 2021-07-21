@@ -38,6 +38,9 @@
             },
             linkField: {
                 default: null
+            },
+            templateOverride: {
+                default: null
             }
         },
         computed: {
