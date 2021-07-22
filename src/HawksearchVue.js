@@ -51,7 +51,7 @@ class HawksearchVue {
             parameters: null
         },
         searchConfig: {
-            initialSearch: false,
+            initialSearch: true,
             scrollUpOnRefresh: true
         },
         resultItem: {
@@ -72,7 +72,7 @@ class HawksearchVue {
             type: "dispatch"
         },
         paramsMapping: {},
-        generateTemplateOverrides: false
+        generateTemplateOverrides: true
     }
 
     static widgetInstances = {}
@@ -594,6 +594,10 @@ class HawksearchVue {
         Vue.prototype.$mount = function (el, hydrating) {
             const options = this.$options;
             var templateOverride = (options.propsData && options.propsData.templateOverride) || options.templateOverride;
+
+            if (!templateOverride && options.name && this.$root.config.generateTemplateOverrides) {
+                templateOverride = '#vue-hawksearch-' + options.name;
+            }
 
             if (templateOverride &&
                 typeof templateOverride === 'string' &&

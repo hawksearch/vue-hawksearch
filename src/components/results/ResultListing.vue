@@ -1,5 +1,5 @@
 <template>
-    <div class="hawk-results__listing">
+    <div :class="'hawk-results__listing ' + listingTypeClass">
         <template v-if="loadingResults">
             <spinner></spinner>
         </template>
@@ -18,10 +18,11 @@
     import ResultItem from './ResultItem'
     import PlaceholderItem from './PlaceholderItem'
     import Spinner from './Spinner'
+    import { snakeCase } from "snake-case";
 
     export default {
         name: 'result-listing',
-        props: [],
+        props: ['type'],
         components: {
             ResultItem,
             PlaceholderItem,
@@ -45,6 +46,11 @@
             ]),
             results: function () {
                 return this.searchOutput ? this.searchOutput.Results : null;
+            },
+            listingTypeClass: function () {
+                if (this.type) {
+                    return 'hawk-results__listing_type__' + snakeCase(this.type);
+                }
             }
         }
     }

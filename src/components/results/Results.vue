@@ -43,6 +43,7 @@
     import Tabs from './Tabs'
     import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
+    import ListingType from './tools/ListingType'
 
     export default {
         name: 'results',
@@ -56,7 +57,8 @@
             Banner,
             Tabs,
             Recommendations,
-            AutocorrectSuggestions
+            AutocorrectSuggestions,
+            ListingType
         },
 
         mounted() {
@@ -68,13 +70,16 @@
         },
         data() {
             return {
-
+                listingType: 'grid'
             }
         },
         methods: {
             onClick: function (e) {
                 e.stopPropagation();
             },
+            onListingChange: function (type) {
+                this.listingType = type;
+            }
         },
         computed: {
             ...mapState([

@@ -30,6 +30,7 @@ export { default as Pager } from './results/tools/Pager';
 export { default as LoadMore } from './results/tools/LoadMore';
 export { default as Pagination } from './results/tools/Pagination';
 export { default as Sorting } from './results/tools/Sorting';
+export { default as ListingType } from './results/tools/ListingType';
 export { default as AutocorrectSuggestions } from './results/AutocorrectSuggestions';
 export { default as Banner } from './results/Banner';
 export { default as Spinner } from './results/Spinner';
