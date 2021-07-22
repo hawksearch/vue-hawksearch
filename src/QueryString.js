@@ -1,4 +1,4 @@
-import { createBrowserHistory } from 'History';
+import { createBrowserHistory } from 'history';
 
 const allowedParams = [
 	"keyword",
