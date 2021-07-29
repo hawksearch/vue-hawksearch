@@ -332,7 +332,7 @@ class HawksearchVue {
         var config = store.state.config;
         var clientData = this.getClientData(store);
 
-        var params = Object.assign({}, searchParams,
+        var params = lodash.merge({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
                 IndexName: this.getIndexName(config),
@@ -420,7 +420,7 @@ class HawksearchVue {
 
         var config = store.state.config;
         var clientData = this.getClientData(store);
-        var params = Object.assign({}, searchParams,
+        var params = lodash.merge({}, searchParams,
             {
                 ClientGuid: config.clientGuid,
                 IndexName: this.getIndexName(config),
