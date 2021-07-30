@@ -66,7 +66,7 @@
             },
             viewAllMatches: function () {
                 if (this.$parent.search) {
-                    this.$parent.search();
+                    this.$parent.search({ ignoreRedirectRules: true });
                 }
             }
         },

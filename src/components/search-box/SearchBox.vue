@@ -35,14 +35,16 @@
             }
         },
         methods: {
-            search: function () {
+            search: function (options) {
                 this.cancelSuggestions();
+
+                options = options || {};
 
                 let searchBoxConfig = this.$root.config.searchBoxConfig;
                 let searchPage = this.searchPage || location.pathname;
                 
                 if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage != location.pathname)) {
-                    HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage);
+                    HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options.ignoreRedirectRules);
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
