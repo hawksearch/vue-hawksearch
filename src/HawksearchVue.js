@@ -52,6 +52,7 @@ class HawksearchVue {
         },
         searchConfig: {
             initialSearch: true,
+            redirectRules: true,
             scrollUpOnRefresh: true
         },
         resultItem: {
@@ -350,7 +351,9 @@ class HawksearchVue {
             })
         }).then(response => {
             if (response.status == '200' && response.data) {
-                callback(response.data);
+                HawksearchVue.handleRedirectRules(response.data, config).then(() => {
+                    callback(response.data);
+                });
             }
         }).catch(err => {
             if (!axios.isCancel(err)) {
@@ -612,7 +615,7 @@ class HawksearchVue {
         }
     }
 
-    static redirectSearch(keyword, widget, searchPageUrl) {
+    static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
         var redirect = new URL(searchPageUrl, location.href);
         var config = widget.config;
         var store = this.getWidgetStore(widget);
@@ -636,8 +639,28 @@ class HawksearchVue {
         }
 
         if (keyword || config.searchBoxConfig.redirectOnEmpty) {
-            location.assign(redirect.href);
+            if (!ignoreRedirectRules && keyword && config.searchConfig.redirectRules) {
+                this.fetchResults({ Keyword: keyword }, store, () => {
+                    location.assign(redirect.href);
+                });
+            }
+            else {
+                location.assign(redirect.href);
+            }
         }
+    }
+
+    static handleRedirectRules(searchOutput, config) {
+        return new Promise((resolve, reject) => {
+            if (searchOutput && searchOutput.Redirect && searchOutput.Redirect.Location && config.searchConfig.redirectRules) {
+                setTimeout(function () {
+                    location.assign(searchOutput.Redirect.Location);
+                }, 1)
+            }
+            else {
+                resolve();
+            }
+        })
     }
 
     static paramWhitelist = ['CustomUrl', 'Query']
