@@ -131,7 +131,7 @@
                 });
             },
             getFacetType: function (field) {
-                if (this.searchOutput && this.searchOutput.Facets.length) {
+                if (this.searchOutput?.Facets?.length) {
                     var facets = this.searchOutput.Facets;
                     var type;
 
@@ -158,7 +158,7 @@
                 return item.split(',').join(' - ');
             },
             setSearchWithinLabel: function () {
-                if (this.searchOutput && this.searchOutput.Facets.length && !this.searchWithinLabel) {
+                if (this.searchOutput?.Facets?.length && !this.searchWithinLabel) {
                     var searchWithin = this.searchOutput.Facets.find(facet => facet.Field == 'searchWithin');
 
                     if (searchWithin) {
