@@ -112,6 +112,9 @@ function convertObjectToQueryString(queryObj) {
             if (lodash.isArray(value)) {
                 value = value.map(i => encodeURIComponent(i));
             }
+            else {
+                value = encodeURIComponent(value);
+            }
         }
 
         params.set(key, value);
