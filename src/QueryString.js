@@ -148,7 +148,7 @@ function urlStringToParamEntries(searchQuery) {
         if (searchQuery[0] == '?') {
             searchQuery = searchQuery.slice(1);
         }
-        return searchQuery.split('&').map(i => [i.split('=')[0], i.split('=')[1].replace('%20', ' ')]);
+        return searchQuery.split('&').map(i => [i.split('=')[0], decodeURIComponent(i.split('=')[1]).replace('+', ' ')]);
     }
     else {
         return searchQuery
