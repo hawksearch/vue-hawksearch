@@ -20,15 +20,16 @@
         },
         data() {
             return {
-                minValue: undefined,
-                maxValue: undefined
+                minValue: 0,
+                maxValue: 0
             }
         },
         methods: {
             onChange: function () {
                 if (this.minValue || this.maxValue) {
-                    this.facetData.Value = (this.minValue || '') + ',' + (this.maxValue || '');
-                    this.$root.dispatchToStore('applyFacets', this.facetData);
+                    var facetData = Object.assign({}, this.facetData);
+                    facetData.Value = this.minValue + ',' + this.maxValue;
+                    this.$root.dispatchToStore('applyFacets', facetData);
                 }
                 else {
                     var field = this.facetData.ParamName ? this.facetData.ParamName : this.facetData.Field;

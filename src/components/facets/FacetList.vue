@@ -182,7 +182,7 @@
                 'loadingResults'
             ]),
             facets: function () {
-                return (this.extendedSearchParams && this.extendedSearchParams.Facets) ? this.extendedSearchParams.Facets.filter(facet => facet.FieldType != 'tab') : null;
+                return this.extendedSearchParams?.Facets?.filter(facet => facet.FieldType != 'tab');
             },
             facetsElements: function () {
                 return this.$children;

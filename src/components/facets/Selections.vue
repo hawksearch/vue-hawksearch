@@ -124,10 +124,10 @@
                 headers.FacetSelections = lodash.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !lodash.isEmpty(a) });
 
                 this.$root.dispatchToStore('fetchResults', headers).then(() => {
-                            var widget = this.$root;
-                            var store = HawksearchVue.getWidgetStore(widget);
-                            HawksearchVue.truncateFacetSelections(store);
-                            HawksearchVue.applyTabSelection(widget);
+                    var widget = this.$root;
+                    var store = HawksearchVue.getWidgetStore(widget);
+                    HawksearchVue.truncateFacetSelections(store);
+                    HawksearchVue.applyTabSelection(widget);
                 });
             },
             getFacetType: function (field) {
@@ -197,7 +197,7 @@
                     }
 
                     this.selections = selections
-
+                    
                     return selections;
                 }
             }
