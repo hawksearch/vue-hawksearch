@@ -344,7 +344,6 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
-        
         axios.post(this.getFullSearchUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
                 store.commit('updateSearchCancelation', c);
