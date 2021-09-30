@@ -65,7 +65,7 @@
                 'tabSelection'
             ]),
             facet: function () {
-                return this.searchOutput ? this.searchOutput.Facets.find(facet => facet.FieldType == 'tab') : null;
+                return this.searchOutput?.Facets?.find(facet => facet.FieldType == 'tab')
             }
         },
         watch: {

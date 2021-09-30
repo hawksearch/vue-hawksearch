@@ -344,7 +344,7 @@ class HawksearchVue {
         this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
-
+        
         axios.post(this.getFullSearchUrl(store), params, {
             cancelToken: new CancelToken(function executor(c) {
                 store.commit('updateSearchCancelation', c);
@@ -504,7 +504,7 @@ class HawksearchVue {
             });
         }
 
-        extendedSearchParams.Facets.map(facet => {
+        extendedSearchParams?.Facets?.map(facet => {
             if (facet.Values && facet.Values.length && paramPool.hasOwnProperty(this.getFacetParamName(facet))) {
                 handleSelections(facet.Values, facet);
             }

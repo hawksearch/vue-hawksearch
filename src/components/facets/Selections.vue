@@ -124,14 +124,14 @@
                 headers.FacetSelections = lodash.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !lodash.isEmpty(a) });
 
                 this.$root.dispatchToStore('fetchResults', headers).then(() => {
-                            var widget = this.$root;
-                            var store = HawksearchVue.getWidgetStore(widget);
-                            HawksearchVue.truncateFacetSelections(store);
-                            HawksearchVue.applyTabSelection(widget);
+                    var widget = this.$root;
+                    var store = HawksearchVue.getWidgetStore(widget);
+                    HawksearchVue.truncateFacetSelections(store);
+                    HawksearchVue.applyTabSelection(widget);
                 });
             },
             getFacetType: function (field) {
-                if (this.searchOutput && this.searchOutput.Facets.length) {
+                if (this.searchOutput?.Facets?.length) {
                     var facets = this.searchOutput.Facets;
                     var type;
 
@@ -158,7 +158,7 @@
                 return item.split(',').join(' - ');
             },
             setSearchWithinLabel: function () {
-                if (this.searchOutput && this.searchOutput.Facets.length && !this.searchWithinLabel) {
+                if (this.searchOutput?.Facets?.length && !this.searchWithinLabel) {
                     var searchWithin = this.searchOutput.Facets.find(facet => facet.Field == 'searchWithin');
 
                     if (searchWithin) {
@@ -197,7 +197,7 @@
                     }
 
                     this.selections = selections
-
+                    
                     return selections;
                 }
             }

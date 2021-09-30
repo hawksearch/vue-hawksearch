@@ -81,7 +81,7 @@
                 var items = [];
 
                 if (this.searchOutput && this.searchOutput.Merchandising) {
-                    items = this.searchOutput.Merchandising.Items.filter(item => item.Zone == this.zone);
+                    items = this.searchOutput?.Merchandising?.Items?.filter(item => item.Zone == this.zone);
                 }
 
                 return items;

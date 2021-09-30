@@ -112,6 +112,9 @@ function convertObjectToQueryString(queryObj) {
             if (lodash.isArray(value)) {
                 value = value.map(i => encodeURIComponent(i));
             }
+            else {
+                value = encodeURIComponent(value);
+            }
         }
 
         params.set(key, value);
@@ -148,8 +151,7 @@ function urlStringToParamEntries(searchQuery) {
         if (searchQuery[0] == '?') {
             searchQuery = searchQuery.slice(1);
         }
-
-        return searchQuery.split('&').map(i => i.split('='));
+        return searchQuery.split('&').map(i => [i.split('=')[0], decodeURIComponent(i.split('=')[1]).replace('+', ' ')]);
     }
     else {
         return searchQuery
