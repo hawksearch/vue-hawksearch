@@ -40,7 +40,7 @@ export function parseURLparams(widget) {
     let mappedStateToURLParam = lodash.mapValues(stateToURLParam, paramName => { return getParamName(paramName, widget) });
 
     for (let [key, value] of Object.entries(mappedStateToURLParam)) {
-        pendingSearch[key] = params.get(value);
+        pendingSearch[key] = params.get(value) && decodeURIComponent(params.get(value));
         lodash.pull(paramList, value)
     }
 
@@ -153,5 +153,22 @@ function urlStringToParamEntries(searchQuery) {
     }
     else {
         return searchQuery
+    }
+}
+
+export function urlObjToString(urlObj) {
+    var searchQuery = /\?(.*)/i;
+    var base = urlObj.toString().replace(searchQuery, '');
+    var paramList = [];
+
+    for (let [key, value] of urlObj.searchParams.entries()) {
+        paramList.push(`${key}=${value}`);
+    }
+
+    if (paramList.length) {
+        return base + '?' + paramList.join('&');
+    }
+    else {
+        return urlObj.toString();
     }
 }

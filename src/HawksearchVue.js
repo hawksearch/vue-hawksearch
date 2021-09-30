@@ -1,7 +1,7 @@
 import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
 import i18n from './i18n';
-import { getParamName, parseURLparams, updateUrl } from './QueryString';
+import { getParamName, parseURLparams, updateUrl, urlObjToString } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
 import Results from './components/results/Results.vue';
@@ -621,7 +621,7 @@ class HawksearchVue {
         var store = this.getWidgetStore(widget);
 
         if (keyword) {
-            redirect.searchParams.set(getParamName('keyword', widget), keyword);
+            redirect.searchParams.set(getParamName('keyword', widget), encodeURIComponent(keyword));
         }
 
         if (config.indexName) {
@@ -641,11 +641,11 @@ class HawksearchVue {
         if (keyword || config.searchBoxConfig.redirectOnEmpty) {
             if (!ignoreRedirectRules && keyword && config.searchConfig.redirectRules) {
                 this.fetchResults({ Keyword: keyword }, store, () => {
-                    location.assign(redirect.href);
+                    location.assign(urlObjToString(redirect));
                 });
             }
             else {
-                location.assign(redirect.href);
+                location.assign(urlObjToString(redirect));
             }
         }
     }
