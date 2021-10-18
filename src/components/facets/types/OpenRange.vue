@@ -31,7 +31,6 @@
                 var currentMaxValue = JSON.parse(JSON.stringify(this.maxValue));
 
                 if (Number(this.minValue) <= Number(this.maxValue)) {
-                    console.log("running");
                     var facetData = Object.assign({}, this.facetData);
                     facetData.Value = this.minValue + ',' + this.maxValue;
                     this.$root.dispatchToStore('applyFacets', facetData);
@@ -58,29 +57,7 @@
             ]),
             facetValue: function () {
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length) {
-                    var selection = this.pendingSearch.FacetSelections[HawksearchVue.getFacetParamName(this.facetData)];
-                    var facetValue = this.facetData.Values;
-                    console.log(facetValue);
-                    if (!selection) {
-                        this.reset();
-                    }
-                    else {
-                        try {
-                            if (facetValue.RangeStart !== selection[0].split(',')[0]) {
-                                facetValue.RangeStart = selection[0].split(',')[0];
-                            }
-
-                            if (facetValue.RangeEnd !== selection[0].split(',')[1]) {
-                                facetValue.RangeEnd = selection[0].split(',')[1];
-                            }
-                        }
-                        catch (e) { console.log(e) }
-                    }
-
-                    return facetValue;
-                }
-                else {
-                    return {};
+                    // console.log(this.facetData.Values.map(val => val));
                 }
             }
         },

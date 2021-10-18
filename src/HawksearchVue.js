@@ -830,6 +830,7 @@ class HawksearchVue {
     }
 
     static collapseAllFacets() {
+        console.log("HawksearchVue.widgetInstances ==>", HawksearchVue.widgetInstances);
         Object.values(HawksearchVue.widgetInstances).forEach(w => {
             w.$children.forEach(c => {
                 if (c.$options.name == 'facet-list') {
