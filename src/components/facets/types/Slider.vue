@@ -287,7 +287,6 @@
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length && this.wrapper) {
                     var selection = this.pendingSearch.FacetSelections[HawksearchVue.getFacetParamName(this.facetData)];
                     var facetValue = this.facetData.Values[0];
-
                     if (!selection) {
                         this.reset();
                     }
