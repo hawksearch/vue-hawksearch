@@ -45,7 +45,7 @@
                 buttonWidth: 23,
                 cache: [],
                 componentReset: true,
-                rangePrecesion: 2,
+                rangePrecision: 2,
                 sliderPrecision: 0,
                 inputLocked: false
             }
@@ -174,8 +174,8 @@
                 return updated;
             },
             applyFacet: function () {
-                var minValue = this.valueRound(this.minValue, this.rangePrecesion);
-                var maxValue = this.valueRound(this.maxValue, this.rangePrecesion); 
+                var minValue = this.valueRound(this.minValue, this.rangePrecision);
+                var maxValue = this.valueRound(this.maxValue, this.rangePrecision); 
                 if (this.validSelection({ minValue, maxValue })) {
                     this.userInput = true;
                     var facetData = Object.assign({}, this.facetData);
@@ -185,8 +185,8 @@
             },
             validSelection: function ({ minValue, maxValue }) {
                 if (minValue <= maxValue &&
-                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion) &&
-                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
+                    minValue >= this.valueRound(this.facetValue.RangeMin, this.rangePrecision) &&
+                    maxValue <= this.valueRound(this.facetValue.RangeMax, this.rangePrecision)) {
 
                     return true;
                 }
@@ -195,26 +195,26 @@
             },
             valueConvert: function (temp) {
                 var x = temp;
-                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecesion);
-                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecesion);
+                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecision);
+                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecision);
                 var n = this.wrapper.width;
                 var precision = this.sliderPrecision;
 
                 if (temp == 0 || temp == n) {
-                    precision = this.rangePrecesion;
+                    precision = this.rangePrecision;
                 }
 
                 return this.valueRound(((m - k) * x + n * k) / n, precision);
             },
             tempConvert: function (value) {
-                var y = this.valueRound(value, this.rangePrecesion);
-                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecesion);
-                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecesion);
+                var y = this.valueRound(value, this.rangePrecision);
+                var m = this.valueRound(this.facetValue.RangeMax, this.rangePrecision);
+                var k = this.valueRound(this.facetValue.RangeMin, this.rangePrecision);
                 var n = this.wrapper.width;
                 var precision = this.sliderPrecision;
 
                 if (value == k || value == m) {
-                    precision = this.rangePrecesion;
+                    precision = this.rangePrecision;
                 }
 
                 if (m == k) {
@@ -253,7 +253,7 @@
                 return lodash.round(parseFloat(value), precision);
             },
             updateMinTemp: function () {
-                if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= this.valueRound(this.facetValue.RangeMin, this.rangePrecesion)) {
+                if (parseFloat(this.maxValue) >= parseFloat(this.minValue) && parseFloat(this.minValue) >= this.valueRound(this.facetValue.RangeMin, this.rangePrecision)) {
                     var temp = this.tempConvert(this.minValue);
 
                     if (this.maxValue == this.minValue && temp >= this.buttonWidth) {
@@ -264,7 +264,7 @@
                 }
             },
             updateMaxTemp: function () {
-                if (parseFloat(this.minValue) <= parseFloat(this.maxValue) && parseFloat(this.maxValue) <= this.valueRound(this.facetValue.RangeMax, this.rangePrecesion)) {
+                if (parseFloat(this.minValue) <= parseFloat(this.maxValue) && parseFloat(this.maxValue) <= this.valueRound(this.facetValue.RangeMax, this.rangePrecision)) {
                     var temp = this.tempConvert(this.maxValue);
 
                     if (this.maxValue == this.minValue && temp <= (this.wrapper.width - this.buttonWidth)) {
@@ -354,8 +354,8 @@
                         this.maxValue = cache.maxValue;
                     }
                     else {
-                        this.minValue = this.valueRound(n.RangeStart, this.rangePrecesion);
-                        this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecesion);
+                        this.minValue = this.valueRound(n.RangeStart, this.rangePrecision);
+                        this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecision);
                     }
 
                     if (this.minValue != this.maxValue) {

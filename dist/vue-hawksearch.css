@@ -31,12 +31,12 @@
 
 
 
-.slider[data-v-15330368] {
+.slider[data-v-04716a58] {
   position: relative;
   overflow: visible;
   margin: 0 10px;
 }
-.slider-background[data-v-15330368] {
+.slider-background[data-v-04716a58] {
   height: 15px;
   top: -2px;
   left: -2px;
@@ -46,7 +46,7 @@
   border: 1px solid #d8d8d8;
   position: relative;
 }
-.slider-wrapper[data-v-15330368] {
+.slider-wrapper[data-v-04716a58] {
   height: 15px;
   top: -2px;
   left: -2px;
@@ -54,7 +54,7 @@
   width: 100%;
   position: absolute;
 }
-.slider-button[data-v-15330368] {
+.slider-button[data-v-04716a58] {
   margin-left: -12px;
   top: -5px;
   width: 24px;
@@ -69,7 +69,7 @@
   position: absolute;
   cursor: pointer;
 }
-.slider-button[data-v-15330368]:before {
+.slider-button[data-v-04716a58]:before {
   top: 7px;
   height: 10px;
   width: 1px;
@@ -79,7 +79,7 @@
   position: absolute;
   background-color: #dadfe8;
 }
-.slider-button[data-v-15330368]:after {
+.slider-button[data-v-04716a58]:after {
   top: 7px;
   height: 10px;
   width: 1px;
@@ -89,7 +89,7 @@
   position: absolute;
   background-color: #dadfe8;
 }
-.slider-progressbar[data-v-15330368] {
+.slider-progressbar[data-v-04716a58] {
   height: 13px;
   top: 0;
   background-color: #3f4044;

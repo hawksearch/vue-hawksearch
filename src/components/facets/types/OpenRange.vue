@@ -77,8 +77,8 @@
                         this.maxValue = cache.maxValue;
                     }
                     else {
-                        this.minValue = this.valueRound(n.RangeStart, this.rangePrecesion);
-                        this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecesion);
+                        this.minValue = this.valueRound(n.RangeStart, this.rangePrecision);
+                        this.maxValue = this.valueRound(n.RangeEnd, this.rangePrecision);
                     }
 
                     if (this.minValue != this.maxValue) {
