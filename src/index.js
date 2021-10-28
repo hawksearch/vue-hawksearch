@@ -16,4 +16,12 @@ export * from './components';
 export { default as tConfig } from './i18n';
 export { default as TrackingEvent } from './TrackingEvent';
 
+Array.prototype.max = function max() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function min() {
+  return Math.min.apply(null, this);
+};
+
 export default HawksearchVue;
