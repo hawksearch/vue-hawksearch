@@ -615,36 +615,36 @@ class HawksearchVue {
     }
 
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
-        var redirect = new URL(searchPageUrl, location.href);
+        var redirect = new URL(searchPageUrl, location.href).toString();
         var config = widget.config;
         var store = this.getWidgetStore(widget);
 
         if (keyword) {
-            redirect.searchParams.set(getParamName('keyword', widget), keyword);
+            redirect = redirect + "?" + getParamName('keyword', widget) + "=" + encodeURIComponent(keyword);
         }
 
         if (config.indexName) {
-            redirect.searchParams.set(getParamName('indexName', widget), config.indexName);
+            redirect = redirect + "?" + getParamName('indexName', widget) + "=" + encodeURIComponent(keyword);
         }
 
         if (store.state.language) {
-            redirect.searchParams.set(getParamName('language', widget), store.state.language);
+            redirect = redirect + "?" + getParamName('language', widget) + "=" + encodeURIComponent(store.state.language);
         }
 
         for (let [key, value] of Object.entries(config.additionalParameters)) {
             if (this.isWhitelistedParam(key)) {
-                redirect.searchParams.set(getParamName(key, widget), value);
+                redirect = redirect + "?" + getParamName(key, widget) + "=" + encodeURIComponent(value);
             }
         }
 
         if (keyword || config.searchBoxConfig.redirectOnEmpty) {
             if (!ignoreRedirectRules && keyword && config.searchConfig.redirectRules) {
                 this.fetchResults({ Keyword: keyword }, store, () => {
-                    location.assign(redirect.href);
+                    location.assign(redirect);
                 });
             }
             else {
-                location.assign(redirect.href);
+                location.assign(redirect);
             }
         }
     }
