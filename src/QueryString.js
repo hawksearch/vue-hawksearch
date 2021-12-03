@@ -48,10 +48,10 @@ export function parseURLparams(widget) {
         pendingSearch.FacetSelections = {};
 
         paramList.forEach(param => {
-            pendingSearch.FacetSelections[decodeURIParam(getParamName(param, widget, true))[0]] = decodeURIParam(params.get(param)); // decode
+            pendingSearch.FacetSelections[decodeURIParam(getParamName(param, widget, true))[0]] = decodeURIParam([params.get(param)]); // decode
         });
     }
-
+    
     return lodash.pickBy(pendingSearch);
 }
 
