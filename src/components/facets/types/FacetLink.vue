@@ -20,7 +20,7 @@
         name: 'facet-link',
         props: ['facetData'],
         mounted() {
-            
+            console.log("facet-link");
         },
         data() {
             return {

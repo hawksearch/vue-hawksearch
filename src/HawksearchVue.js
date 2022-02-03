@@ -284,6 +284,7 @@ class HawksearchVue {
     }
 
     static initialSearch(widget) {
+        console.log("widget ==>", widget)
         if (!widget) {
             console.error('Widget not supplied');
             return false;
@@ -297,7 +298,6 @@ class HawksearchVue {
         }
 
         this.handleAdditionalParameters(widget);
-
         var searchParams = parseURLparams(widget);
 
         widget.dispatchToStore('fetchResults', searchParams).then(() => {
