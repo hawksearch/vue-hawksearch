@@ -76,7 +76,6 @@
                     if (f.hasOwnProperty('isCollapsed')) {
                         this.collapseFacet(f);
                     }
-                    sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
                 })
             },
             collapseAllExceptCurrent:function (facet) {
@@ -84,7 +83,6 @@
                     if (f.hasOwnProperty('isCollapsed') && f != facet) {
                         this.collapseFacet(f);
                     }
-                    sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
                 })
             },
             expandAll: function () {
