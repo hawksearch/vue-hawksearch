@@ -824,7 +824,7 @@ class HawksearchVue {
     }
 
     static scrollToBeginning(widget) {
-        if (widget.config.searchConfig.scrollUpOnRefresh) {
+        if (!window.location.hash && widget.config.searchConfig.scrollUpOnRefresh) {
             window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
         }
     }
