@@ -284,7 +284,6 @@ class HawksearchVue {
     }
 
     static initialSearch(widget) {
-        console.log("widget ==>", widget)
         if (!widget) {
             console.error('Widget not supplied');
             return false;
@@ -298,6 +297,7 @@ class HawksearchVue {
         }
 
         this.handleAdditionalParameters(widget);
+
         var searchParams = parseURLparams(widget);
 
         widget.dispatchToStore('fetchResults', searchParams).then(() => {
@@ -824,13 +824,12 @@ class HawksearchVue {
     }
 
     static scrollToBeginning(widget) {
-        if (!window.location.hash && widget.config.searchConfig.scrollUpOnRefresh) {
+        if (widget.config.searchConfig.scrollUpOnRefresh) {
             window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
         }
     }
 
     static collapseAllFacets() {
-        console.log("HawksearchVue.widgetInstances ==>", HawksearchVue.widgetInstances);
         Object.values(HawksearchVue.widgetInstances).forEach(w => {
             w.$children.forEach(c => {
                 if (c.$options.name == 'facet-list') {

@@ -1,8 +1,8 @@
 <template>
-    <div :class="getField('type') == 'Content' ? 'hawk-results__contentItem' : 'hawk-results__item'" @click="onClick">
+    <div :class="getField('type') == 'Content' ? 'hawk-results__contentItem' : 'hawk-results__item'">
         <template v-if="getField('type') == 'Content'">
             <h4 class="hawk-results__hawk-contentTitle">
-                <a :href="absoluteUrl(getField(linkField))">{{ getField('itemname') }}</a>
+                <a :href="absoluteUrl(getField(linkField))" @click="onClick">{{ getField('itemname') }}</a>
             </h4>
             <template v-if="getField('description_short')">
                 <div>{{ getField('description_short') }}</div>
