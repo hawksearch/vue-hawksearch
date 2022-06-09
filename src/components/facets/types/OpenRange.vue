@@ -57,9 +57,7 @@
                 'pendingSearch'
             ]),
             facetValue: function () {
-                console.log("This called!", this.facetData);
                 if (this.facetData && this.facetData.Values && this.facetData.Values.length) {
-                    console.log(this.facetData.Values);
                     //We just need to replace the array with startRange and endRange to make this work
                     this.minRange = this.facetData.Values.map(val => val.Value).min().toFixed(2);
                     this.maxRange = this.facetData.Values.map(val => val.Value).max().toFixed(2);
