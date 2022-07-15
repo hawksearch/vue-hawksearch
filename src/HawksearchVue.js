@@ -624,7 +624,7 @@ class HawksearchVue {
         }
 
         if (config.indexName) {
-            redirect = redirect + "?" + getParamName('indexName', widget) + "=" + encodeURIComponent(keyword);
+            redirect = redirect + "?" + getParamName('indexName', widget) + "=" + encodeURIComponent(config.indexName);
         }
 
         if (store.state.language) {
