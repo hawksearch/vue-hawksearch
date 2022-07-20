@@ -615,25 +615,25 @@ class HawksearchVue {
     }
 
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
-        var redirect = new URL(searchPageUrl, location.href).toString();
+        var redirect = new URL(searchPageUrl, location.href);
         var config = widget.config;
         var store = this.getWidgetStore(widget);
 
         if (keyword) {
-            redirect = redirect + "?" + getParamName('keyword', widget) + "=" + encodeURIComponent(keyword);
+            redirect.searchParams.set(getParamName('keyword', widget), encodeURIComponent(keyword));
         }
 
         if (config.indexName) {
-            redirect = redirect + "?" + getParamName('indexName', widget) + "=" + encodeURIComponent(config.indexName);
+            redirect.searchParams.set(getParamName('indexName', widget), config.indexName);
         }
 
         if (store.state.language) {
-            redirect = redirect + "?" + getParamName('language', widget) + "=" + encodeURIComponent(store.state.language);
+            redirect.searchParams.set(getParamName('language', widget), encodeURIComponent(store.state.language));
         }
 
         for (let [key, value] of Object.entries(config.additionalParameters)) {
             if (this.isWhitelistedParam(key)) {
-                redirect = redirect + "?" + getParamName(key, widget) + "=" + encodeURIComponent(value);
+                redirect.searchParams.set(getParamName(key, widget), encodeURIComponent(value));
             }
         }
 
