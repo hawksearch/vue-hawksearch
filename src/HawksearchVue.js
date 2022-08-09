@@ -564,7 +564,7 @@ class HawksearchVue {
             case 'nestedcheckbox':
             case 'nestedlinklist':
             case 'swatch':
-                handleCheckboxes(facet.Values);
+                handleCheckboxes(facet.SwatchData);
 
                 if (searchParamFacets[field].length == 0) {
                     delete searchParamFacets[field];

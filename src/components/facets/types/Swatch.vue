@@ -53,7 +53,7 @@
         },
         computed: {
             items: function () {
-                return this.facetData.Values;
+                return this.facetData.SwatchData;
             }
         }
     }
