@@ -53,7 +53,15 @@
         },
         computed: {
             items: function () {
-                return this.facetData.SwatchData;
+                this.facetData.Values = this.facetData.Values.map(value => {
+                    let currentSwatchData = this.facetData.SwatchData.find(data => data.Value === value.Value);
+                    return {
+                        ...value,
+                        ...currentSwatchData
+                    }
+                });
+                
+                return this.facetData.Values;
             }
         }
     }
