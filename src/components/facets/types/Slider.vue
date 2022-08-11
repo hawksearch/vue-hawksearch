@@ -32,7 +32,6 @@
             });
 
             addToRangeFacets(HawksearchVue.getFacetParamName(this.facetData));
-            console.log("facetData ====>", this.facetData);
         },
         data() {
             return {

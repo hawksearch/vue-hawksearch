@@ -509,11 +509,16 @@ class HawksearchVue {
             }
 
             if (facet.Values && facet.Values.length && facet.SwatchData && facet.SwatchData.length) {
-                facet.Values = facet.Values.map(facetValue => {
-                    return Object.assign({}, facet.SwatchData.find(item => item.Value.toLowerCase() == facetValue.Value.toLowerCase()), facetValue);
-                });
-
-                facet.Values = facet.Values.filter(item => Boolean(item.AssetName));
+                let newFacetValues = [];
+                for (var i = 0; i < facet.Values.length; i++) {
+                    let value = facet.Values[i];
+                    let swatchData = facet.SwatchData.find(sd => sd.Value.toLowerCase() == value.Value.toLowerCase());
+                    value = Object.assign({}, swatchData, value);
+                    if(Boolean(value.AssetName) || Boolean(value.Color)) {
+                        newFacetValues.push(value);
+                    }
+                }
+                facet.Values = newFacetValues;
             }
             else if (facet.Values && facet.Values.length && facet.Ranges && facet.Ranges.length) {
                 facet.Values = facet.Values.map(facetValue => {
