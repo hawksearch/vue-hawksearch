@@ -1,9 +1,9 @@
 <template>
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-link">
-            <div class="hawk-sliderNumeric">
-                <input v-model.lazy="minValue" class="hawk-numericInput numeric-from" @change="applyFacet" type="text">
-                <input v-model.lazy="maxValue" class="hawk-numericInput numeric-to" @change="applyFacet" type="text">
+            <div class="slider-numeric">
+                <div class="dollar">{{facetData.CurrencySymbol}}<input v-model.lazy="minValue" style="padding-left: 15px;"  class="hawk-numericInput numeric-from" @change="applyFacet" type="text"></div>
+                <div class="dollar">{{facetData.CurrencySymbol}}<input v-model.lazy="maxValue" style="padding-left: 15px;"  class="hawk-numericInput numeric-to" @change="applyFacet" type="text"></div>
             </div>
             <div class="slider" ref="wrapper">
                 <div class="slider-background"></div>
@@ -386,6 +386,11 @@
 </script>
 
 <style scoped lang="scss">
+    .slider-numeric{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }   
     .slider {
         position: relative;
         overflow: visible;
@@ -454,5 +459,9 @@
         top: 0;
         background-color: #3f4044;
         position: absolute;
+    }
+    .dollar{
+        display: flex;
+        width: 25%;
     }
 </style>

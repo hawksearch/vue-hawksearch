@@ -11,11 +11,11 @@
                         <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
                         <div @click="viewAllMatches" class="view-matches">View all matches</div>
                     </ul>
-                    <!--<div class="autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
+                    <div class="autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
                         <categories-container :suggestions="suggestions"></categories-container>
                         <popular-container :suggestions="suggestions"></popular-container>
                         <content-container :suggestions="suggestions"></content-container>
-                    </div>-->
+                    </div>
                 </template>
                 <template v-else>
                     <li class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</li>

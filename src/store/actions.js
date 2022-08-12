@@ -2,6 +2,7 @@ export default {
     fetchResults({ commit, state }, searchParams) {
         return new Promise((resolve, reject) => {
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
+            pendingSearch.Keyword = decodeURIComponent(pendingSearch.Keyword);
             commit('updatePendingSearch', pendingSearch);
             commit('updateSuggestions', null);
             commit('updateLoadingSuggestions', false);

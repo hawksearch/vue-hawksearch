@@ -509,11 +509,16 @@ class HawksearchVue {
             }
 
             if (facet.Values && facet.Values.length && facet.SwatchData && facet.SwatchData.length) {
-                facet.Values = facet.Values.map(facetValue => {
-                    return Object.assign({}, facet.SwatchData.find(item => item.Value.toLowerCase() == facetValue.Value.toLowerCase()), facetValue);
-                });
-
-                facet.Values = facet.Values.filter(item => Boolean(item.AssetName));
+                let newFacetValues = [];
+                for (var i = 0; i < facet.Values.length; i++) {
+                    let value = facet.Values[i];
+                    let swatchData = facet.SwatchData.find(sd => sd.Value.toLowerCase() == value.Value.toLowerCase());
+                    value = Object.assign({}, swatchData, value);
+                    if(Boolean(value.AssetName) || Boolean(value.Color)) {
+                        newFacetValues.push(value);
+                    }
+                }
+                facet.Values = newFacetValues;
             }
             else if (facet.Values && facet.Values.length && facet.Ranges && facet.Ranges.length) {
                 facet.Values = facet.Values.map(facetValue => {
@@ -615,25 +620,25 @@ class HawksearchVue {
     }
 
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
-        var redirect = new URL(searchPageUrl, location.href).toString();
+        var redirect = new URL(searchPageUrl, location.href);
         var config = widget.config;
         var store = this.getWidgetStore(widget);
 
         if (keyword) {
-            redirect = redirect + "?" + getParamName('keyword', widget) + "=" + encodeURIComponent(keyword);
+            redirect.searchParams.set(getParamName('keyword', widget), encodeURIComponent(keyword));
         }
 
         if (config.indexName) {
-            redirect = redirect + "?" + getParamName('indexName', widget) + "=" + encodeURIComponent(keyword);
+            redirect.searchParams.set(getParamName('indexName', widget), config.indexName);
         }
 
         if (store.state.language) {
-            redirect = redirect + "?" + getParamName('language', widget) + "=" + encodeURIComponent(store.state.language);
+            redirect.searchParams.set(getParamName('language', widget), encodeURIComponent(store.state.language));
         }
 
         for (let [key, value] of Object.entries(config.additionalParameters)) {
             if (this.isWhitelistedParam(key)) {
-                redirect = redirect + "?" + getParamName(key, widget) + "=" + encodeURIComponent(value);
+                redirect.searchParams.set(getParamName(key, widget), encodeURIComponent(value));
             }
         }
 

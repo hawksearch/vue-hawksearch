@@ -2,7 +2,7 @@
     <li :class="listItemClass">
         <button @click="selectFacet" class="hawk-facet-rail__facet-btn hawk-styleSwatch">
             <span class="hawk-selectionInner">
-                <template v-if="item.isColor">
+                <template v-if="item.Color">
                     <span class="hawk-swatchColor" :style="colorStyle" :title="item.Value" />
                 </template>
                 <template v-else>
