@@ -13,9 +13,9 @@
         name: 'listing-type',
         props: ['listingTypes'],
         mounted() {
-
         },
         data() {
+          return {}
         },
         methods: {
             changeToType: function (type) {

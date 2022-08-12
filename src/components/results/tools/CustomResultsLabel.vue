@@ -18,9 +18,7 @@
         name: 'custom-results-label',
         props: ['resultsField'],
         data() {
-            return {
-
-            };
+            return {};
         },
         methods: {
 

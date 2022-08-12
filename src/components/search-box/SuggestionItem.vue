@@ -28,9 +28,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             getField: function (fieldName) {
@@ -105,4 +103,3 @@
         margin: 0;
     }*/
 </style>
-

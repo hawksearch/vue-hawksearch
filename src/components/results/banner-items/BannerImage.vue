@@ -15,9 +15,7 @@
             this.$parent.loadHandler(this.banner);
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             absoluteUrl: function (url) {
