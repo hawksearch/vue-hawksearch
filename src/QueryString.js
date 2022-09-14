@@ -32,6 +32,18 @@ export function getParamName(paramName, widget, reverse) {
     return paramName;
 }
 
+function constructFacetValue(encodedParam) {
+    const param = decodeURIParam(encodedParam);
+    let paramValue;
+    if (param.includes(',')) {
+        paramValue = param.split(',');
+    } else {
+        paramValue = param;
+    }
+    return paramValue;
+}
+
+
 export function parseURLparams(widget) {
     var params = new URLSearchParams(urlStringToParamEntries(location.search));
     var paramList = Object.keys(Object.fromEntries(params.entries()));
@@ -48,7 +60,7 @@ export function parseURLparams(widget) {
         pendingSearch.FacetSelections = {};
 
         paramList.forEach(param => {
-            pendingSearch.FacetSelections[decodeURIParam(getParamName(param, widget, true))[0]] = decodeURIParam(params.get(param)); // decode
+            pendingSearch.FacetSelections[decodeURIParam(getParamName(param, widget, true))[0]] = constructFacetValue(params.get(param)); // decode
         });
     }
 
