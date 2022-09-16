@@ -1,7 +1,6 @@
 <template>
     <div class="hawk-autosuggest-menu">
-        <!-- <template v-if="fieldFocused && (loadingSuggestions || suggestions)"> -->
-        <template>
+        <template v-if="fieldFocused && (loadingSuggestions || suggestions)">
             <div class="hawk-dropdown-menu hawk-autosuggest-menu__list hawk-autosuggest-outer-list">
                 <template v-if="loadingSuggestions">
                     <div class="hawk-autosuggest-menu__item">{{ $t('Loading') }}...</div>
@@ -10,8 +9,6 @@
                     <div class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
                         <ul>
-                            <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
-                            <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
                             <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
                         </ul>
                         <div @click="viewAllMatches" class="view-matches">View all matches</div>
