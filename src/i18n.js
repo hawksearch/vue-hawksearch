@@ -15,4 +15,11 @@ const i18n = new VueI18n({
     messages, // set locale messages
 })
 
+export const getI18n = ({ locale = 'en', messages = messages }) => {
+    return new VueI18n({
+        locale, // set locale
+        messages, // set locale messages
+    })
+}
+
 export default i18n;

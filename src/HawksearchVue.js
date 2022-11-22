@@ -1,6 +1,6 @@
 import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
-import i18n from './i18n';
+import { getI18n } from './i18n';
 import { getParamName, parseURLparams, updateUrl } from './QueryString';
 import SearchBox from './components/search-box/SearchBox';
 import FacetList from './components/facets/FacetList.vue';
@@ -182,7 +182,7 @@ class HawksearchVue {
         var widget = new Vue({
             el,
             store,
-            i18n,
+            i18n: getI18n(),
             components,
             mounted() {
                 try {
