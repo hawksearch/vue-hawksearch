@@ -1,26 +1,28 @@
 <template>
     <div class="hawk-autosuggest-menu">
         <template v-if="fieldFocused && (loadingSuggestions || suggestions)">
-            <ul class="hawk-dropdown-menu hawk-autosuggest-menu__list hawk-autosuggest-outer-list">
+            <div class="hawk-dropdown-menu hawk-autosuggest-menu__list hawk-autosuggest-outer-list">
                 <template v-if="loadingSuggestions">
-                    <li class="hawk-autosuggest-menu__item">{{ $t('Loading') }}...</li>
+                    <div class="hawk-autosuggest-menu__item">{{ $t('Loading') }}...</div>
                 </template>
                 <template v-else-if="suggestions.Products.length">
-                    <ul class="hawk-autosuggest-inner-list">
+                    <div class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
-                        <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
+                        <ul>
+                            <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
+                        </ul>
                         <div @click="viewAllMatches" class="view-matches">View all matches</div>
-                    </ul>
-                    <div class="autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
+                    </div>
+                    <div class="hawk-autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
                         <categories-container :suggestions="suggestions"></categories-container>
                         <popular-container :suggestions="suggestions"></popular-container>
                         <content-container :suggestions="suggestions"></content-container>
                     </div>
                 </template>
                 <template v-else>
-                    <li class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</li>
+                    <div class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</div>
                 </template>
-            </ul>
+            </div>
         </template>
     </div>
 </template>
