@@ -73,7 +73,8 @@ class HawksearchVue {
             type: "dispatch"
         },
         paramsMapping: {},
-        generateTemplateOverrides: true
+        generateTemplateOverrides: true,
+        i18n: {}
     }
 
     static widgetInstances = {}
@@ -182,7 +183,7 @@ class HawksearchVue {
         var widget = new Vue({
             el,
             store,
-            i18n: getI18n(),
+            i18n: getI18n(config.i18n),
             components,
             mounted() {
                 try {
