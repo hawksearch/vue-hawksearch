@@ -17,7 +17,7 @@ const i18n = new VueI18n({
 
 export const getI18n = (i18n = {}) => {
     const locale = i18n.locale || 'en';
-    const messages = i18n.messages || messages;
+    const messages = lodash.merge(messages, (i18n.messages || {}));
     return new VueI18n({
         locale, // set locale
         messages, // set locale messages
