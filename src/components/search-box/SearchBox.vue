@@ -89,7 +89,7 @@
             },
             onClick: function (e) {
                 e.stopPropagation();
-                e.preventDefault();
+                // e.preventDefault();
             },
             cancelSuggestions: function () {
                 clearTimeout(this.suggestionDelay);
