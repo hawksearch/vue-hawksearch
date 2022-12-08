@@ -15,4 +15,13 @@ const i18n = new VueI18n({
     messages, // set locale messages
 })
 
+export const getI18n = (i18n = {}) => {
+    const locale = i18n.locale || 'en';
+    const messages = lodash.merge(messages, (i18n.messages || {}));
+    return new VueI18n({
+        locale, // set locale
+        messages, // set locale messages
+    })
+}
+
 export default i18n;
