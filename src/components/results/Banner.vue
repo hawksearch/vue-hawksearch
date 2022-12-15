@@ -28,9 +28,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             clickHandler: function (banner) {

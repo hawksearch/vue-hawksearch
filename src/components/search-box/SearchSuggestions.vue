@@ -47,9 +47,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             onItemSeleted: function (item) {

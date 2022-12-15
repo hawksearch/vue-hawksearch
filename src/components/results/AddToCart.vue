@@ -20,9 +20,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             addToCart: function (e) {

@@ -32,9 +32,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
 
