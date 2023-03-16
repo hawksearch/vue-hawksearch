@@ -123,7 +123,7 @@ class TrackingEvent {
         const guid = createGuid();
 
         if (typeId === this.SearchType.Initial) {
-            setCookie('hawk_query_id', guid);
+            setCookie('hawk_query_id', guid, null, true);
         }
 
         const queryId = getCookie('hawk_query_id') || guid;

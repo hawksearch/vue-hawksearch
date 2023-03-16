@@ -19,9 +19,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
 

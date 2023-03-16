@@ -22,9 +22,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             clearSelections: function (exception) {

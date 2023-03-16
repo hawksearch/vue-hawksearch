@@ -3,7 +3,7 @@ export function getVisitorId() {
 	let visitorId = getCookie(hawk_visitor_id);
 
 	if (!visitorId) {
-		setCookie(hawk_visitor_id, createGuid(), getVisitorExpiry());
+		setCookie(hawk_visitor_id, createGuid(), getVisitorExpiry(), true);
 		visitorId = getCookie(hawk_visitor_id);
 	}
 
@@ -15,7 +15,7 @@ export function getVisitId() {
 	let visitId = getCookie(hawk_visit_id);
 
 	if (!visitId) {
-		setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+		setCookie('hawk_visit_id', createGuid(), getVisitExpiry(), true);
 		visitId = getCookie('hawk_visit_id');
 	}
 
@@ -38,7 +38,7 @@ export function getCookie(name) {
 	return null;
 }
 
-export function setCookie(name, value, expiry) {
+export function setCookie(name, value, expiry, secure) {
 	let expires;
 
 	if (expiry) {
@@ -48,7 +48,11 @@ export function setCookie(name, value, expiry) {
 		expires = '';
 	}
 
-	document.cookie = name + '=' + value + expires + '; path=/';
+	let cookie = name + '=' + value + expires + '; path=/';
+	if (secure) {
+		cookie += ';secure';
+	}
+	document.cookie = cookie;
 }
 
 export function createGuid() {

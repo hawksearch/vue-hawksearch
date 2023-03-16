@@ -24,9 +24,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             onChange: function (e) {

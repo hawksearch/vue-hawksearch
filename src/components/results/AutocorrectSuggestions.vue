@@ -20,9 +20,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             selectSuggestion: function(selectedSuggestion) {

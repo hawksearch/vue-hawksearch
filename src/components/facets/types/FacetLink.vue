@@ -22,8 +22,7 @@
         mounted() {
         },
         data() {
-            return {
-            }
+            return {}
         },
         methods: {
             selectFacet: function (value) {

@@ -15,9 +15,7 @@
         mounted() {
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         components: {
             FeaturedItem

@@ -67,6 +67,7 @@
                 }
 
                 this.applyFacets();
+                this.isExpanded = value.Selected;
             },
             negateFacet: function (value) {
                 this.$parent.clearSelections(value);

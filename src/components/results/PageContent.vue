@@ -28,9 +28,7 @@
 
         },
         data() {
-            return {
-
-            }
+            return {}
         },
         methods: {
             getItemType: function (item) {
