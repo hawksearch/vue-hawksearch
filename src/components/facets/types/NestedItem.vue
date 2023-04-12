@@ -56,7 +56,7 @@
                 this.isExpanded = !this.isExpanded;
             },
             selectFacet: function (value) {
-                this.$parent.clearSelections(value);
+                this.$parent.clearInlineSelections(value);
 
                 if (value.Negated) {
                     value.Selected = true;
@@ -78,6 +78,9 @@
             },
             clearSelections: function (value) {
                 this.$parent.clearSelections(value);
+            },
+            clearInlineSelections: function (value) {
+                this.$parent.clearInlineSelections(value);
             },
             applyFacets: function () {
                 this.$root.dispatchToStore('applyFacets', this.facetData);
