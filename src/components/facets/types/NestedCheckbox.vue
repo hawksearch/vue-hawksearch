@@ -44,6 +44,25 @@
                     clearValues(this.items);
                 }
             },
+            clearInlineSelections: function (exception) {
+                var clearInlineValues = function (items) {
+                    items = items.map(item => {
+                        if (item.Children) {
+                            clearInlineValues(item.Children);
+                        }
+
+                        if (item.Path.indexOf(exception.Path) === 0 || exception.Path.indexOf(item.Path) === 0) {
+                            item.Negated = false;
+                            item.Selected = false;
+                        }
+
+                        return item;
+                    });
+                }
+                if (this.getCheckboxType() == 'single') {
+                    clearInlineValues(this.items);
+                }
+            },
             getCheckboxType: function () {
                 var field = HawksearchVue.getFacetParamName(this.facetData);
 
