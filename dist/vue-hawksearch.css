@@ -119,6 +119,7 @@
 
 
 
+
 .custom-component-select[data-v-11e3877c] {
   position: relative;
   width: 100%;
@@ -2500,4 +2501,29 @@ ul.hawk-facet-rail__facet-list.colors {
       font-size: 14px; }
   .hawk-facet-rail__facet-values-size ul li.selected {
     border: 2px solid #f37624; }
+
+.hawk-facet-rail__facet-values-recent-search {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+  .hawk-facet-rail__facet-values-recent-search div {
+    cursor: pointer; }
+  .hawk-facet-rail__facet-values-recent-search div:hover,
+  .hawk-facet-rail__facet-values-recent-search button:hover {
+    text-decoration: underline;
+    color: #f47b20; }
+  .hawk-facet-rail__facet-values-recent-search button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end; }
 

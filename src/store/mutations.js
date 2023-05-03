@@ -46,5 +46,8 @@ export default {
     },
     updateInitialSearchUrl(state,value){
         state.initialSearchUrl = value;
+    },
+    updateRecentSearch(state, value) {
+        state.recentSearch = value;
     }
 };

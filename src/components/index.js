@@ -14,6 +14,7 @@ export { default as NestedLinkItem } from './facets/types/NestedLinkItem';
 export { default as NestedLinkList } from './facets/types/NestedLinkList';
 export { default as Swatch } from './facets/types/Swatch';
 export { default as SwatchItem } from './facets/types/SwatchItem';
+export { default as RecentSearches } from './facets/types/RecentSearches';
 export { default as ResultImage } from './results/ResultImage';
 export { default as ResultItem } from './results/ResultItem';
 export { default as ResultListing } from './results/ResultListing';
