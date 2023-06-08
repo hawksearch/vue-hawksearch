@@ -44,7 +44,7 @@
             DashCircleSvg
         },
         mounted() {
-
+            this.isExpanded = this.isExpandable(this.itemData);
         },
         data() {
             return {
@@ -84,6 +84,14 @@
             },
             applyFacets: function () {
                 this.$root.dispatchToStore('applyFacets', this.facetData);
+            },
+            isExpandable: function (itemData) {
+                if (itemData.Selected) {
+                    return true;
+                } else if (itemData.Children && itemData.Children.length) {
+                    return itemData.Children.some(item => this.isExpandable(item));
+                }
+                return false;
             }
         },
         computed: {
