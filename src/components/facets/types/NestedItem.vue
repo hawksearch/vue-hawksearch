@@ -56,18 +56,18 @@
                 this.isExpanded = !this.isExpanded;
             },
             selectFacet: function (value) {
+                const previouslySelected = value.Selected;
                 this.$parent.clearInlineSelections(value);
 
                 if (value.Negated) {
                     value.Selected = true;
                     value.Negated = false;
-                }
-                else {
+                } else if (!previouslySelected) {
                     value.Selected = !value.Selected;
                 }
 
                 this.applyFacets();
-                this.isExpanded = value.Selected;
+                this.isExpanded = true;
             },
             negateFacet: function (value) {
                 this.$parent.clearSelections(value);
