@@ -44,6 +44,8 @@
     import Recommendations from './recommendations/Recommendations'
     import AutocorrectSuggestions from './AutocorrectSuggestions'
     import ListingType from './tools/ListingType'
+    import Sorting from './tools/Sorting'
+    import Pagination from './tools/Pagination'
 
     export default {
         name: 'results',
@@ -58,7 +60,9 @@
             Tabs,
             Recommendations,
             AutocorrectSuggestions,
-            ListingType
+            ListingType,
+            Sorting,
+            Pagination
         },
 
         mounted() {
