@@ -5,18 +5,22 @@
                 <template v-if="loadingSuggestions">
                     <div class="hawk-autosuggest-menu__item">{{ $t('Loading') }}...</div>
                 </template>
-                <template v-else-if="suggestions.Products.length">
-                    <div class="hawk-autosuggest-inner-list">
+                <template v-else-if="suggestions.Products.length
+                || suggestions.Categories.length 
+                || suggestions.Popular.length 
+                || suggestions.Content.length">
+                    <div v-if="suggestions.Products.length" class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
                         <ul>
                             <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
                         </ul>
                         <div @click="viewAllMatches" class="view-matches">View all matches</div>
                     </div>
-                    <div class="hawk-autosuggest-inner-container" v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length">
-                        <categories-container :suggestions="suggestions"></categories-container>
-                        <popular-container :suggestions="suggestions"></popular-container>
-                        <content-container :suggestions="suggestions"></content-container>
+                    <div v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length" 
+                        class="hawk-autosuggest-inner-container">
+                        <categories-container v-if="suggestions.Categories.length" :suggestions="suggestions"></categories-container>
+                        <popular-container v-if="suggestions.Popular.length" :suggestions="suggestions"></popular-container>
+                        <content-container v-if="suggestions.Content.length" :suggestions="suggestions"></content-container>
                     </div>
                 </template>
                 <template v-else>
