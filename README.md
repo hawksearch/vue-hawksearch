@@ -9,13 +9,13 @@ Please contact Hawksearch personnel for additional information on service settup
 Install the latest package version usnig npm
 
 ```sh
-$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#latest
+$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#master
 ```
 
 In some cases you may need a specific version
 
 ```sh
-$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#v0.9.26
+$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#v0.9.94
 ```
 
 ## Getting started

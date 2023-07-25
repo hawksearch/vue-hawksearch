@@ -1,0 +1,19 @@
+.hawk-facet-rail__facet-values-recent-search  {
+    display: flex;
+    flex-direction: column;
+	div {
+        cursor: pointer;
+    }
+    div:hover,
+    button:hover {
+        text-decoration: underline;
+        color: $orange1;
+    }
+    button {
+        cursor: pointer;
+        border: none;
+        background: none;
+        display: flex;
+        justify-content: flex-end;
+    }
+}

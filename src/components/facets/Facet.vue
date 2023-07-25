@@ -69,6 +69,7 @@ import Search from "./types/Search";
 import OpenRange from "./types/OpenRange";
 import Swatch from "./types/Swatch";
 import Slider from "./types/Slider";
+import RecentSearches from "./types/RecentSearches";
 
 export default {
   name: "facet",
@@ -85,6 +86,7 @@ export default {
     OpenRange,
     Swatch,
     Slider,
+    RecentSearches,
   },
   created: function () {
     this.isInitialLoad = true;
@@ -247,6 +249,10 @@ export default {
 
         case "openRange":
           return "open-range";
+          break;
+
+        case "recentsearches":
+          return "recent-searches";
           break;
 
         default:

@@ -44,7 +44,7 @@
             DashCircleSvg
         },
         mounted() {
-
+            this.isExpanded = this.isExpandable(this.itemData);
         },
         data() {
             return {
@@ -56,18 +56,18 @@
                 this.isExpanded = !this.isExpanded;
             },
             selectFacet: function (value) {
-                this.$parent.clearSelections(value);
+                const previouslySelected = value.Selected;
+                this.$parent.clearInlineSelections(value);
 
                 if (value.Negated) {
                     value.Selected = true;
                     value.Negated = false;
-                }
-                else {
+                } else if (!previouslySelected) {
                     value.Selected = !value.Selected;
                 }
 
                 this.applyFacets();
-                this.isExpanded = value.Selected;
+                this.isExpanded = true;
             },
             negateFacet: function (value) {
                 this.$parent.clearSelections(value);
@@ -79,8 +79,19 @@
             clearSelections: function (value) {
                 this.$parent.clearSelections(value);
             },
+            clearInlineSelections: function (value) {
+                this.$parent.clearInlineSelections(value);
+            },
             applyFacets: function () {
                 this.$root.dispatchToStore('applyFacets', this.facetData);
+            },
+            isExpandable: function (itemData) {
+                if (itemData.Selected) {
+                    return true;
+                } else if (itemData.Children && itemData.Children.length) {
+                    return itemData.Children.some(item => this.isExpandable(item));
+                }
+                return false;
             }
         },
         computed: {

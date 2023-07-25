@@ -1,0 +1,15 @@
+export const FacetType = {
+    Checkbox: "checkbox",
+    NestedCheckbox: "nestedcheckbox",
+    Link: "link",
+    Nestedlink: "nestedlinklist",
+    Slider: "slider",
+    Swatch: "swatch",
+    Rating: "rating",
+    Size: "size",
+    SearchWithin: "search",
+    RecentSearches: "recentsearches",
+    RelatedSearches: "related",
+    OpenRange: "openRange",
+    Distance: "distance",
+};
