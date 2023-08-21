@@ -519,6 +519,13 @@ class HawksearchVue {
                         newFacetValues.push(value);
                     }
                 }
+                const facetValues = facet.Values.map(value => value.Value.toLowerCase());
+                const swatchWithNoFacet = facet.SwatchData.filter(sd => !facetValues.includes(sd.Value.toLowerCase()));
+                swatchWithNoFacet.forEach(sd => {
+                    if (Boolean(sd.AssetName) || Boolean(sd.Color)) {
+                        newFacetValues.push(sd);
+                    }
+                });
                 facet.Values = newFacetValues;
             }
             else if (facet.Values && facet.Values.length && facet.Ranges && facet.Ranges.length) {

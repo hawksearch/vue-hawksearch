@@ -9,11 +9,13 @@
             </template>
         </template>
         <template v-else>
-            <result-image :imagePath="getField('image')"></result-image>
-
-            <div class="hawk-results__item-name">
-                <span>{{ getField('itemname') }}</span>
-            </div>
+            <a :href="getLink()">
+                <result-image :imagePath="getField('image')"></result-image>
+    
+                <div class="hawk-results__item-name">
+                    <span>{{ getField('itemname') }}</span>
+                </div>
+            </a>
         </template>
     </div>
 </template>
