@@ -11,6 +11,7 @@
     import { mapState } from 'vuex'
     import SearchSuggestions from "./SearchSuggestions";
     import CustomResultsLabel from "../results/tools/CustomResultsLabel";
+    import { getRecentSearch, setRecentSearch } from '../../CookieHandler';
 
     export default {
         name: 'search-box',
@@ -42,17 +43,24 @@
 
                 let searchBoxConfig = this.$root.config.searchBoxConfig;
                 let searchPage = this.searchPage || location.pathname;
-                
+
+                this.updateRecentSearch();
+
                 if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage != location.pathname)) {
                     HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options.ignoreRedirectRules);
                 }
                 else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = this.keyword;
-                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 }).then(() => {
+                    this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 })
+                        .then(() => {
                             var widget = this.$root;
                             HawksearchVue.applyTabSelection(widget);
-                    });
+                        });
                 }
+            },
+            updateRecentSearch: function () {
+                setRecentSearch(this.keyword);
+                this.$root.$store.commit("updateRecentSearch", getRecentSearch());
             },
             onKeyDown: function (e) {
                 if (e.key == 'Enter') {
