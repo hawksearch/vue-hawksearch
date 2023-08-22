@@ -9,13 +9,15 @@
             </template>
         </template>
         <template v-else>
-            <a :href="getLink()">
+            <a :href="getLink()" @click="onClick">
                 <result-image :imagePath="getField('image')"></result-image>
-    
-                <div class="hawk-results__item-name">
-                    <span>{{ getField('itemname') }}</span>
-                </div>
             </a>
+
+            <div class="hawk-results__item-name">
+                <a :href="getLink()" @click="onClick">
+                    <span>{{ getField('itemname') }}</span>
+                </a>
+            </div>
         </template>
     </div>
 </template>
@@ -128,6 +130,8 @@
                 }
             },
             onClick: function (e) {
+                e.preventDefault();
+
                 var link = this.getLink();
 
                 if (this.trackEvent) {
