@@ -79,7 +79,9 @@
         },
         methods: {
             onClick: function (e) {
-                e.stopPropagation();
+                if (e && e.stopPropagation) {
+                    e.stopPropagation();
+                }
             },
             onListingChange: function (type) {
                 this.listingType = type;
