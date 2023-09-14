@@ -9,12 +9,12 @@
             </template>
         </template>
         <template v-else>
-            <a :href="getLink()" @click="onClick">
+            <a :href="link" @click="onClick">
                 <result-image :imagePath="getField('image')"></result-image>
             </a>
 
             <div class="hawk-results__item-name">
-                <a :href="getLink()" @click="onClick">
+                <a :href="link" @click="onClick">
                     <span>{{ getField('itemname') }}</span>
                 </a>
             </div>
@@ -56,6 +56,14 @@
             ]),
             trackEvent: function () {
                 return this.$root.trackEvent;
+            },
+            link: function () {
+                const linkField = this.linkField || this.$root.config.resultItem.linkField;
+                const link = this.getField(linkField);
+
+                if (link) {
+                    return HawksearchVue.getAbsoluteUrl(link, this.$root.$store);
+                }
             }
         },
         methods: {
@@ -112,14 +120,6 @@
                     return truncated;
                 }
             },
-            getLink: function () {
-                var linkField = this.linkField || this.$root.config.resultItem.linkField;
-                var link = this.getField(linkField);
-
-                if (link) {
-                    return HawksearchVue.getAbsoluteUrl(link, this.$root.$store);
-                }
-            },
             getJsonData: function (fieldName) {
                 if (!this.getField(fieldName)) return;
 
@@ -132,7 +132,7 @@
             onClick: function (e) {
                 e.preventDefault();
 
-                var link = this.getLink();
+                const link = this.link;
 
                 if (this.trackEvent) {
                     this.trackEvent.track('click', {
