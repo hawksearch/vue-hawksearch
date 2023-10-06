@@ -1,24 +1,21 @@
 <template>
-    <div :class="getField('type') == 'Content' ? 'hawk-results__contentItem' : 'hawk-results__item'">
-        <template v-if="getField('type') == 'Content'">
-            <h4 class="hawk-results__hawk-contentTitle">
-                <a :href="absoluteUrl(getField(linkField))" @click="onClick">{{ getField('itemname') }}</a>
-            </h4>
-            <template v-if="getField('description_short')">
-                <div>{{ getField('description_short') }}</div>
+    <div :class="getField('type') == 'Content' ? 'hawk-results__contentItem' : 'hawk-results__item'" @click="onClick">
+        <a :href="link">
+            <template v-if="getField('type') == 'Content'">
+                <h4 class="hawk-results__hawk-contentTitle">
+                    {{ getField('itemname') }}
+                </h4>
+                <template v-if="getField('description_short')">
+                    <div>{{ getField('description_short') }}</div>
+                </template>
             </template>
-        </template>
-        <template v-else>
-            <a :href="link" @click="onClick">
+            <template v-else>
                 <result-image :imagePath="getField('image')"></result-image>
-            </a>
-
-            <div class="hawk-results__item-name">
-                <a :href="link" @click="onClick">
+                <div class="hawk-results__item-name">
                     <span>{{ getField('itemname') }}</span>
-                </a>
-            </div>
-        </template>
+                </div>
+            </template>
+        </a>
     </div>
 </template>
 
@@ -130,9 +127,9 @@
                 }
             },
             onClick: function (e) {
-                e.preventDefault();
-
                 const link = this.link;
+
+                console.log("this.trackEvent ==> ", this.trackEvent)
 
                 if (this.trackEvent) {
                     this.trackEvent.track('click', {
@@ -143,9 +140,9 @@
                     });
                 }
 
-                if (link && this.$root.config.resultItem.itemSelect) {
-                    location.assign(link);
-                }
+                // if (link && this.$root.config.resultItem.itemSelect) {
+                //     location.assign(link);
+                // }
             },
             absoluteUrl: function (url) {
                 var store = this.$root.$store;
