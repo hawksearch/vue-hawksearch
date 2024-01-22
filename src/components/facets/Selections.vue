@@ -6,7 +6,7 @@
                 <div class="hawk-selections__category-wrapper">
                     <span class="hawk-selections__category-name">{{ data.Label }}:</span>
                     <ul class="hawk-selections__item-list">
-                        <li v-for="item in data.Items" :key="item" class="hawk-selections__item">
+                        <li v-for="item in data.Items" :key="item.Value" class="hawk-selections__item">
                             <button @click="clearSelectionItem(field, item)" class="hawk-selections__item-remove">
                                 <x-circle-svg></x-circle-svg>
                             </button>
