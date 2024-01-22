@@ -12,7 +12,9 @@
         props: ['facetData', 'itemData'],
         components: { },
         mounted() { },
-        data() { },
+        data() {
+            return {};
+        },
         methods: {
             selectFacet: function (value) {
                 value.Selected = !value.Selected;
