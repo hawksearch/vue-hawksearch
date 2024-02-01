@@ -8,7 +8,7 @@
                     </template>
                 </span>
                 <span :class="itemData.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
-                    {{ itemData.Label }} ({{ itemData.Count }})
+                    {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>
             <button @click="negateFacet(itemData)" class="hawk-facet-rail__facet-btn-exclude">
@@ -92,6 +92,10 @@
                     return itemData.Children.some(item => this.isExpandable(item));
                 }
                 return false;
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {

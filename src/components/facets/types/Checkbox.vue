@@ -15,7 +15,7 @@
                         </span>
 
                         <span :class="value.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
-                            {{ value.Label }} ({{ value.Count }})
+                            {{ htmlEntityDecode(value.Label) }} ({{ value.Count }})
                         </span>
                     </button>
 
@@ -132,6 +132,10 @@
                 }
 
                 return styles;
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {
