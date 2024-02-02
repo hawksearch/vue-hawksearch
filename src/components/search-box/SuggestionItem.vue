@@ -3,7 +3,7 @@
         <div v-if="getThumb()">
             <img class="hawk-sqItemImage-thumb" :src="getThumb()" />
         </div>
-        <span class="p-name">{{ getTitle() }}</span>
+        <span class="p-name">{{ htmlEntityDecode(getTitle()) }}</span>
     </li>
 </template>
 
@@ -88,6 +88,10 @@
             },
             onClick: function () {
                 this.$emit('itemselected', this);
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {
