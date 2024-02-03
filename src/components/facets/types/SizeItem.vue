@@ -1,7 +1,7 @@
 <template>
 	<li :key="itemData.Value" :class="{'selected': itemData.Selected}">
         <button @click="selectFacet(itemData)" >
-			<div>{{itemData.Label}}</div>
+			<div>{{htmlEntityDecode(itemData.Label)}}</div>
 		</button>
 	</li>
 </template>
@@ -21,6 +21,10 @@
             },
             applyFacets: function () {
                 this.$root.dispatchToStore('applyFacets', this.facetData);
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: { }

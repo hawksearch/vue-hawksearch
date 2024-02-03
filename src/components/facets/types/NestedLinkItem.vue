@@ -3,7 +3,7 @@
         <div class="hawkFacet-group__inline">
             <button @click="selectFacet(itemData)" class="hawk-facet-rail__facet-btn">
                 <span :class="'hawk-facet-rail__facet-name' + (itemData.Negated ? ' line-through' : '') + (itemData.Selected ? ' checked' : '') ">
-                    {{ itemData.Label }} ({{ itemData.Count }})
+                    {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>
             <button v-if="itemData.Children && itemData.Children.length" :class="isExpanded ? 'hawk-collapseState hawk-linklist' : 'hawk-collapseState hawk-linklist collapsed'" aria-expanded="false" @click="toggleExpanded">
@@ -61,6 +61,10 @@
             },
             applyFacets: function () {
                 this.$root.dispatchToStore('applyFacets', this.facetData);
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {

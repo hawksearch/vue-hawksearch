@@ -2,7 +2,7 @@
     <div v-if="suggestions && suggestions.Categories && suggestions.Categories.length">
         <h3>{{ suggestions.CategoryHeading }}</h3>
         <div v-for="category in suggestions.Categories" :key="category.Value" class="autosuggest-menu__item">
-            <div v-html="category.Value"></div>
+            <div v-html="htmlEntityDecode(category.Value)"></div>
         </div>
     </div>
 </template>
@@ -19,7 +19,10 @@
             return {}
         },
         methods: {
-
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
+            }
         },
         computed: {
 

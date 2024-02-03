@@ -12,10 +12,10 @@
                             </button>
                             <span :class="itemClass(item)">
                                 <template v-if="getFacetType(field) == 'range'">
-                                    {{ rangeLabel(item.Label) }}
+                                    {{ htmlEntityDecode(rangeLabel(item.Label)) }}
                                 </template>
                                 <template v-else>
-                                    {{ item.Label }}
+                                    {{ htmlEntityDecode(item.Label) }}
                                 </template>
                             </span>
                         </li>
@@ -165,6 +165,10 @@
                         this.searchWithinLabel = searchWithin.Name;
                     }
                 }
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {
