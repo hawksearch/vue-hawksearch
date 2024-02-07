@@ -7,7 +7,7 @@
                         <checkmark-svg class="hawk-facet-rail__facet-checkbox-icon" />
                     </template>
                 </span>
-                <span :class="itemData.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
+                <span :class="itemData.Negated ? 'hawk-selections__item-name--negated' : 'hawk-facet-rail__facet-name' ">
                     {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>

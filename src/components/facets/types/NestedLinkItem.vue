@@ -2,7 +2,7 @@
     <li class="hawk-facet-rail__facet-list-item hawkFacet-group">
         <div class="hawkFacet-group__inline">
             <button @click="selectFacet(itemData)" class="hawk-facet-rail__facet-btn">
-                <span :class="'hawk-facet-rail__facet-name' + (itemData.Negated ? ' line-through' : '') + (itemData.Selected ? ' checked' : '') ">
+                <span :class="'hawk-facet-rail__facet-name' + (itemData.Negated ? ' hawk-selections__item-name--negated' : '') + (itemData.Selected ? ' checked' : '') ">
                     {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>
