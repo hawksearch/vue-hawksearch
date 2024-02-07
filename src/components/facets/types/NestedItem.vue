@@ -83,7 +83,6 @@
                 this.$parent.clearInlineSelections(value);
             },
             applyFacets: function () {
-                console.log("this.facetData ==> ", this.facetData);
                 this.$root.dispatchToStore('applyFacets', this.facetData);
             },
             isExpandable: function (itemData) {

@@ -1,8 +1,6 @@
 <template>
-	<li :key="itemData.Value" :class="{'selected': itemData.Selected}">
-        <button @click="selectFacet(itemData)" >
-			<div>{{htmlEntityDecode(itemData.Label)}}</div>
-		</button>
+	<li @click="selectFacet(itemData)" :key="itemData.Value" :class="{'selected': itemData.Selected}">
+		<div>{{htmlEntityDecode(itemData.Label)}}</div>
 	</li>
 </template>
 
@@ -10,13 +8,9 @@
     export default {
         name: 'size-item',
         props: ['facetData', 'itemData'],
-        components: { },
-        mounted() { },
-        data() { },
         methods: {
             selectFacet: function (value) {
                 value.Selected = !value.Selected;
-
                 this.applyFacets();
             },
             applyFacets: function () {
@@ -26,8 +20,7 @@
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
             }
-        },
-        computed: { }
+        }
     }
 </script>
 <style scoped lang="scss">

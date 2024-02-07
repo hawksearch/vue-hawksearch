@@ -19,11 +19,6 @@
             SizeItem
         },
         mounted() { },
-        data() {
-            return {
-
-            }
-        },
         methods: {
         },
         computed: {
