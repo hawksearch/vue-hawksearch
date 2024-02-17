@@ -3,7 +3,7 @@
         <div class="hawk__searchBox__searchInput">
             <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
-        <search-suggestions :field-focused="fieldFocused"></search-suggestions>
+        <search-suggestions :field-focused="fieldFocused" :keyword="keyword"></search-suggestions>
     </div>
 </template>
 
