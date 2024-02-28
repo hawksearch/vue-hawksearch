@@ -520,7 +520,7 @@ class HawksearchVue {
                     }
                 }
                 const facetValues = facet.Values.map(value => value.Value.toLowerCase());
-                const swatchWithNoFacet = facet.SwatchData.filter(sd => !facetValues.includes(sd.Value.toLowerCase()));
+                const swatchWithNoFacet = facet.Values.filter(sd => !facetValues.includes(sd.Value.toLowerCase()));
                 swatchWithNoFacet.forEach(sd => {
                     if (Boolean(sd.AssetName) || Boolean(sd.Color)) {
                         newFacetValues.push(sd);

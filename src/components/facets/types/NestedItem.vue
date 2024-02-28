@@ -7,8 +7,8 @@
                         <checkmark-svg class="hawk-facet-rail__facet-checkbox-icon" />
                     </template>
                 </span>
-                <span :class="itemData.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
-                    {{ itemData.Label }} ({{ itemData.Count }})
+                <span :class="itemData.Negated ? 'hawk-selections__item-name--negated' : 'hawk-facet-rail__facet-name' ">
+                    {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>
             <button @click="negateFacet(itemData)" class="hawk-facet-rail__facet-btn-exclude">
@@ -56,13 +56,13 @@
                 this.isExpanded = !this.isExpanded;
             },
             selectFacet: function (value) {
-                const previouslySelected = value.Selected;
                 this.$parent.clearInlineSelections(value);
 
                 if (value.Negated) {
                     value.Selected = true;
                     value.Negated = false;
-                } else if (!previouslySelected) {
+                }
+                else {
                     value.Selected = !value.Selected;
                 }
 
@@ -92,6 +92,10 @@
                     return itemData.Children.some(item => this.isExpandable(item));
                 }
                 return false;
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {

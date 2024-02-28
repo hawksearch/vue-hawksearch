@@ -5,7 +5,7 @@
                 <li v-for="value in facetData.Values" :key="value.Value" class="hawk-facet-rail__facet-list-item">
                     <button  @click="selectFacet(value)" class="hawk-facet-rail__facet-btn" >
                         <span class="hawk-facet-rail__facet-name">
-                            {{value.Label}} ({{value.Count}})
+                            {{htmlEntityDecode(value.Label)}} ({{value.Count}})
                         </span>
                     </button>
                 </li>
@@ -32,6 +32,10 @@
 
                     HawksearchVue.applyTabSelection(widget);
                 });
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {

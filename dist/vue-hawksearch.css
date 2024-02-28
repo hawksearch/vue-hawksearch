@@ -15,10 +15,10 @@
 
 
 
-.line-through[data-v-4a10a5b8] {
+.line-through[data-v-83fae7c0] {
   text-decoration: line-through;
 }
-.hawk-facet-rail__facet-values-checkbox__scrollable[data-v-4a10a5b8] {
+.hawk-facet-rail__facet-values-checkbox__scrollable[data-v-83fae7c0] {
   overflow-y: scroll;
   padding-right: 10px;
 }
@@ -2504,9 +2504,6 @@ ul.hawk-facet-rail__facet-list.colors {
     .hawk-facet-rail__facet-values-size ul li div {
       text-align: center;
       font-size: 14px; }
-    .hawk-facet-rail__facet-values-size ul li button {
-      border: none;
-      background: transparent; }
   .hawk-facet-rail__facet-values-size ul li.selected {
     border: 2px solid #f37624; }
 

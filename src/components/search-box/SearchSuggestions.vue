@@ -18,9 +18,9 @@
                     </div>
                     <div v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length" 
                         class="hawk-autosuggest-inner-container">
-                        <categories-container v-if="suggestions.Categories.length" :suggestions="suggestions"></categories-container>
-                        <popular-container v-if="suggestions.Popular.length" :suggestions="suggestions"></popular-container>
-                        <content-container v-if="suggestions.Content.length" :suggestions="suggestions"></content-container>
+                        <categories-container v-if="suggestions.Categories.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></categories-container>
+                        <popular-container v-if="suggestions.Popular.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></popular-container>
+                        <content-container v-if="suggestions.Content.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></content-container>
                     </div>
                 </template>
                 <template v-else>
@@ -40,7 +40,7 @@
 
     export default {
         name: 'search-suggestions',
-        props: ['fieldFocused'],
+        props: ['fieldFocused', 'keyword'],
         components: {
             SuggestionItem,
             CategoriesContainer,
@@ -50,17 +50,16 @@
         mounted() {
 
         },
-        data() {
-            return {}
-        },
+        data() {},
         methods: {
             onItemSeleted: function (item) {
+                console.log(this.trackEvent, item.Value, item.Url, this.$parent.keyword);
                 if (this.trackEvent && item.getTitle() && item.getLink() && this.$parent.keyword) {
                     this.trackEvent.track('autocompleteclick', {
                         keyword: this.$parent.keyword,
                         suggestType: this.trackEvent.SuggestType.TopProductMatches,
                         name: item.getTitle(),
-                        url: item.getLink(),
+                        url: item.getLink()
                     });
                 }
 

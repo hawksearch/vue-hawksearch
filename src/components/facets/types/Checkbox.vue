@@ -14,8 +14,8 @@
                             <img :src="getAssetUrl(value)" :alt="value.Label" />
                         </span>
 
-                        <span :class="value.Negated ? 'hawk-facet-rail__facet-name line-through' : 'hawk-facet-rail__facet-name' ">
-                            {{ value.Label }} ({{ value.Count }})
+                        <span :class="value.Negated ? 'hawk-selections__item-name--negated' : 'hawk-facet-rail__facet-name' ">
+                            {{ htmlEntityDecode(value.Label) }} ({{ value.Count }})
                         </span>
                     </button>
 
@@ -132,6 +132,10 @@
                 }
 
                 return styles;
+            },
+            htmlEntityDecode: function(value) {
+                var decoded = new DOMParser().parseFromString(value, "text/html");
+                return decoded.documentElement.textContent;
             }
         },
         computed: {
