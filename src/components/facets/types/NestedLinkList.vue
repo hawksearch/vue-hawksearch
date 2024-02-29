@@ -18,12 +18,6 @@
         components: {
             NestedLinkItem
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             clearSelections: function (exception) {
                 var clearValues = function (items) {

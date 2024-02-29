@@ -5,32 +5,17 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import Pager from './Pager';
     import ItemsPerPage from './ItemsPerPage';
 
     export default {
         name: 'pagination',
-        props: [],
         components: {
             Pager,
             ItemsPerPage
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
-        computed: {
-
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

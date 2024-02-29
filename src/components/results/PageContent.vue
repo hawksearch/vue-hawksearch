@@ -22,14 +22,6 @@
     export default {
         name: 'page-content',
         props: ['zone'],
-        components: {
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             getItemType: function (item) {
                 switch (item.ContentType) {
@@ -71,8 +63,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

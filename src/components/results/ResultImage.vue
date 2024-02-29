@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     export default {
@@ -14,22 +14,12 @@
                 default: null
             }
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
         computed: {
             imageUrl: function () {
                 return this.imagePath;
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

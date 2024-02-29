@@ -15,25 +15,10 @@
 
     export default {
         name: 'placeholder-item',
-        props: [],
         components: {
             PlaceholderImage
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
-        computed: {
-
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

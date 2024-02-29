@@ -5,27 +5,15 @@
 </template>
 
 <script>
-
     export default {
         name: 'placeholder-image',
         props: ['showSpinner'],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             getHeight: function () {
                 return Math.round(Math.random() * (175 - 125) + 125);
             }
-        },
-        computed: {
-
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

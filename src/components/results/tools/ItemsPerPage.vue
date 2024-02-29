@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     import CustomSelect from './CustomSelect'
@@ -18,13 +18,6 @@
         name: 'items-per-page',
         components: {
             CustomSelect
-        },
-        props: [],
-        mounted() {
-
-        },
-        data() {
-            return {}
         },
         methods: {
             onChange: function (e) {
@@ -49,8 +42,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

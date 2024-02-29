@@ -34,7 +34,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import CheckmarkSvg from '../../svg/CheckmarkSvg';
     import PlusCircleSvg from '../../svg/PlusCircleSvg';
     import DashCircleSvg from '../../svg/DashCircleSvg';
@@ -46,12 +46,6 @@
             CheckmarkSvg,
             PlusCircleSvg,
             DashCircleSvg
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
         },
         methods: {
             selectFacet: function (value) {
@@ -148,8 +142,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

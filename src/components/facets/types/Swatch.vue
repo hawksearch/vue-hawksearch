@@ -18,12 +18,6 @@
         components: {
             SwatchItem
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             clearSelections: function (exception) {
                 if (this.getCheckboxType() == 'single') {
@@ -55,8 +49,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

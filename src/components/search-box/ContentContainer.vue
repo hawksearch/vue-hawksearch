@@ -8,16 +8,9 @@
 </template>
 
 <script>
-
     export default {
         name: 'content-container',
         props: ['suggestions', 'keyword'],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             htmlEntityDecode: function(value) {
                 var decoded = new DOMParser().parseFromString(value, "text/html");
@@ -45,7 +38,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

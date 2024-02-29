@@ -17,16 +17,10 @@
     </li>
 </template>
 
-<script lang="js">
-
+<script>
     export default {
         name: 'nested-link-item',
         props: ['facetData', 'itemData'],
-        components: {
-        },
-        mounted() {
-
-        },
         data() {
             return {
                 isExpanded: false
@@ -66,8 +60,6 @@
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
             }
-        },
-        computed: {
         }
     }
 </script>
