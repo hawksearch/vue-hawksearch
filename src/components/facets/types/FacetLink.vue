@@ -14,16 +14,10 @@
     </div>
 </template>
 
-<script lang="js">
-
+<script>
     export default {
         name: 'facet-link',
         props: ['facetData'],
-        mounted() {
-        },
-        data() {
-            return {}
-        },
         methods: {
             selectFacet: function (value) {
                 value.Selected = !value.Selected;
@@ -37,13 +31,8 @@
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
             }
-        },
-        computed: {
-
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

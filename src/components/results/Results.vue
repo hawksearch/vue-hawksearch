@@ -49,7 +49,6 @@
 
     export default {
         name: 'results',
-        props: [],
         components: {
             SearchResultsLabel,
             Selections,
@@ -64,7 +63,6 @@
             Sorting,
             Pagination
         },
-
         mounted() {
             var widget = this.$root;
 
@@ -101,8 +99,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

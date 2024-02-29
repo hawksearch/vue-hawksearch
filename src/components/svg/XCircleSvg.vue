@@ -7,25 +7,10 @@
 </template>
 
 <script>
-
     export default {
         name: 'x-circle-svg',
-        props: ['iconClass'],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
-        computed: {
-
-        }
+        props: ['iconClass']
     }
-
-
 </script>
 
 <style scoped lang="scss">

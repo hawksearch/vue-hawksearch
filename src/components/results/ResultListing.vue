@@ -13,7 +13,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex'
     import ResultItem from './ResultItem'
     import PlaceholderItem from './PlaceholderItem'
@@ -27,15 +27,6 @@
             ResultItem,
             PlaceholderItem,
             Spinner
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
         },
         computed: {
             ...mapState([
@@ -52,7 +43,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

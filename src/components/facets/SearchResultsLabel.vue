@@ -6,21 +6,11 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     export default {
         name: 'search-results-label',
-        props: [],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
         computed: {
             ...mapState([
                 'searchOutput'
@@ -30,7 +20,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

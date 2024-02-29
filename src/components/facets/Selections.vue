@@ -40,10 +40,6 @@
 
     export default {
         name: 'selections',
-        props: [],
-        mounted() {
-
-        },
         data() {
             return {
                 selections: [],
@@ -207,8 +203,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

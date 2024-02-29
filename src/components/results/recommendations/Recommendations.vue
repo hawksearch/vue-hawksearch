@@ -120,8 +120,6 @@
                 isItemClickable: true
             }
         },
-        created:function() {
-        },
         methods: {
             onMouseUp: function (event) {
                 this.isMouseDown = false;
@@ -195,9 +193,6 @@
                 this.slideOffset = -((index - 1) * (this.widgetItem.carouselData.scrollNumber * this.itemWidth));
             }
         },
-        computed: {
-
-        },
         watch: {
             widgetItem: function (item) {
                 var height = 0;
@@ -224,7 +219,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

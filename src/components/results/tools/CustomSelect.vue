@@ -11,7 +11,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     export default {
@@ -37,8 +37,6 @@
                 open: false,
                 timeout: null,
             };
-        },
-        mounted() {
         },
         beforeDestroy() {
             clearTimeout(this.timeout);

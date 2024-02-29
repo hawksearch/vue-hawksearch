@@ -9,7 +9,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
     import { addToRangeFacets } from '../../../QueryString';
 
@@ -102,10 +102,7 @@
                 }
             }
         }
-
     }
-
-
 </script>
 
 <style scoped lang="scss">

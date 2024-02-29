@@ -18,9 +18,6 @@
         components: {
             SizeItem
         },
-        mounted() { },
-        methods: {
-        },
         computed: {
             items: function () {
                 return this.facetData.Values;
