@@ -10,26 +10,11 @@
     </svg>
 </template>
 
-<script lang="js">
-
+<script>
     export default {
         name: 'dash-circle-svg',
-        props: ['iconClass'],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
-        methods: {
-
-        },
-        computed: {
-
-        }
+        props: ['iconClass']
     }
-
-
 </script>
 
 <style scoped lang="scss">

@@ -27,15 +27,6 @@
 
   export default  {
     name: 'placeholder-facet',
-    props: [],
-    mounted () {
-
-    },
-    data () {
-      return {
-
-      }
-    },
     methods: {
         getWidth: function () {
             return Math.round(Math.random() * (250 - 125) + 125);
@@ -43,9 +34,6 @@
         getCount: function () {
             return Math.round(Math.random() * (8 - 1) + 1);
         }
-    },
-    computed: {
-
     }
 }
 

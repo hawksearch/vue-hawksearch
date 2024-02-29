@@ -4,15 +4,11 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     export default {
         name: 'load-more',
-        props: [],
-        mounted() {
-
-        },
         data() {
             return {
                 hasError: false
@@ -45,8 +41,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

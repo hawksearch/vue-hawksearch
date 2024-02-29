@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     export default {
         name: 'AddToCart',
         props: {
@@ -15,12 +15,6 @@
             addArgs: {
                 default: {}
             }
-        },
-        mounted() {
-
-        },
-        data() {
-            return {}
         },
         methods: {
             addToCart: function (e) {
@@ -35,7 +29,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

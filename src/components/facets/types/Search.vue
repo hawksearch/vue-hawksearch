@@ -13,7 +13,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
 
     export default {
@@ -22,9 +22,6 @@
             mode: {
                 default: 'searchWithin'
             }
-        },
-        mounted() {
-
         },
         data() {
             return {
@@ -112,8 +109,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

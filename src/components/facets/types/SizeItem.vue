@@ -4,7 +4,7 @@
 	</li>
 </template>
 
-<script lang="js">
+<script>
     export default {
         name: 'size-item',
         props: ['facetData', 'itemData'],

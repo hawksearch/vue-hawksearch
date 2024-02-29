@@ -6,25 +6,17 @@
     </div>
 </template>
 
-<script lang="js">
-    import { mapState } from 'vuex';
-
+<script>
+    import { mapState } from 'vuex'
     export default {
         name: 'listing-type',
         props: ['listingTypes'],
-        mounted() {
-        },
-        data() {
-          return {}
-        },
         methods: {
             changeToType: function (type) {
                 this.$emit('typeChanged', type);
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

@@ -30,7 +30,7 @@
     </li>
 </template>
 
-<script lang="js">
+<script>
     import CheckmarkSvg from '../../svg/CheckmarkSvg';
     import PlusCircleSvg from '../../svg/PlusCircleSvg';
     import DashCircleSvg from '../../svg/DashCircleSvg';
@@ -97,8 +97,6 @@
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
             }
-        },
-        computed: {
         }
     }
 </script>

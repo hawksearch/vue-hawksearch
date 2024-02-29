@@ -24,12 +24,6 @@
                 default: null
             }
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             getField: function (fieldName) {
                 var storeState = this.$root.$store.state;
@@ -93,9 +87,6 @@
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
             }
-        },
-        computed: {
-
         }
     }
 </script>

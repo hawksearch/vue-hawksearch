@@ -271,9 +271,9 @@ export default {
     },
     truncateVisible: function () {
       return this.shouldTruncate && !this.filter;
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

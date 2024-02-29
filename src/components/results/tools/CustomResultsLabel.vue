@@ -17,12 +17,6 @@
     export default {
         name: 'custom-results-label',
         props: ['resultsField'],
-        data() {
-            return {};
-        },
-        methods: {
-
-        },
         computed: {
             ...mapGetters([
                 'getResponseField'
