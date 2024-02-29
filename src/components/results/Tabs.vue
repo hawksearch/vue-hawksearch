@@ -13,7 +13,6 @@
 
     export default {
         name: 'tabs',
-        props: [],
         mounted() {
             if (this.searchOutput) {
                 this.updateTabs(this.facet);
@@ -76,7 +75,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

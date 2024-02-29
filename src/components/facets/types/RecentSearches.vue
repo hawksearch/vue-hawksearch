@@ -31,9 +31,6 @@ export default {
     mounted() {
         this.updateRecentSearch();
     },
-    data() {
-        return {};
-    },
     methods: {
         updateRecentSearch: function () {
             this.$root.$store.commit("updateRecentSearch", getRecentSearch());
@@ -79,8 +76,8 @@ export default {
     },
     computed: {
         ...mapState(["recentSearch"]),
-    },
-};
+    }
+}
 </script>
 
 <style scoped lang="scss">

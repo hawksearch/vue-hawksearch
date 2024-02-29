@@ -8,16 +8,9 @@
 </template>
 
 <script>
-
 export default {
     name: 'popular-container',
     props: ['suggestions', 'keyword'],
-    mounted() {
-
-    },
-    data() {
-        return {}
-    },
     methods: {
         htmlEntityDecode: function (value) {
             var decoded = new DOMParser().parseFromString(value, "text/html");
@@ -46,7 +39,6 @@ export default {
         }
     }
 }
-
 </script>
 
 <style scoped lang="scss"></style>

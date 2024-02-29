@@ -12,17 +12,10 @@
     export default {
         name: 'featured-items',
         props: ['banner'],
-        mounted() {
-        },
-        data() {
-            return {}
-        },
         components: {
             FeaturedItem
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

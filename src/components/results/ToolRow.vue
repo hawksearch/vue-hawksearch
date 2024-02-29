@@ -10,7 +10,7 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import Sorting from './tools/Sorting'
     import Pagination from './tools/Pagination'
     import { mapState } from 'vuex';

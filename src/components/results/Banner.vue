@@ -24,12 +24,6 @@
                 default: 'Top'
             }
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             clickHandler: function (banner) {
                 if (this.trackEvent) {
@@ -86,7 +80,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

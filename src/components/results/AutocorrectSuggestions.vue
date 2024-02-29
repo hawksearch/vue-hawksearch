@@ -10,18 +10,11 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex'
 
     export default {
         name: 'autocorrect-suggestions',
-        props: [],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             selectSuggestion: function(selectedSuggestion) {
                 this.$root.$emit('selectAutocorrectSuggestion', selectedSuggestion)
@@ -39,7 +32,6 @@
             }
         }
     }
-
 </script>
 
 <style scoped lang="scss">

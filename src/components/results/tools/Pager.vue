@@ -25,14 +25,13 @@
     </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
     import LeftChevronSvg from '../../svg/LeftChevronSvg'
     import RightChevronSvg from '../../svg/RightChevronSvg'
 
     export default {
         name: 'pager',
-        props: [],
         components: {
             LeftChevronSvg,
             RightChevronSvg
@@ -126,8 +125,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

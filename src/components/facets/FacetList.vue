@@ -35,14 +35,13 @@
   </div>
 </template>
 
-<script lang="js">
+<script>
     import { mapState } from 'vuex';
     import Facet from './Facet';
     import PlaceholderFacet from './PlaceholderFacet';
 
     export default {
         name: 'facet-list',
-        props: [],
         components: {
             Facet,
             PlaceholderFacet

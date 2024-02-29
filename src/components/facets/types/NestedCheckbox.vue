@@ -18,12 +18,6 @@
         components: {
             NestedItem
         },
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             clearSelections: function (exception) {
                 var clearValues = function (items) {
@@ -80,8 +74,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

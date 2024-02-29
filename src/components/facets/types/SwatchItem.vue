@@ -17,16 +17,9 @@
 </template>
 
 <script>
-
     export default {
         name: 'swatch-item',
         props: ['facetData', 'item'],
-        mounted() {
-
-        },
-        data() {
-            return {}
-        },
         methods: {
             selectFacet: function () {
                 this.$parent.clearSelections(this.item);
@@ -64,8 +57,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">

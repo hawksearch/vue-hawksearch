@@ -47,10 +47,6 @@
             PopularContainer,
             ContentContainer
         },
-        mounted() {
-
-        },
-        data() {},
         methods: {
             onItemSeleted: function (item) {
                 console.log(this.trackEvent, item.Value, item.Url, this.$parent.keyword);
@@ -83,8 +79,6 @@
             }
         }
     }
-
-
 </script>
 
 <style scoped lang="scss">
