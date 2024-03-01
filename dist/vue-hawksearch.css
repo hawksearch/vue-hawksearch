@@ -15,10 +15,10 @@
 
 
 
-.line-through[data-v-83fae7c0] {
+.line-through[data-v-319d3e01] {
   text-decoration: line-through;
 }
-.hawk-facet-rail__facet-values-checkbox__scrollable[data-v-83fae7c0] {
+.hawk-facet-rail__facet-values-checkbox__scrollable[data-v-319d3e01] {
   overflow-y: scroll;
   padding-right: 10px;
 }
@@ -33,7 +33,7 @@
 
 
 
-.slider-numeric[data-v-6bc34cf1] {
+.slider-numeric[data-v-1dae5132] {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -45,12 +45,12 @@
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
-.slider[data-v-6bc34cf1] {
+.slider[data-v-1dae5132] {
   position: relative;
   overflow: visible;
   margin: 0 10px;
 }
-.slider-background[data-v-6bc34cf1] {
+.slider-background[data-v-1dae5132] {
   height: 15px;
   top: -2px;
   left: -2px;
@@ -60,7 +60,7 @@
   border: 1px solid #d8d8d8;
   position: relative;
 }
-.slider-wrapper[data-v-6bc34cf1] {
+.slider-wrapper[data-v-1dae5132] {
   height: 15px;
   top: -2px;
   left: -2px;
@@ -68,7 +68,7 @@
   width: 100%;
   position: absolute;
 }
-.slider-button[data-v-6bc34cf1] {
+.slider-button[data-v-1dae5132] {
   margin-left: -12px;
   top: -5px;
   width: 24px;
@@ -83,7 +83,7 @@
   position: absolute;
   cursor: pointer;
 }
-.slider-button[data-v-6bc34cf1]:before {
+.slider-button[data-v-1dae5132]:before {
   top: 7px;
   height: 10px;
   width: 1px;
@@ -93,7 +93,7 @@
   position: absolute;
   background-color: #dadfe8;
 }
-.slider-button[data-v-6bc34cf1]:after {
+.slider-button[data-v-1dae5132]:after {
   top: 7px;
   height: 10px;
   width: 1px;
@@ -103,13 +103,13 @@
   position: absolute;
   background-color: #dadfe8;
 }
-.slider-progressbar[data-v-6bc34cf1] {
+.slider-progressbar[data-v-1dae5132] {
   height: 13px;
   top: 0;
   background-color: #3f4044;
   position: absolute;
 }
-.dollar[data-v-6bc34cf1] {
+.dollar[data-v-1dae5132] {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -122,7 +122,7 @@
 
 
 
-.custom-component-select[data-v-b581a9f6] {
+.custom-component-select[data-v-d713fefa] {
   position: relative;
   width: 100%;
   text-align: left;
@@ -130,7 +130,7 @@
   height: 32px;
   line-height: 32px;
 }
-.custom-component-select .selected[data-v-b581a9f6] {
+.custom-component-select .selected[data-v-d713fefa] {
   border-radius: 6px;
   border: 1px solid #ccc;
   padding-left: 1em;
@@ -140,11 +140,11 @@
       -ms-user-select: none;
           user-select: none;
 }
-.custom-component-select .selected.open[data-v-b581a9f6] {
+.custom-component-select .selected.open[data-v-d713fefa] {
   border: 1px solid #ccc;
   border-radius: 6px 6px 0px 0px;
 }
-.custom-component-select .selected[data-v-b581a9f6]:after {
+.custom-component-select .selected[data-v-d713fefa]:after {
   position: absolute;
   content: "";
   top: 16px;
@@ -154,7 +154,7 @@
   border: 5px solid transparent;
   border-color: black transparent transparent transparent;
 }
-.custom-component-select .items[data-v-b581a9f6] {
+.custom-component-select .items[data-v-d713fefa] {
   border-radius: 0px 0px 6px 6px;
   overflow: hidden;
   border-right: 1px solid #ccc;
@@ -166,7 +166,7 @@
   right: 0;
   z-index: 1;
 }
-.custom-component-select .items div[data-v-b581a9f6] {
+.custom-component-select .items div[data-v-d713fefa] {
   padding-left: 1em;
   cursor: pointer;
   -webkit-user-select: none;
@@ -174,23 +174,23 @@
       -ms-user-select: none;
           user-select: none;
 }
-.custom-component-select .items div[data-v-b581a9f6]:hover {
+.custom-component-select .items div[data-v-d713fefa]:hover {
   color: white;
   background-color: #007bff;
 }
-.selectHide[data-v-b581a9f6] {
+.selectHide[data-v-d713fefa] {
   display: none;
 }
-.custom-select-wrapper[data-v-bd43ba0c] {
+.custom-select-wrapper[data-v-011267eb] {
   width: 130px;
 }
 
 
-.break[data-v-07bc8a8c] {
+.break[data-v-3cda6851] {
   width: 6px;
   display: inline-block;
 }
-.custom-select-wrapper[data-v-3fa4684d] {
+.custom-select-wrapper[data-v-3f6edde2] {
   width: 180px;
 }
 
@@ -211,7 +211,7 @@
 
 
 
-.recommendations-container[data-v-2e3c10f4]:hover {
+.recommendations-container[data-v-9c0986c6]:hover {
   cursor: pointer;
 }
 
