@@ -14,7 +14,7 @@
         <template v-else-if="results && results.length == 0">
             <span>{{ $t('No Results') }}</span>
         </template>
-        <template v-else-if="!waitingForInitialSearch && !infiniteScroll">
+        <template v-else-if="!waitingForInitialSearch">
             <tabs></tabs>
 
             <div class="hawk-results__top-tool-row">
@@ -27,11 +27,7 @@
                 <tool-row />
             </div>
         </template>
-        <template v-else-if="!waitingForInitialSearch && infiniteScroll">
-            <tabs></tabs>
-            <result-listing />
-            <load-more />
-        </template>
+
     </div>
 </template>
 
@@ -50,7 +46,6 @@
     import ListingType from './tools/ListingType'
     import Sorting from './tools/Sorting'
     import Pagination from './tools/Pagination'
-    import LoadMore from './tools/LoadMore.vue';
 
     export default {
         name: 'results',
@@ -66,8 +61,7 @@
             AutocorrectSuggestions,
             ListingType,
             Sorting,
-            Pagination,
-            LoadMore
+            Pagination
         },
         mounted() {
             var widget = this.$root;
@@ -77,10 +71,8 @@
             }
         },
         data() {
-            var widget = this.$root;
             return {
-                listingType: 'grid',
-                infiniteScroll: widget.config.searchConfig.infiniteScroll
+                listingType: 'grid'
             }
         },
         methods: {

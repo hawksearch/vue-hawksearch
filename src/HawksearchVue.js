@@ -53,8 +53,7 @@ class HawksearchVue {
         searchConfig: {
             initialSearch: true,
             redirectRules: true,
-            scrollUpOnRefresh: true,
-            infiniteScroll: false
+            scrollUpOnRefresh: true
         },
         resultItem: {
             titleField: 'itemname',
@@ -237,7 +236,7 @@ class HawksearchVue {
                                     resolve();
                                 });
                             }
-
+                            
                             var trackingActions = [
                                 'fetchResults',
                                 'applyFacets',
@@ -306,8 +305,8 @@ class HawksearchVue {
             this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
-
-        if (store.state.isFirstInitialSearch) {
+        
+        if(store.state.isFirstInitialSearch){
             store.commit('updateInitialSearchUrl', location.search);
             store.commit('updateIsFirstInitialSearch', false);
         }
@@ -516,7 +515,7 @@ class HawksearchVue {
                     let value = facet.Values[i];
                     let swatchData = facet.SwatchData.find(sd => sd.Value.toLowerCase() == value.Value.toLowerCase());
                     value = Object.assign({}, swatchData, value);
-                    if (Boolean(value.AssetName) || Boolean(value.Color)) {
+                    if(Boolean(value.AssetName) || Boolean(value.Color)) {
                         newFacetValues.push(value);
                     }
                 }
@@ -809,7 +808,7 @@ class HawksearchVue {
     static applyTabSelection(widget) {
         var store = this.getWidgetStore(widget);
         var data = store.state.searchOutput;
-
+        
         if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
             var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
 
@@ -897,14 +896,14 @@ class HawksearchVue {
         return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    static trackPageLoad() {
+    static trackPageLoad(){
         var widgets = Object.values(HawksearchVue.widgetInstances);
 
-        if (widgets.length) {
+        if(widgets.length){
             var widget = widgets[0];
 
             if (widget && widget.trackEvent) {
-                var additionalParams = HawksearchVue.getWidgetStore(widget).state.config.additionalParameters;
+                var additionalParams =  HawksearchVue.getWidgetStore(widget).state.config.additionalParameters;
                 var additionalParamsCustomUrl = additionalParams.CustomUrl;
 
                 widget.trackEvent.track('pageload', { pageType: (additionalParams && additionalParamsCustomUrl) ? 'landing' : 'custom' });
