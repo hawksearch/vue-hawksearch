@@ -1,11 +1,13 @@
 {
   "name": "@hawksearch/vue",
-  "version": "0.9.104",
+  "version": "0.9.105",
   "description": "Vue.js SDK for Hawksearch",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
     "build": "cross-env BUILD_ENV=esm rollup -c",
-    "dev": "rollup -c --watch"
+    "dev": "rollup -c --watch",
+    "gv": "genversion src/version.js --esm",
+    "release": "npm run gv && npm run build"
   },
   "repository": {
     "type": "git",
@@ -46,6 +48,7 @@
     "browserslist": "^4.16.3",
     "core-js": "^2.6.11",
     "cross-env": "^5.2.1",
+    "genversion": "^3.2.0",
     "history": "^5.0.0",
     "node-sass": "^5.0.0",
     "rollup": "^2.7.2",
