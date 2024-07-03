@@ -737,12 +737,6 @@ class HawksearchVue {
     }
 
     static loadPolyfills() {
-        if (this.isIE()) {
-            var polyfillElement = document.createElement('script');
-            polyfillElement.setAttribute('src', 'https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch');
-            document.head.appendChild(polyfillElement);
-        }
-
         if (!String.prototype.replaceAll) {
             String.prototype.replaceAll = function (str, newStr) {
 
