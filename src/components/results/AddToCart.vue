@@ -13,7 +13,8 @@
                 type: Function
             },
             addArgs: {
-                default: {}
+                default: () => ({}),
+                type: Object
             }
         },
         methods: {
