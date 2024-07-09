@@ -736,25 +736,6 @@ class HawksearchVue {
         return ((old_ie > -1) || (new_ie > -1))
     }
 
-    static loadPolyfills() {
-        if (this.isIE()) {
-            var polyfillElement = document.createElement('script');
-            polyfillElement.setAttribute('src', 'https://cdn.polyfill.io/v3/polyfill.min.js?features=fetch');
-            document.head.appendChild(polyfillElement);
-        }
-
-        if (!String.prototype.replaceAll) {
-            String.prototype.replaceAll = function (str, newStr) {
-
-                if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
-                    return this.replace(str, newStr);
-                }
-
-                return this.replace(new RegExp(str, 'g'), newStr);
-            };
-        }
-    }
-
     static handleAdditionalParameters(widget) {
         var store = this.getWidgetStore(widget);
         var urlParams = new URLSearchParams(location.search);
