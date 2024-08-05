@@ -53,11 +53,22 @@
 		z-index: 1;
 	}
 
-	&:hover,
-	&:active {
+	@media (hover: hover) {
+		&:hover {
+			&:after {
+				transform: translateY(-50%) translateX(-50%) scale(1);
+				background-color: rgba(0, 112, 65, 0.2)!important;
+				border: none!important;
+				box-shadow: none!important;
+				opacity: 1;
+			}
+		}
+	}
+
+	&.active {
 		&:after {
 			transform: translateY(-50%) translateX(-50%) scale(1);
-			background-color: rgba(0, 112, 65, 0.2)!important;;
+			background-color: rgba(0, 112, 65, 0.2)!important;
 			border: none!important;
 			box-shadow: none!important;
 			opacity: 1;

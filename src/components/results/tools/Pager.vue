@@ -53,14 +53,29 @@
             }
         },
         methods: {
-            goToPreviousPage: function () {
+            goToPreviousPage: function (event) {
                 if (this.page > 1) {
                     this.goToPage(parseInt(this.page, 10) - 1);
+                    this.blurEventTarget(event);
                 }
             },
-            goToNextPage: function () {
+            goToNextPage: function (event) {
                 if (this.page < this.totalPages) {
                     this.goToPage(parseInt(this.page, 10) + 1);
+                    this.blurEventTarget(event);
+                }
+            },
+            blurEventTarget: function (event) {
+                if (event && event.target) {
+                    const closestPaginationItem = event.target.closest('.hawk-pagination__item');
+                    if (closestPaginationItem) {
+                        closestPaginationItem.blur();
+                        closestPaginationItem.classList.add("active");
+
+                        setTimeout(() => {
+                            closestPaginationItem.classList.remove("active");
+                        }, 500);
+                    }
                 }
             },
             goToPreviousPageLink: function () {
@@ -88,6 +103,7 @@
             },
             onChange: function (e) {
                 this.goToPage(parseInt(e.target.value, 10));
+                this.blurEventTarget(e);
             },
             onInput: function (e) {
                 let wantedPageNo = parseInt(e.currentTarget.value, 10);
