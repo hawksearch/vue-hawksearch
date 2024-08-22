@@ -3,8 +3,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import vuePlugin from 'rollup-plugin-vue';
 import scss from 'rollup-plugin-scss'
-import autoprefixer from 'autoprefixer'
-import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser';
 
 const extensions = ['.mjs', '.web.js', '.js', '.json', '.vue'];
