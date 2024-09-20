@@ -23,6 +23,14 @@
                         <content-container v-if="suggestions.Content.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></content-container>
                     </div>
                 </template>
+                <template v-if="hasSuggestions">
+                    <div class="hawk-autocorrect-suggestion-container" v-memo="[suggestions.DymContentSearch]">
+                        <h3 v-once>{{ suggestions.DYMContentHeading }}</h3>
+                        <ul class="hawk-autocorrect-suggestion">
+                            <dym-content-item v-for="item in suggestions.DymContentSearch" :key="item.Url" :item="item" :keyword="keyword" :track-event="trackEvent"/>
+                        </ul>
+                    </div>
+                </template>
                 <template v-else>
                     <div class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</div>
                 </template>
@@ -37,6 +45,7 @@
     import CategoriesContainer from './CategoriesContainer';
     import PopularContainer from './PopularContainer';
     import ContentContainer from './ContentContainer';
+    import DymContentItem from './DymSuggestions';
 
     export default {
         name: 'search-suggestions',
@@ -45,7 +54,8 @@
             SuggestionItem,
             CategoriesContainer,
             PopularContainer,
-            ContentContainer
+            ContentContainer,
+            DymContentItem
         },
         methods: {
             onItemSeleted: function (item) {
@@ -74,6 +84,9 @@
                 'suggestions',
                 'loadingSuggestions'
             ]),
+            hasSuggestions() {
+                return this.suggestions.DymContentSearch && this.suggestions.DymContentSearch.length > 0;
+            },
             trackEvent: function () {
                 return this.$root.trackEvent;
             }
