@@ -9,7 +9,6 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-
 import SearchSuggestions from "./SearchSuggestions.vue";
 import CustomResultsLabel from "../results/tools/CustomResultsLabel.vue";
 
