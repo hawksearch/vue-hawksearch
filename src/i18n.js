@@ -1,27 +1,27 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
+import lodash from 'lodash';
 
-Vue.use(VueI18n);
-
-const messages = {
+// Базовые переводы
+const defaultMessages = {
     en: {
-        "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
-    }
+        response_error_generic:
+            'An error occurred while searching for your results. Please contact the site administrator.',
+    },
 };
 
-// Create VueI18n instance with options
-const i18n = new VueI18n({
-    locale: 'en', // set locale
-    messages, // set locale messages
-})
+// Создание базового i18n
+const i18n = createI18n({
+    locale: 'en',
+    messages: defaultMessages,
+});
 
-export const getI18n = (i18n = {}) => {
-    const locale = i18n.locale || 'en';
-    const messages = lodash.merge(messages, (i18n.messages || {}));
-    return new VueI18n({
-        locale, // set locale
-        messages, // set locale messages
-    })
-}
+export const getI18n = (customI18n = {}) => {
+    const locale = customI18n.locale || 'en';
+    const messages = lodash.merge({}, defaultMessages, customI18n.messages || {});
+    return createI18n({
+        locale,
+        messages,
+    });
+};
 
 export default i18n;

@@ -1,3 +1,6 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 .recommendations-title {
     text-align: center;
 }
@@ -22,11 +25,8 @@
     margin: 0 0 2em;
     width: 100%;
 
-    @include md {
+    @include mixins.md {
         max-width: 300px;
-    }
-
-    @include lg {
     }
 }
 

@@ -1,3 +1,6 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 .icon {
     display: inline-block;
     width: 1.5em;
@@ -15,28 +18,31 @@
     top: -5px;
 }
 
+/* Primary Icon */
 .icon-primary {
-    fill: $primary;
-    color: $primary;
+    fill: theme.$primary;  // Используем переменную theme.$primary
+    color: theme.$primary;  // Используем переменную theme.$primary
 
     path {
-        fill: $primary;
-        color: $primary;
+        fill: theme.$primary;  // Используем переменную theme.$primary
+        color: theme.$primary;  // Используем переменную theme.$primary
     }
 }
 
+/* Disabled Icon */
 .icon-disabled {
     pointer-events: none;
 
     path {
-        fill: #b9bbbd !important;
+        fill: theme.$disabled;  // Используем переменную theme.$disabled для цвета
     }
 }
 
+/* Listing Item Status Icon */
 .listing-item-status-icon {
     width: 30px;
 
-    @include xlg {
+    @include mixins.xlg {
         width: 15px;
     }
 }

@@ -1,41 +1,30 @@
-/*
-* Utils
-*
-*/
-@import 'utils/theme';
-@import 'utils/media';
-@import 'utils/mixins';
+// General
+@use 'ap01' as base;
 
-/*
-* General
-*
-*/
-@import 'general/elements';
+@use 'general/elements' as elements;
 
-/*
-* Components
-*
-*/
-@import 'components/accessibility';
-@import 'components/hawk';
-@import 'components/hawk-button';
-@import 'components/icon';
-@import 'components/dropdown';
-@import 'components/autosuggest-menu';
-@import 'components/hawk-facet-rail';
-@import 'components/hawk-tools';
-@import 'components/hawk-results';
-@import 'components/hawk-selections';
-@import 'components/hawk-tool-row';
-@import 'components/hawk-sorting';
-@import 'components/hawk-pagination';
-@import 'components/hawk-slider';
-@import 'components/hawk-swatch';
-@import 'components/hawk-open-range';
-@import 'components/hawk-modal';
-@import 'components/hawk-placeholders';
-@import 'components/hawk-recommendations';
-@import 'components/hawk-autocorrect-suggestion';
-@import 'components/compareItems';
-@import 'components/hawk-size-item';
-@import 'components/hawk-recent-search';
+// Components
+
+@use 'components/accessibility' as accessibility;
+@use 'components/hawk' as hawk;
+@use 'components/hawk-button' as hawkButton;
+@use 'components/icon' as icon;
+@use 'components/dropdown' as dropdown;
+@use 'components/autosuggest-menu' as autosuggestMenu;
+@use 'components/hawk-facet-rail' as facetRail;
+@use 'components/hawk-tools' as tools;
+@use 'components/hawk-results' as results;
+@use 'components/hawk-selections' as selections;
+@use 'components/hawk-tool-row' as toolRow;
+@use 'components/hawk-sorting' as sorting;
+@use 'components/hawk-pagination' as pagination;
+@use 'components/hawk-slider' as slider;
+@use 'components/hawk-swatch' as swatch;
+@use 'components/hawk-open-range' as openRange;
+@use 'components/hawk-modal' as modal;
+@use 'components/hawk-placeholders' as placeholders;
+@use 'components/hawk-recommendations' as recommendations;
+@use 'components/hawk-autocorrect-suggestion' as autocorrectSuggestion;
+@use 'components/compareItems' as compareItems;
+@use 'components/hawk-size-item' as sizeItem;
+@use 'components/hawk-recent-search' as recentSearch;

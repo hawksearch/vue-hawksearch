@@ -1,3 +1,5 @@
+@use '../utils/theme' as theme;
+
 .hawk-autosuggest-menu {
 	position: relative;
 	z-index: 110;
@@ -24,7 +26,7 @@
 
 .hawk-autosuggest-menu__item {
 	padding-left: 10px;
-	background-color: $autosuggest-item-bg;
+	background-color: theme.$autosuggest-item-bg;
 	line-height: 24px;
 	font-size: 16px;
 	cursor: pointer;
@@ -32,7 +34,7 @@
 	&:hover,
 	&:focus,
 	&--highlighted {
-		background-color: $autosuggest-item-hover-bg;
+		background-color: theme.$autosuggest-item-hover-bg;
 		color: #fff;
 	}
 }
@@ -43,7 +45,7 @@
 }
 
 .hawk-autosuggest-menu__text--deleted {
-	color: $red;
+	color: theme.$red;
 
 	.autosuggest-menu__item:hover &,
 	.autosuggest-menu__item:focus & {
@@ -52,7 +54,7 @@
 }
 
 .hawk-autosuggest-menu__text--archived {
-	color: $orange;
+	color: theme.$orange;
 
 	.hawk-autosuggest-menu__item:hover &,
 	.hawk-autosuggest-menu__item:focus & {

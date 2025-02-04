@@ -1,4 +1,6 @@
-@mixin fauxActiveUnderline($color) {
+@use 'theme' as theme;
+
+@mixin fauxActiveUnderline($color: theme.$primary-color) {
 	background-image: linear-gradient(to bottom, $color, $color);
 	background-size: 0 2px;
 	background-position: 50% 100%;
@@ -12,7 +14,7 @@
 	}
 }
 
-@mixin focusBorder($color: $cyan) {
+@mixin focusBorder($color: theme.$cyan) {
 	&:focus {
 		box-shadow: 0 0 0 3px $color;
 	}
@@ -20,8 +22,8 @@
 
 @mixin focusOutline() {
 	&:focus {
-		box-shadow: 0 0 0 0.2rem rgba(230, 230, 230, 0.5);
-		border-radius: 4px !important;
+		box-shadow: 0 0 0 0.2rem theme.$focus-box-shadow-color;
+		border-radius: theme.$focus-outline-radius !important;
 	}
 
 	&:hover {
@@ -31,20 +33,22 @@
 }
 
 @mixin HoverCircleAccent($size: 40px) {
-	display: inline-block;
-	position: relative;
+	& {
+		display: inline-block;
+		position: relative;
+	}
 
 	&:after {
 		content: '';
 		display: block;
 		opacity: 0;
 		position: absolute;
-		transition-duration: 0.15s;
+		transition-duration: theme.$transition-duration;
 		transition-timing-function: cubic-bezier(0.4, 0, 0.02, 1);
 		transition-property: transform, opacity, background-color;
 		top: 50%;
 		left: 50%;
-		background: none!important;
+		background: none !important;
 		border-radius: 50%;
 		box-sizing: border-box;
 		transform: translateY(-50%) translateX(-50%) scale(0);
@@ -53,45 +57,88 @@
 		z-index: 1;
 	}
 
-	@media (hover: hover) {
-		&:hover {
-			&:after {
-				transform: translateY(-50%) translateX(-50%) scale(1);
-				background-color: rgba(0, 112, 65, 0.2)!important;
-				border: none!important;
-				box-shadow: none!important;
-				opacity: 1;
-			}
-		}
+	&:hover:after {
+		transform: translateY(-50%) translateX(-50%) scale(1);
+		background-color: theme.$hover-background !important;
+		border: none !important;
+		box-shadow: none !important;
+		opacity: 1;
 	}
 
-	&.active {
+	&.active:after {
+		transform: translateY(-50%) translateX(-50%) scale(1);
+		background-color: theme.$hover-background !important;
+		border: none !important;
+		box-shadow: none !important;
+		opacity: 1;
+	}
+}
+
+
+@mixin ButtonLink() {
+	& {
+		background-color: transparent !important;
+		border-radius: 0;
+		border: none !important;
+		outline: none;
+		padding: 0;
+		margin: 0;
+		height: auto;
+		cursor: pointer;
+	}
+
+	&:active {
+		outline: none;
+		box-shadow: none !important;
+	}
+
+	&:not(:disabled):not(.disabled):active {
+		background-color: transparent;
+	}
+
+	&:hover {
 		&:after {
 			transform: translateY(-50%) translateX(-50%) scale(1);
-			background-color: rgba(0, 112, 65, 0.2)!important;
-			border: none!important;
-			box-shadow: none!important;
+			background-color: theme.$hover-background !important;
+			border: none !important;
+			box-shadow: none !important;
 			opacity: 1;
 		}
 	}
 }
 
-@mixin ButtonLink() {
-	background-color: transparent!important;
-	border-radius: 0;
-	border: none!important;
-	outline: none;
-	padding: 0;
-	margin: 0;
-	height: auto;
-	cursor: pointer;
-
-	&:active {
-		outline: none;
-		box-shadow: none!important;
+@mixin xs {
+	@media only screen and (max-width: 35.938em) {
+		@content;
 	}
+}
 
-	&:not(:disabled):not(.disabled):active {
-		background-color: transparent;
+@mixin smd {
+	@media only screen and (max-width: 47.938em) {
+		@content;
+	}
+}
+
+@mixin sm {
+	@media only screen and (min-width: 36em) {
+		@content;
+	}
+}
+
+@mixin md {
+	@media only screen and (min-width: 48em) {
+		@content;
+	}
+}
+
+@mixin lg {
+	@media only screen and (min-width: 62em) {
+		@content;
+	}
+}
+
+@mixin xlg {
+	@media only screen and (min-width: 75em) {
+		@content;
 	}
 }

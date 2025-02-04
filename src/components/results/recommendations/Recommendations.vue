@@ -222,7 +222,4 @@
 </script>
 
 <style scoped lang="scss">
-.recommendations-container:hover {
-    cursor: pointer;
-}
 </style>

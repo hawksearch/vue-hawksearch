@@ -1,21 +1,26 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 div[data-component="hawksearch-facets"] {
-	@include smd {
+	@include mixins.smd {
 		width: 100%;
 	}
 }
 
 .hawk-facet-rail {
-	border: 1px solid $primary;
-	background-color: $grey2;
-	width: 100%;
+	& {
+		border: 1px solid theme.$primary;
+		background-color: theme.$grey2;
+		width: 100%;
+	}
 
-	@include md {
+	@include mixins.md {
 		width: auto;
 		min-width: 230px;
 		margin-right: 1em;
 	}
 
-	@include lg {
+	@include mixins.lg {
 		min-width: 300px;
 	}
 
@@ -25,7 +30,7 @@ div[data-component="hawksearch-facets"] {
 }
 
 .hawk-facet-rail__sticky {
-	@include smd {
+	@include mixins.smd {
 		position: fixed;
 		top: 8px;
 		cursor: pointer;
@@ -34,7 +39,7 @@ div[data-component="hawksearch-facets"] {
 }
 
 .hawk-facet-rail__facet-list-wpr {
-	@include smd {
+	@include mixins.smd {
 		display: none;
 	}
 }
@@ -46,7 +51,7 @@ div[data-component="hawksearch-facets"] {
 }
 
 .hawk-facet-rail__facet-list-mobile {
-	@include smd {
+	@include mixins.smd {
 		display: block;
 		overflow-y: scroll;
 		max-height: 400px;
@@ -71,12 +76,12 @@ div[data-component="hawksearch-facets"] {
 }
 
 .hawk-facet-rail__heading {
-	color: $white;
-	background-color: $hawk-facet-rail-heading-bg;
+	color: theme.$white;
+	background-color: theme.$hawk-facet-rail-heading-bg;
 	font-size: 1.2em;
 	padding: 10px;
 	font-weight: bold;
-	@include smd {
+	@include mixins.smd {
 		position: relative;
 
 		&:after {
@@ -99,7 +104,7 @@ div[data-component="hawksearch-facets"] {
 	border-bottom: 1px solid #d9d9d6;
 	margin: 1em 0;
 
-	@include md {
+	@include mixins.md {
 		margin: 0;
 	}
 
@@ -112,8 +117,8 @@ div[data-component="hawksearch-facets"] {
 
 .hawk-facet-rail__facet {
 	padding: 10px;
-	border-bottom: 1px solid $grey;
-	border-top: 1px solid $white;
+	border-bottom: 1px solid theme.$grey;
+	border-top: 1px solid theme.$white;
 }
 
 .hawk-facet-rail__facet-heading {
@@ -207,7 +212,7 @@ div[data-component="hawksearch-facets"] {
 	input {
 		width: 100%;
 		box-sizing: border-box;
-		border: 1px solid $grey;
+		border: 1px solid theme.$grey;
 		padding: 5px;
 	}
 
@@ -215,8 +220,8 @@ div[data-component="hawksearch-facets"] {
 }
 
 .hawk-facet-rail__facet-values {
-	background-color: $white;
-	border: 1px solid $grey;
+	background-color: theme.$white;
+	border: 1px solid theme.$grey;
 	padding: 10px;
 
 	.hawk-facet-rail__facet-values-link {
@@ -276,30 +281,33 @@ div[data-component="hawksearch-facets"] {
 	text-align: right;
 }
 
-.hawk-facet-rail__facet-btn {
-	@include ButtonLink;
-	display: flex;
-	align-items: flex-start;
-	line-height: 1.3;
-	padding: 0;
-	flex-grow: 1;
-	text-align: left;
-	margin: 0 5px;
-	box-shadow: none;
-	color: #000;
-	font-weight: normal;
-	font-size: 0.933em;
+ .hawk-facet-rail__facet-btn {
+	& {
+		display: flex;
+		align-items: flex-start;
+		line-height: 1.3;
+		padding: 0;
+		flex-grow: 1;
+		text-align: left;
+		margin: 0 5px;
+		box-shadow: none;
+		color: #000;
+		font-weight: normal;
+		font-size: 0.933em;
 
-	@include lg {
+		@include mixins.ButtonLink();
+	}
+
+	@include mixins.lg {
 		line-height: 1.4;
 	}
 
 	.hawk-facet-rail__facet-name {
 		word-break: break-all;
-	}
 
-	.hawk-facet-rail__facet-name.checked {
-		color: #f47b20;
+		&.checked {
+			color: #f47b20;
+		}
 	}
 
 	&:focus,
@@ -312,8 +320,10 @@ div[data-component="hawksearch-facets"] {
 		}
 	}
 
-	&:hover {
-		color: $orange1;
+	@media (hover: hover) {
+		&:hover {
+			color: theme.$orange1;
+		}
 	}
 }
 
@@ -351,16 +361,17 @@ button.hawk-collapseState {
 }
 
 .hawk-facet-rail__facet-btn-exclude {
-	@include ButtonLink;
+	@include mixins.ButtonLink;
 }
 
 .hawk-facet-rail__facet-btn-include {
-	@include ButtonLink;
-	color: $primary;
+	color: theme.$primary;
+
+	@include mixins.ButtonLink;
 }
 
 .hawk-facet-rail__show-more-btn {
-	@include ButtonLink;
+	@include mixins.ButtonLink;
 }
 
 .hawk-facet-rail__facet-checkbox {
@@ -370,7 +381,7 @@ button.hawk-collapseState {
 	min-width: 20px;
 	height: 20px;
 	background: transparent;
-	border: 1px solid $primary;
+	border: 1px solid theme.$primary;
 	border-radius: 4px;
 	margin-right: 5px;
 }

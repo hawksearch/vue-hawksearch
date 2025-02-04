@@ -1,9 +1,12 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 @mixin paginationControl() {
 	height: 15px;
 	cursor: pointer;
 
 	path {
-		fill: $pagination-control-path;
+		fill: theme.$pagination-control-path;
 	}
 }
 

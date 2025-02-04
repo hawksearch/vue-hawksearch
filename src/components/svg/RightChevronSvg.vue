@@ -12,7 +12,4 @@
 </script>
 
 <style scoped lang="scss">
-
-    .right-chevron-svg {
-    }
 </style>

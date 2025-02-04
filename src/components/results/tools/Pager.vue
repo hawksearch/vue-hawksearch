@@ -144,8 +144,4 @@
 </script>
 
 <style scoped lang="scss">
-    .break {
-        width: 6px;
-        display: inline-block;
-    }
 </style>

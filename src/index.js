@@ -1,30 +1,25 @@
-import Vue from 'vue';
-window.Vue = Vue;
-
-Vue.config.devtools = true;
-
-import HawksearchVue from "./HawksearchVue";
-import { version } from "./version";
+import HawksearchVue from './HawksearchVue';
+import { version } from './version';
 
 HawksearchVue.version = version;
-window.HawksearchVue = HawksearchVue;
-window.moment = require('moment-mini');
+
+if (typeof window !== 'undefined') {
+  window.HawksearchVue = HawksearchVue;
+}
+
+if (typeof window !== 'undefined') {
+  window.moment = moment;
+}
 
 HawksearchVue.init();
 
-import 'styles/app.scss';
+import './styles/app.scss';
 
 export * from './components';
-
 export { default as tConfig } from './i18n';
 export { default as TrackingEvent } from './TrackingEvent';
 
-Array.prototype.max = function max() {
-  return Math.max.apply(null, this);
-};
-
-Array.prototype.min = function min() {
-  return Math.min.apply(null, this);
-};
+export const arrayMax = (arr) => Math.max(...arr);
+export const arrayMin = (arr) => Math.min(...arr);
 
 export default HawksearchVue;

@@ -1,3 +1,5 @@
+@use '../utils/theme' as theme;
+
 .hawk-dropdown-toggle {
 	display: flex;
 	align-items: center;
@@ -10,7 +12,7 @@
 .hawk-dropdown-toggle:not(:disabled):not(.disabled):active:focus,
 .hawk-dropdown-toggle:not(:disabled):not(.disabled).active:focus,
 .show > .hawk-dropdown-toggle.dropdown-toggle:focus .hawk-hawk-btn-outline-secondary {
-	color: $dropdown-toggle;
+	color: theme.$dropdown-toggle;
 }
 
 .hawk-dropdown-toggle__text {

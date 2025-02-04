@@ -1,3 +1,6 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 .hawk-sorting {
 	display: flex;
 	align-items: center;
@@ -12,7 +15,7 @@
 	margin-right: 15px;
 	padding: 0 0 15px;
 
-	@include md {
+	@include mixins.md {
 		padding: 15px 0;
 	}
 

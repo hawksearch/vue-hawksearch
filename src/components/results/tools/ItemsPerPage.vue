@@ -45,7 +45,4 @@
 </script>
 
 <style scoped lang="scss">
-    .custom-select-wrapper {
-        width: 180px;
-    }
 </style>

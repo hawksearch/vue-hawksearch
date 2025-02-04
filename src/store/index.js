@@ -1,23 +1,23 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
- 
-Vue.use(Vuex);
- 
-import defaultState from './state'
-import defaultMutations from './mutations'
-import defaultActions from './actions'
-import defaultGetters from './getters'
- 
-export default ({ state, mutations, actions, getters }) => {
-    state = Object.assign({}, defaultState, state);
-    mutations = Object.assign({}, defaultMutations, mutations);
-    actions = Object.assign({}, defaultActions, actions);
-    getters = Object.assign({}, defaultGetters, getters);
- 
-    return new Vuex.Store({
-        state,
-        mutations,
-        actions,
-        getters
-    })
-}
+import { createStore } from 'vuex';
+
+import defaultState from './state';
+import defaultMutations from './mutations';
+import defaultActions from './actions';
+import defaultGetters from './getters';
+
+const store = createStore({
+    state: {
+        ...defaultState,
+    },
+    mutations: {
+        ...defaultMutations,
+    },
+    actions: {
+        ...defaultActions,
+    },
+    getters: {
+        ...defaultGetters,
+    },
+});
+
+export default store;

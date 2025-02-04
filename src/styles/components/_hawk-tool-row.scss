@@ -1,10 +1,13 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 .hawk-tool-row {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
 
-	@include lg {
+	@include mixins.lg {
 		flex-wrap: nowrap;
 		justify-content: flex-start;
 	}

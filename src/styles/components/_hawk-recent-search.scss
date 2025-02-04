@@ -1,3 +1,6 @@
+@use '../utils/theme' as theme;
+@use '../utils/mixins' as mixins;
+
 .hawk-facet-rail__facet-values-recent-search  {
     display: flex;
     flex-direction: column;
@@ -7,7 +10,7 @@
     div:hover,
     button:hover {
         text-decoration: underline;
-        color: $orange1;
+        color: theme.$orange1;
     }
     button {
         cursor: pointer;

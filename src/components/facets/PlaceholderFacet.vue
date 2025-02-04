@@ -41,7 +41,4 @@
 </script>
 
 <style scoped lang="scss">
-  .placeholder-facet {
-
-  }
 </style>

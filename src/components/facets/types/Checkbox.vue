@@ -145,12 +145,4 @@
 </script>
 
 <style scoped lang="scss">
-    .line-through {
-        text-decoration: line-through;
-    }
-
-    .hawk-facet-rail__facet-values-checkbox__scrollable {
-        overflow-y: scroll;
-        padding-right: 10px;
-    }
 </style>

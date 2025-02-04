@@ -1,3 +1,5 @@
+@use '../utils/mixins' as mixins;
+
 .hawk {
 	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 	font-size: 16px;
@@ -12,7 +14,7 @@
 	flex-wrap: wrap;
 	margin-bottom: 70px;
 
-	@include md {
+	@include mixins.md {
 		flex-wrap: nowrap;
 	}
 }
