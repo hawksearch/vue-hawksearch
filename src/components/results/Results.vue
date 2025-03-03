@@ -33,19 +33,18 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
-    import { parseURLparams } from '../../QueryString';
-    import SearchResultsLabel from '../facets/SearchResultsLabel'
-    import Selections from '../facets/Selections'
-    import ToolRow from './ToolRow'
-    import ResultListing from './ResultListing'
-    import PageContent from './PageContent'
-    import Banner from './Banner'
-    import Tabs from './Tabs'
-    import Recommendations from './recommendations/Recommendations'
-    import AutocorrectSuggestions from './AutocorrectSuggestions'
-    import ListingType from './tools/ListingType'
-    import Sorting from './tools/Sorting'
-    import Pagination from './tools/Pagination'
+    import SearchResultsLabel from '../facets/SearchResultsLabel.vue'
+    import Selections from '../facets/Selections.vue'
+    import ToolRow from './ToolRow.vue'
+    import ResultListing from './ResultListing.vue'
+    import PageContent from './PageContent.vue'
+    import Banner from './Banner.vue'
+    import Tabs from './Tabs.vue'
+    import Recommendations from './recommendations/Recommendations.vue'
+    import AutocorrectSuggestions from './AutocorrectSuggestions.vue'
+    import ListingType from './tools/ListingType.vue'
+    import Sorting from './tools/Sorting.vue'
+    import Pagination from './tools/Pagination.vue'
 
     export default {
         name: 'results',

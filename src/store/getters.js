@@ -24,5 +24,11 @@ export default {
                 return tabFacet.Values.find(value => value.Selected == true);
             }
         }
-    }
+    },
+    config: state => {
+        return state.config;
+    },
+    facetsCollapseAllTrigger: state => {
+        return state.facetsCollapseAllTrigger;
+    },
 };

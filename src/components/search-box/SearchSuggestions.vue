@@ -32,53 +32,55 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-    import SuggestionItem from './SuggestionItem';
-    import CategoriesContainer from './CategoriesContainer';
-    import PopularContainer from './PopularContainer';
-    import ContentContainer from './ContentContainer';
+import { mapState } from 'vuex';
+import SuggestionItem from './SuggestionItem.vue';
+import CategoriesContainer from './CategoriesContainer.vue';
+import PopularContainer from './PopularContainer.vue';
+import ContentContainer from './ContentContainer.vue';
+import useTrackingEvent from '@/composables/useTrackingEvent';
 
-    export default {
-        name: 'search-suggestions',
-        props: ['fieldFocused', 'keyword'],
-        components: {
-            SuggestionItem,
-            CategoriesContainer,
-            PopularContainer,
-            ContentContainer
-        },
-        methods: {
-            onItemSeleted: function (item) {
-                console.log(this.trackEvent, item.Value, item.Url, this.$parent.keyword);
-                if (this.trackEvent && item.getTitle() && item.getLink() && this.$parent.keyword) {
-                    this.trackEvent.track('autocompleteclick', {
-                        keyword: this.$parent.keyword,
-                        suggestType: this.trackEvent.SuggestType.TopProductMatches,
-                        name: item.getTitle(),
-                        url: item.getLink()
-                    });
-                }
+export default {
+    name: 'search-suggestions',
+    props: ['fieldFocused', 'keyword'],
+    components: {
+        SuggestionItem,
+        CategoriesContainer,
+        PopularContainer,
+        ContentContainer
+    },
+    methods: {
+        onItemSeleted: function (item) {
+            console.log(this.trackEvent, item.Value, item.Url, this.$parent.keyword);
+            if (this.trackEvent && item.getTitle() && item.getLink() && this.$parent.keyword) {
+                this.trackEvent.track('autocompleteclick', {
+                    keyword: this.$parent.keyword,
+                    suggestType: this.trackEvent.SuggestType.TopProductMatches,
+                    name: item.getTitle(),
+                    url: item.getLink()
+                });
+            }
 
-                if (item.getLink()) {
-                    location.assign(item.getLink());
-                }
-            },
-            viewAllMatches: function () {
-                if (this.$parent.search) {
-                    this.$parent.search({ ignoreRedirectRules: true });
-                }
+            if (item.getLink()) {
+                location.assign(item.getLink());
             }
         },
-        computed: {
-            ...mapState([
-                'suggestions',
-                'loadingSuggestions'
-            ]),
-            trackEvent: function () {
-                return this.$root.trackEvent;
+        viewAllMatches: function () {
+            if (this.$parent.search) {
+                this.$parent.search({ ignoreRedirectRules: true });
             }
         }
+    },
+    computed: {
+        ...mapState([
+            'suggestions',
+            'loadingSuggestions'
+        ]),
+    },
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
+}
 </script>
 
 <style scoped lang="scss">

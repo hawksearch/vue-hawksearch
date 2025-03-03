@@ -41,14 +41,14 @@
 .hawk-btn:hover {
 	color: #fff;
 	text-decoration: none;
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 }
 
 .hawk-btn.active,
 .hawk-btn:active {
 	background-image: none;
 	outline: 0;
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 }
 
 /*
@@ -154,13 +154,13 @@ fieldset[disabled] .hawk-btn-default:hover {
 .hawk-btn-primary.focus,
 .hawk-btn-primary:focus {
 	color: #fff;
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 	border-color: transparent;
 }
 
 .hawk-btn-primary:hover {
 	color: #fff;
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 	border-color: transparent;
 }
 
@@ -168,7 +168,7 @@ fieldset[disabled] .hawk-btn-default:hover {
 .hawk-btn-primary:active,
 .open > .dropdown-toggle.hawk-btn-primary {
 	color: #fff;
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 	border-color: transparent;
 }
 
@@ -182,7 +182,7 @@ fieldset[disabled] .hawk-btn-default:hover {
 .open > .dropdown-toggle.hawk-btn-primary:focus,
 .open > .dropdown-toggle.hawk-btn-primary:hover {
 	color: #fff;
-	background-color: darken($primary, 10%);
+	background-color: color.adjust($primary, $lightness: -10%);
 	border-color: transparent;
 }
 
@@ -201,7 +201,7 @@ fieldset[disabled] .hawk-btn-default:hover {
 fieldset[disabled] .hawk-btn-primary.focus,
 fieldset[disabled] .hawk-btn-primary:focus,
 fieldset[disabled] .hawk-btn-primary:hover {
-	background-color: darken($primary, 5%);
+	background-color: color.scale($primary, $lightness: -5%);
 	border-color: transparent;
 }
 
@@ -522,7 +522,7 @@ fieldset[disabled] .hawk-btn-danger:hover {
 
 		&:hover {
 			text-decoration: underline;
-			color: darken(#337ab7, 10%);
+			color: color.adjust(#337ab7, $lightness: -10%);
 		}
 
 		&--logout {

@@ -13,7 +13,7 @@
 <script>
     import { mapState } from 'vuex';
 
-    import CustomSelect from './CustomSelect'
+    import CustomSelect from './CustomSelect.vue'
 
     export default {
         name: 'sorting',

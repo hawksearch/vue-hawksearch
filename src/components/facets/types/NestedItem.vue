@@ -31,9 +31,9 @@
 </template>
 
 <script>
-    import CheckmarkSvg from '../../svg/CheckmarkSvg';
-    import PlusCircleSvg from '../../svg/PlusCircleSvg';
-    import DashCircleSvg from '../../svg/DashCircleSvg';
+    import CheckmarkSvg from '../../svg/CheckmarkSvg.vue';
+    import PlusCircleSvg from '../../svg/PlusCircleSvg.vue';
+    import DashCircleSvg from '../../svg/DashCircleSvg.vue';
 
     export default {
         name: 'nested-item',

@@ -36,7 +36,7 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
-    import XCircleSvg from '../svg/XCircleSvg';
+    import XCircleSvg from '../svg/XCircleSvg.vue';
 
     export default {
         name: 'selections',
@@ -67,7 +67,7 @@
                 if (this.pendingSearch) {
                     var pendingSearch = Object.assign({}, this.pendingSearch);
                     delete pendingSearch.SearchWithin;
-                    this.$root.$store.commit('updatePendingSearch', pendingSearch);
+                    this.$store.commit('updatePendingSearch', pendingSearch);
                 }
             },
             clearSelectionField: function (field) {

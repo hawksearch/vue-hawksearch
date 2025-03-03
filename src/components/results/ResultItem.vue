@@ -21,8 +21,9 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
-    import ResultImage from './ResultImage';
-    import AddToCart from './AddToCart';
+    import ResultImage from './ResultImage.vue';
+    import AddToCart from './AddToCart.vue';
+    import useTrackingEvent from '@/composables/useTrackingEvent';
 
     export default {
         name: "ResultItem",
@@ -49,24 +50,26 @@
                 'searchOutput'
             ]),
             ...mapGetters([
-                'getResponseField'
+                'getResponseField',
+                'config',
             ]),
-            trackEvent: function () {
-                return this.$root.trackEvent;
-            },
             link: function () {
-                const linkField = this.linkField || this.$root.config.resultItem.linkField;
+                const linkField = this.linkField || this.config.resultItem.linkField;
                 const link = this.getField(linkField);
 
                 if (link) {
-                    return HawksearchVue.getAbsoluteUrl(link, this.$root.$store);
+                    return HawksearchVue.getAbsoluteUrl(link, this.$store);
                 }
             }
         },
+        setup() {
+            const { trackEvent } = useTrackingEvent();
+            return { trackEvent }
+        },
         methods: {
             getField: function (fieldName, options) {
-                var storeState = this.$root.$store.state;
-                var langIndiffFields = (this.$root.config.resultItem && this.$root.config.resultItem.langIndiffFields && this.$root.config.resultItem.langIndiffFields.length) ? this.$root.config.resultItem.langIndiffFields : [];
+                var storeState = this.$store.state;
+                var langIndiffFields = (this.config.resultItem && this.config.resultItem.langIndiffFields && this.config.resultItem.langIndiffFields.length) ? this.config.resultItem.langIndiffFields : [];
 
                 if (storeState.language && !lodash.includes(langIndiffFields, fieldName)) {
                     fieldName += `_${storeState.language}`;
@@ -145,8 +148,7 @@
                 // }
             },
             absoluteUrl: function (url) {
-                var store = this.$root.$store;
-                return HawksearchVue.getAbsoluteUrl(url, store);
+                return HawksearchVue.getAbsoluteUrl(url, this.$store);
             }
         }
     };

@@ -77,14 +77,16 @@
 }
 
 @mixin ButtonLink() {
-	background-color: transparent!important;
-	border-radius: 0;
-	border: none!important;
-	outline: none;
-	padding: 0;
-	margin: 0;
-	height: auto;
-	cursor: pointer;
+	& {
+		background-color: transparent!important;
+		border-radius: 0;
+		border: none!important;
+		outline: none;
+		padding: 0;
+		margin: 0;
+		height: auto;
+		cursor: pointer;
+	}
 
 	&:active {
 		outline: none;
