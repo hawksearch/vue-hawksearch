@@ -12,58 +12,56 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-
-    export default {
-        name: 'custom-select',
-        props:{
-            options:{
-                type: Array,
-                required: true
-            },
-            default: {
-                type: String,
-                required: false,
-                default: null,
-            },
-            tabindex:{
-                type: Number,
-                required: false,
-                default: 0
-            }
+export default {
+    name: 'custom-select',
+    props:{
+        options:{
+            type: Array,
+            required: true
         },
-        data() {
-            return {
-                open: false,
-                timeout: null,
-            };
+        default: {
+            type: String,
+            required: false,
+            default: null,
         },
-        beforeDestroy() {
+        tabindex:{
+            type: Number,
+            required: false,
+            default: 0
+        }
+    },
+    data() {
+        return {
+            open: false,
+            timeout: null,
+        };
+    },
+    beforeDestroy() {
+        clearTimeout(this.timeout);
+    },
+    methods: {
+        clickSelectHead: function() {
             clearTimeout(this.timeout);
+            this.open = !this.open
         },
-        methods: {
-            clickSelectHead: function() {
-                clearTimeout(this.timeout);
-                this.open = !this.open
-            },
-            clickSelectOption: function (option) {
-                this.$emit('change', { target: { value: option.value } });
-                
-                this.selected = option;
-                this.open = false;
-            },
-            doBlurSelect: function() {                
-                this.timeout = setTimeout(() => {
-                    this.open = false
-                }, 400);
-            }
+        clickSelectOption: function (option) {
+            this.$emit('change', { target: { value: option.value } });
+            
+            this.selected = option;
+            this.open = false;
         },
-        computed: {
-            selected: function () {
-                return this.options.length > 0 && this.default ? this.default : this.options.length[0]
-            }
+        doBlurSelect: function() {                
+            this.timeout = setTimeout(() => {
+                this.open = false
+            }, 400);
+        }
+    },
+    computed: {
+        selected: function () {
+            return this.options.length > 0 && this.default ? this.default : this.options.length[0]
         }
     }
+}
 </script>
 
 <style scoped lang="scss">

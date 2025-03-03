@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import SizeItem from './SizeItem';
+    import SizeItem from './SizeItem.vue';
 
     export default {
         name: 'size',

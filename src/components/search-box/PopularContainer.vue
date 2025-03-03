@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import useTrackingEvent from '@/composables/useTrackingEvent';
+
 export default {
     name: 'popular-container',
     props: ['suggestions', 'keyword'],
@@ -33,10 +35,9 @@ export default {
             }
         },
     },
-    computed: {
-        trackEvent: function () {
-            return this.$root.trackEvent;
-        }
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
 }
 </script>

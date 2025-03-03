@@ -15,10 +15,10 @@
 
 <script>
     import { mapState } from 'vuex'
-    import ResultItem from './ResultItem'
-    import PlaceholderItem from './PlaceholderItem'
-    import Spinner from './Spinner'
-    import { snakeCase } from "snake-case";
+    import ResultItem from './ResultItem.vue'
+    import PlaceholderItem from './PlaceholderItem.vue'
+    import Spinner from './Spinner.vue'
+    import { snakeCase } from "change-case";
 
     export default {
         name: 'result-listing',

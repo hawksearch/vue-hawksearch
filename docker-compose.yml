@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  vue-hawk:
+    build: .
+    container_name: vue-hawk-tst
+    restart: unless-stopped
+    ports:
+      - "3333:3333"
+      - "3334:3334"
+      - "3335:3335"
+      - "5005:5005"
+      - "5006:5006"
+    environment:
+      NODE_ENV: "development"
+    volumes:
+      - .:/app:delegated
+      - /app/node_modules

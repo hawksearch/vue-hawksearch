@@ -14,7 +14,7 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
-    import ResultImage from '../ResultImage';
+    import ResultImage from '../ResultImage.vue';
 
     export default {
         name: "recommendations-item",
@@ -43,10 +43,11 @@
         },
         computed: {
             ...mapState([
-                'recommendationsOutput'
+                'recommendationsOutput',
             ]),
             ...mapGetters([
-                'getResponseField'
+                'getResponseField',
+                'config',
             ]),
             trackEvent: function () {
                 return this.$root.trackEvent;
@@ -54,8 +55,6 @@
         },
         methods: {
             getField: function (fieldName) {
-                var config = this.$root.config;
-
                 if (this.result &&
                     this.result[fieldName] &&
                     this.result[fieldName].length) {
@@ -64,7 +63,7 @@
                 }
             },
             getCustomDictField: function (fieldName) {
-                var config = this.$root.config;
+                var config = this.config;
 
                 if (config && config.language) {
                     fieldName += `_${config.language}`;
@@ -78,11 +77,11 @@
                 }
             },
             getLink: function () {
-                var linkField = this.linkField || this.$root.config.resultItem.linkField;
+                var linkField = this.linkField || this.config.resultItem.linkField;
                 var link = this.getCustomDictField(linkField);
 
                 if (link) {
-                    return HawksearchVue.getAbsoluteUrl(link, this.$root.$store);
+                    return HawksearchVue.getAbsoluteUrl(link, this.$store);
                 }
             },
             getJsonData: function (fieldName) {
@@ -101,14 +100,14 @@
 
                     if (this.trackEvent) {
                         this.trackEvent.track('recommendationclick', {
-                            widgetGuid: this.widgetGuid || this.$root.$store.state.config.widgetGuid,
+                            widgetGuid: this.widgetGuid || this.config.widgetGuid,
                             uniqueId: this.result.id,
                             requestId: this.requestId,
                             itemIndex: this.result.itemIndex || null
                         });
                     }
 
-                    if (link && this.$root.config.resultItem.itemSelect) {
+                    if (link && this.config.resultItem.itemSelect) {
                         location.assign(link);
                     }
                 }

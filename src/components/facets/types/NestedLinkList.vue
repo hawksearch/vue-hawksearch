@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import NestedLinkItem from './NestedLinkItem';
+    import NestedLinkItem from './NestedLinkItem.vue';
 
     export default {
         name: 'nested-link-list',
@@ -41,8 +41,8 @@
             getCheckboxType: function () {
                 var field = HawksearchVue.getFacetParamName(this.facetData);
 
-                if (this.$root.config.facetConfig.hasOwnProperty(field)) {
-                    return this.$root.config.facetConfig[field];
+                if (this.config.facetConfig.hasOwnProperty(field)) {
+                    return this.config.facetConfig[field];
                 }
                 else {
                     return 'multiple';

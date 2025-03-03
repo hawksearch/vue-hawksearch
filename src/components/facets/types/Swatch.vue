@@ -10,45 +10,47 @@
 </template>
 
 <script>
-    import SwatchItem from './SwatchItem';
+import { mapGetters } from 'vuex';
+import SwatchItem from './SwatchItem.vue';
 
-    export default {
-        name: 'swatch',
-        props: ['facetData'],
-        components: {
-            SwatchItem
-        },
-        methods: {
-            clearSelections: function (exception) {
-                if (this.getCheckboxType() == 'single') {
-                    this.items = this.items.map(item => {
-                        if (lodash.isEqual(item, exception)) {
-                            return item;
-                        }
-                        else {
-                            item.Negated = false;
-                            item.Selected = false;
-                        }
-                    });
-                }
-            },
-            getCheckboxType: function () {
-                var field = HawksearchVue.getFacetParamName(this.facetData);
-
-                if (this.$root.config.facetConfig.hasOwnProperty(field)) {
-                    return this.$root.config.facetConfig[field];
-                }
-                else {
-                    return 'multiple';
-                }
+export default {
+    name: 'swatch',
+    props: ['facetData'],
+    components: {
+        SwatchItem
+    },
+    methods: {
+        clearSelections: function (exception) {
+            if (this.getCheckboxType() == 'single') {
+                this.items = this.items.map(item => {
+                    if (lodash.isEqual(item, exception)) {
+                        return item;
+                    }
+                    else {
+                        item.Negated = false;
+                        item.Selected = false;
+                    }
+                });
             }
         },
-        computed: {
-            items: function () {
-                return this.facetData.Values;
+        getCheckboxType: function () {
+            var field = HawksearchVue.getFacetParamName(this.facetData);
+
+            if (this.config.facetConfig.hasOwnProperty(field)) {
+                return this.config.facetConfig[field];
+            }
+            else {
+                return 'multiple';
             }
         }
+    },
+    computed: {
+        items: function () {
+            return this.facetData.Values;
+        },
+        ...mapGetters(['config']),
     }
+}
 </script>
 
 <style scoped lang="scss">

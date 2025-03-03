@@ -5,8 +5,6 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-
     export default {
         name: 'result-image',
         props: {

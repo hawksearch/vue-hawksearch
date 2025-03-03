@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
 
     export default {
         name: 'search',
@@ -46,7 +46,7 @@
             },
             search: function () {
                 var value = this.searchTermBuffer;
-                var searchBoxConfig = this.$root.config.searchBoxConfig;
+                var searchBoxConfig = this.config.searchBoxConfig;
                 
                 if (value || value == "") {
                     switch (this.mode) {
@@ -101,7 +101,8 @@
                             return this.pendingSearch.SearchWithin;
                     }
                 }
-            }
+            },
+            ...mapGetters(['config']),
         },
         watch: {
             searchString: function (value) {

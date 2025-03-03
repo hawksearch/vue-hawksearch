@@ -11,17 +11,17 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
-    import { getRecentSearch, setRecentSearch,} from "../../CookieHandler";
+    import { mapState, mapActions, mapGetters } from 'vuex'
 
     export default {
         name: 'autocorrect-suggestions',
         methods: {
+            ...mapActions(['updateRecentSearch']),
             selectSuggestion: function(selectedSuggestion) {
                 this.search(selectedSuggestion);
             },
             search: function (keyword) {
-                let searchBoxConfig = this.$root.config.searchBoxConfig;
+                let searchBoxConfig = this.config.searchBoxConfig;
                 let searchPage = this.searchPage || location.pathname;
 
                 this.updateRecentSearch(keyword);
@@ -38,14 +38,13 @@
                         });
                 }
             },
-            updateRecentSearch: function (keyword) {
-                setRecentSearch(keyword);
-                this.$root.$store.commit("updateRecentSearch", getRecentSearch());
-            }
         },
         computed: {
             ...mapState([
                 'searchOutput'
+            ]),
+            ...mapGetters([
+                'config',
             ]),
             results: function () {
                 return this.searchOutput ? this.searchOutput.Results : null;

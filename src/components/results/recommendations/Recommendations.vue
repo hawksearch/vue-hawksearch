@@ -53,10 +53,10 @@
 </template>
 
 <script>
-    import RecommendationsItem from './RecommendationsItem'
-    import PlaceholderItem from '../PlaceholderItem'
-    import LeftChevronSvg from '../../svg/LeftChevronSvg'
-    import RightChevronSvg from '../../svg/RightChevronSvg'
+    import RecommendationsItem from './RecommendationsItem.vue'
+    import PlaceholderItem from '../PlaceholderItem.vue'
+    import LeftChevronSvg from '../../svg/LeftChevronSvg.vue'
+    import RightChevronSvg from '../../svg/RightChevronSvg.vue'
 
     export default {
         name: 'recommendations',
@@ -79,7 +79,7 @@
                 if (this.$refs['recommendations-wrapper'] && this.$refs['recommendations-wrapper'].getBoundingClientRect) {
                     this.componentWidth = this.$refs['recommendations-wrapper'].getBoundingClientRect().width;
 
-                    this.$root.$store.dispatch('fetchRecommendations', { widgetGuid: this.widgetGuid, widgetUniqueid: this.widgetUniqueid })
+                    this.$store.dispatch('fetchRecommendations', { widgetGuid: this.widgetGuid, widgetUniqueid: this.widgetUniqueid })
                         .then(response => {
                             var widgetItem = response.widgetItems.length ? response.widgetItems[0] : {};
 

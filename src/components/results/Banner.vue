@@ -12,10 +12,10 @@
 
 <script>
     import { mapState } from 'vuex';
-    import BannerImage from './banner-items/BannerImage';
-    import BannerCustom from './banner-items/BannerCustom';
+    import BannerImage from './banner-items/BannerImage.vue';
+    import BannerCustom from './banner-items/BannerCustom.vue';
     //import BannerFeatured from './banner-items/BannerFeatured';
-    import BannerWidget from './banner-items/BannerWidget';
+    import BannerWidget from './banner-items/BannerWidget.vue';
 
     export default {
         name: 'banner',

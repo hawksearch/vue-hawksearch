@@ -8,36 +8,37 @@
 </template>
 
 <script>
-    export default {
-        name: 'content-container',
-        props: ['suggestions', 'keyword'],
-        methods: {
-            htmlEntityDecode: function(value) {
-                var decoded = new DOMParser().parseFromString(value, "text/html");
-                return decoded.documentElement.textContent;
-            },
-            onClick: function (item) {
-                item = { ...item };
-                if (this.trackEvent && item.Value && item.Url && this.$parent.keyword) {
-                    this.trackEvent.track('autocompleteclick', {
-                        keyword: this.$parent.keyword,
-                        suggestType: this.trackEvent.SuggestType.TopContentMatches,
-                        name: item.Value,
-                        url: item.Url
-                    });
-                }
+import useTrackingEvent from '@/composables/useTrackingEvent';
 
-                if (item.Url) {
-                    location.assign(item.Url);
-                }
-            }
+export default {
+    name: 'content-container',
+    props: ['suggestions', 'keyword'],
+    methods: {
+        htmlEntityDecode: function (value) {
+            var decoded = new DOMParser().parseFromString(value, "text/html");
+            return decoded.documentElement.textContent;
         },
-        computed: {
-            trackEvent: function () {
-                return this.$root.trackEvent;
+        onClick: function (item) {
+            item = { ...item };
+            if (this.trackEvent && item.Value && item.Url && this.$parent.keyword) {
+                this.trackEvent.track('autocompleteclick', {
+                    keyword: this.$parent.keyword,
+                    suggestType: this.trackEvent.SuggestType.TopContentMatches,
+                    name: item.Value,
+                    url: item.Url
+                });
+            }
+
+            if (item.Url) {
+                location.assign(item.Url);
             }
         }
+    },
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
+}
 </script>
 
 <style scoped lang="scss">

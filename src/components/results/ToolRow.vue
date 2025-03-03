@@ -11,8 +11,8 @@
 </template>
 
 <script>
-    import Sorting from './tools/Sorting'
-    import Pagination from './tools/Pagination'
+    import Sorting from './tools/Sorting.vue'
+    import Pagination from './tools/Pagination.vue'
     import { mapState } from 'vuex';
 
     export default {

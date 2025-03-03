@@ -26,121 +26,128 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-    import LeftChevronSvg from '../../svg/LeftChevronSvg'
-    import RightChevronSvg from '../../svg/RightChevronSvg'
+import { mapState, mapGetters } from 'vuex';
+import LeftChevronSvg from '../../svg/LeftChevronSvg.vue'
+import RightChevronSvg from '../../svg/RightChevronSvg.vue'
+import useEventBus from '@/composables/useEventBus';
 
-    export default {
-        name: 'pager',
-        components: {
-            LeftChevronSvg,
-            RightChevronSvg
-        },
-        mounted() {
+export default {
+    name: 'pager',
+    components: {
+        LeftChevronSvg,
+        RightChevronSvg
+    },
+    setup () {
+        const { on } = useEventBus();
+
+        return { on }
+    },
+    mounted() {
+        this.nextPageLink = this.goToNextPageLink();
+        this.previousPageLink = this.goToPreviousPageLink();
+
+        this.on('urlUpdated', () => {
             this.nextPageLink = this.goToNextPageLink();
             this.previousPageLink = this.goToPreviousPageLink();
-
-            this.$root.$on('urlUpdated', () => {
-                this.nextPageLink = this.goToNextPageLink();
-                this.previousPageLink = this.goToPreviousPageLink();
-            })
-        },
-        data() {
-            return {
-                hasError: false,
-                nextPageLink: '',
-                previousPageLink: ''
+        });
+    },
+    data() {
+        return {
+            hasError: false,
+            nextPageLink: '',
+            previousPageLink: ''
+        }
+    },
+    methods: {
+        goToPreviousPage: function (event) {
+            if (this.page > 1) {
+                this.goToPage(parseInt(this.page, 10) - 1);
+                this.blurEventTarget(event);
             }
         },
-        methods: {
-            goToPreviousPage: function (event) {
-                if (this.page > 1) {
-                    this.goToPage(parseInt(this.page, 10) - 1);
-                    this.blurEventTarget(event);
-                }
-            },
-            goToNextPage: function (event) {
-                if (this.page < this.totalPages) {
-                    this.goToPage(parseInt(this.page, 10) + 1);
-                    this.blurEventTarget(event);
-                }
-            },
-            blurEventTarget: function (event) {
-                if (event && event.target) {
-                    const closestPaginationItem = event.target.closest('.hawk-pagination__item');
-                    if (closestPaginationItem) {
-                        closestPaginationItem.blur();
-                        closestPaginationItem.classList.add("active");
+        goToNextPage: function (event) {
+            if (this.page < this.totalPages) {
+                this.goToPage(parseInt(this.page, 10) + 1);
+                this.blurEventTarget(event);
+            }
+        },
+        blurEventTarget: function (event) {
+            if (event && event.target) {
+                const closestPaginationItem = event.target.closest('.hawk-pagination__item');
+                if (closestPaginationItem) {
+                    closestPaginationItem.blur();
+                    closestPaginationItem.classList.add("active");
 
-                        setTimeout(() => {
-                            closestPaginationItem.classList.remove("active");
-                        }, 500);
-                    }
-                }
-            },
-            goToPreviousPageLink: function () {
-                if (this.page > 1) {
-                    var url = new URL(location.href);
-
-                    url.searchParams.set('pg',parseInt(this.page, 10) - 1);
-
-                    return url.toString();
-                }
-            },
-            goToNextPageLink: function () {
-                if (this.page < this.totalPages) {
-                   var url = new URL(location.href);
-
-                    url.searchParams.set('pg',parseInt(this.page, 10) + 1);
-
-                    return url.toString();
-                }
-            },
-            goToPage: function (page) {
-                if (page >= 1 && page <= this.totalPages) {
-                    this.$root.dispatchToStore('applyPageNumber', page);
-                }
-            },
-            onChange: function (e) {
-                this.goToPage(parseInt(e.target.value, 10));
-                this.blurEventTarget(e);
-            },
-            onInput: function (e) {
-                let wantedPageNo = parseInt(e.currentTarget.value, 10);
-
-                if (wantedPageNo > this.totalPages) {
-                    wantedPageNo = this.totalPages;
-                    e.currentTarget.value = "";
-                    e.preventDefault();
-                }
-
-                if (wantedPageNo < 1) {
-                    wantedPageNo = 1;
-                    e.currentTarget.value = "";
-                    e.preventDefault();
+                    setTimeout(() => {
+                        closestPaginationItem.classList.remove("active");
+                    }, 500);
                 }
             }
         },
-        computed: {
-            ...mapState([
-                'searchOutput'
-            ]),
-            pagination: function () {
-                return this.searchOutput ? this.searchOutput.Pagination : {};
-            },
-            page: function () {
-                return this.pagination.CurrentPage;
-            },
-            totalPages: function () {
-                return this.pagination.NofPages;
-            },
-            isLink: function () {
-                var type = this.$root.config.pagination.type;
+        goToPreviousPageLink: function () {
+            if (this.page > 1) {
+                var url = new URL(location.href);
 
-                return type == "link";
+                url.searchParams.set('pg',parseInt(this.page, 10) - 1);
+
+                return url.toString();
+            }
+        },
+        goToNextPageLink: function () {
+            if (this.page < this.totalPages) {
+                var url = new URL(location.href);
+
+                url.searchParams.set('pg',parseInt(this.page, 10) + 1);
+
+                return url.toString();
+            }
+        },
+        goToPage: function (page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.$root.dispatchToStore('applyPageNumber', page);
+            }
+        },
+        onChange: function (e) {
+            this.goToPage(parseInt(e.target.value, 10));
+            this.blurEventTarget(e);
+        },
+        onInput: function (e) {
+            let wantedPageNo = parseInt(e.currentTarget.value, 10);
+
+            if (wantedPageNo > this.totalPages) {
+                wantedPageNo = this.totalPages;
+                e.currentTarget.value = "";
+                e.preventDefault();
+            }
+
+            if (wantedPageNo < 1) {
+                wantedPageNo = 1;
+                e.currentTarget.value = "";
+                e.preventDefault();
             }
         }
+    },
+    computed: {
+        ...mapState([
+            'searchOutput'
+        ]),
+        ...mapGetters(['config']),
+        pagination: function () {
+            return this.searchOutput ? this.searchOutput.Pagination : {};
+        },
+        page: function () {
+            return this.pagination.CurrentPage;
+        },
+        totalPages: function () {
+            return this.pagination.NofPages;
+        },
+        isLink: function () {
+            var type = this.config.pagination.type;
+
+            return type == "link";
+        }
     }
+}
 </script>
 
 <style scoped lang="scss">

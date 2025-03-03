@@ -1,20 +1,23 @@
-import { default as getVueStore } from './store';
 import { mapState } from 'vuex';
-import { getI18n } from './i18n';
-import { getParamName, parseURLparams, updateUrl } from './QueryString';
-import SearchBox from './components/search-box/SearchBox';
-import FacetList from './components/facets/FacetList.vue';
-import Results from './components/results/Results.vue';
-import PageContent from './components/results/PageContent.vue';
-import Recommendations from './components/results/recommendations/Recommendations.vue';
-import TrackingEvent from './TrackingEvent';
-import { getVisitorId, getVisitId } from './CookieHandler';
 import history from 'history/browser';
+import lodash from 'lodash';
+import axios from 'axios';
+import { default as getVueStore } from '@/store';
+import { getI18n } from '@/i18n';
+import { getParamName, parseURLparams, updateUrl } from '@/QueryString';
+import { getVisitorId, getVisitId } from '@/CookieHandler';
+import templateOverridePlugin from '@/plugins/templateOverridePlugin';
+import SearchBox from '@/components/search-box/SearchBox.vue';
+import Results from '@/components/results/Results.vue';
+import FacetList from '@/components/facets/FacetList.vue';
+import PageContent from '@/components/results/PageContent.vue';
+import Recommendations from '@/components/results/recommendations/Recommendations.vue';
+import useEventBus from '@/composables/useEventBus';
+import useTrackingEvent from '@/composables/useTrackingEvent';
 
-var _ = require('lodash');
-window.lodash = _.noConflict();
+var _ = lodash;
+window.lodash = lodash.noConflict();
 
-var axios = require('axios').default;
 const CancelToken = axios.CancelToken;
 
 class HawksearchVue {
@@ -83,9 +86,9 @@ class HawksearchVue {
 
     static dataLayers = {}
 
-    static init() {
-        this.addTemplateOverride();
-    }
+    static paramWhitelist = ['CustomUrl', 'Query']
+
+    static suggestionRequest = null
 
     static generateStoreInstance(appliedConfig, storeOverrides) {
         if (!storeOverrides) {
@@ -101,8 +104,6 @@ class HawksearchVue {
         store.commit('setStoreId', storeId);
 
         this.storeInstances[storeId] = store;
-
-        // console.info("Created store, id: " + storeId);
 
         return store;
     }
@@ -169,25 +170,23 @@ class HawksearchVue {
         else {
             // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
             config = this.mergeConfig(this.defaultConfig, store.state.config);
+            store.commit('updateConfig', config);
         }
 
         // Merge passed components with defaults
         components = Object.assign({}, {
             SearchBox,
-            FacetList,
             Results,
+            FacetList,
             PageContent,
-            Recommendations
+            Recommendations,
         }, components);
 
-        var widget = new Vue({
+        var app = Vue.createApp({
             el,
-            store,
-            i18n: getI18n(config.i18n),
             components,
             mounted() {
                 try {
-                    this.trackEvent = HawksearchVue.createTrackEvent(this.config);
                     HawksearchVue.handleLanguageParameters(this);
 
                     history.listen(({ action, location }) => {
@@ -202,26 +201,30 @@ class HawksearchVue {
                 }
                 catch (e) { }
             },
-            data: {
-                widgetId,
-                appliedConfig: config,
-                trackEvent: null
+            data() {
+                return {
+                    widgetId,
+                }
             },
             computed: {
                 ...mapState([
                     'searchOutput',
-                    'pendingSearch'
+                    'pendingSearch',
+                    'config',
                 ]),
-                config: function () {
-                    return lodash.cloneDeep(this.appliedConfig);
-                }
+            },
+            setup() {
+                const { createTrackEvent } = useTrackingEvent();
+                const { emit } = useEventBus();
+
+                return { trackEvent: createTrackEvent(config), emit }
             },
             watch: {
                 searchOutput: function (newValue, oldValue) {
-                    this.$emit('resultsupdate', newValue, oldValue);
+                    this.emit('resultsupdate', newValue, oldValue);
                 },
                 pendingSearch: function (newValue, oldValue) {
-                    this.$emit('searchupdate', newValue, oldValue);
+                    this.emit('searchupdate', newValue, oldValue);
                 }
             },
             methods: {
@@ -273,6 +276,14 @@ class HawksearchVue {
             }
         });
 
+        app.use(store);
+        app.use(getI18n());
+        app.use(templateOverridePlugin, config);
+
+        const widget = app.mount(el);
+        const { emit } = useEventBus();
+        widget.emit = emit;
+
         this.widgetInstances[widgetId] = widget;
 
         return widget;
@@ -284,31 +295,32 @@ class HawksearchVue {
         }
     }
 
-    static initialSearch(widget) {
-        if (!widget) {
-            console.error('Widget not supplied');
-            return false;
-        }
+    static handleRedirectRules(searchOutput, config) {
+        return new Promise((resolve, reject) => {
+            if (searchOutput && searchOutput.Redirect && searchOutput.Redirect.Location && config.searchConfig.redirectRules) {
+                setTimeout(function () {
+                    location.assign(searchOutput.Redirect.Location);
+                }, 1)
+            }
+            else {
+                resolve();
+            }
+        })
+    }
 
-        var store = this.getWidgetStore(widget);
+    static isWhitelistedParam(key) {
+        return this.paramWhitelist.includes(key);
+    }
 
-        if (!store) {
-            console.error("Store instance not supplied");
-            return false
-        }
+    static addWhitelistParams(params) {
+        if (params) {
+            if (typeof params == 'string') {
+                params = [params];
+            }
 
-        this.handleAdditionalParameters(widget);
-
-        var searchParams = parseURLparams(widget);
-
-        widget.dispatchToStore('fetchResults', searchParams).then(() => {
-            this.truncateFacetSelections(store);
-            this.applyTabSelection(widget);
-        });
-        
-        if(store.state.isFirstInitialSearch){
-            store.commit('updateInitialSearchUrl', location.search);
-            store.commit('updateIsFirstInitialSearch', false);
+            if (lodash.isArray(params)) {
+                this.paramWhitelist = lodash.union(this.paramWhitelist, params);
+            }
         }
     }
 
@@ -362,97 +374,95 @@ class HawksearchVue {
         });
     }
 
-    static fetchRecommendations(store, widgetParams, callback) {
-        if (!callback) {
-            callback = function () { };
-        }
+    static getFullSearchUrl(store) {
+        var config = store.state.config;
+        let url = new URL(config.searchUrl, config.apiUrl);
+        return url.href;
+    }
 
-        if (!this.requestConditionsMet(store)) {
-            callback(false)
+    static getAbsoluteUrl(path, store) {
+        if (path) {
+            var config = store.state.config;
+            var url = new URL(path, config.websiteUrl);
+            return url.href;
+        }
+    }
+
+    static isIE() {
+        var ua = window.navigator.userAgent;
+        var old_ie = ua.indexOf('MSIE ');
+        var new_ie = ua.indexOf('Trident/');
+
+        return ((old_ie > -1) || (new_ie > -1))
+    }
+
+    static handleAdditionalParameters(widget) {
+        var store = this.getWidgetStore(widget);
+        var urlParams = new URLSearchParams(location.search);
+        var additionalParameters = {};
+
+        this.paramWhitelist.forEach(key => {
+            if (urlParams.get(getParamName(key, widget))) {
+                additionalParameters[key] = urlParams.get(getParamName(key, widget));
+            }
+        });
+
+        if (Object.keys(additionalParameters).length) {
+            var config = lodash.cloneDeep(widget.config);
+            config.additionalParameters = lodash.merge({}, config.additionalParameters, additionalParameters);
+            store.commit('updateConfig', config);
+        }
+    }
+
+    static initialSearch(widget) {
+        if (!widget) {
+            console.error('Widget not supplied');
             return false;
         }
 
-        var config = store.state.config;
-        var params = {
-            ClientGuid: config.clientGuid,
-            IndexName: this.getIndexName(config),
-            DisplayFullResponse: true,
-            visitId: getVisitId(),
-            visitorId: getVisitorId(),
-            enablePreview: true,
-            widgetUids: [
-                {
-                    widgetGuid: widgetParams.widgetGuid || config.widgetGuid,
-                    uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
-                }
-            ],
-            contextProperties: {
-                uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
-            },
-            renderHTML: false
+        var store = this.getWidgetStore(widget);
+
+        if (!store) {
+            console.error("Store instance not supplied");
+            return false
         }
 
-        axios.post(config.recommendationUrl, params).then(response => {
-            if (response.status == '200' && response.data) {
-                callback(response.data);
-            }
-        }).catch(err => {
-            if (!axios.isCancel(err)) {
-                callback(false, true);
-            }
+        this.handleAdditionalParameters(widget);
+
+        var searchParams = parseURLparams(widget);
+
+        widget.dispatchToStore('fetchResults', searchParams).then(() => {
+            this.truncateFacetSelections(store);
+            this.applyTabSelection(widget);
         });
+        
+        if(store.state.isFirstInitialSearch){
+            store.commit('updateInitialSearchUrl', location.search);
+            store.commit('updateIsFirstInitialSearch', false);
+        }
     }
 
-    static fetchSuggestions(searchParams, store, callback) {
-        if (!this.requestConditionsMet(store)) {
-            return false;
-        }
+    static mergeConfig(configA, configB) {
+        var a = lodash.cloneDeep(configA);
+        var b = lodash.cloneDeep(configB);
 
-        if (store.state.autocompleteCancelation) {
-            store.state.autocompleteCancelation();
-            store.commit('updateAutocompleteCancelation', null);
-        }
+        var mergedConfig = lodash.merge({}, a, b);
 
-        if (!callback) {
-            callback = function () { };
-        }
-
-        if (!searchParams) {
-            searchParams = {};
-        }
-
-        var config = store.state.config;
-        var clientData = this.getClientData(store);
-        var params = lodash.merge({}, searchParams,
-            {
-                ClientGuid: config.clientGuid,
-                IndexName: this.getIndexName(config),
-                ClientData: clientData,
-                DisplayFullResponse: true
-            },
-            config.additionalParameters);
-
-        axios.post(this.getFullAutocompleteUrl(store), params, {
-            cancelToken: new CancelToken(function executor(c) {
-                store.commit('updateAutocompleteCancelation', c);
-            }),
-        }).then(response => {
-            if (response && response.status == '200' && response.data) {
-                callback(response.data);
-            }
-        }).catch(err => {
-            if (!axios.isCancel(err)) {
-                callback(false);
+        Object.keys(mergedConfig).forEach((key) => {
+            if (lodash.isArray(mergedConfig[key]) && a[key] && lodash.isArray(a[key]) && b[key] && lodash.isArray(b[key])) {
+                mergedConfig[key] = lodash.union(a[key], b[key]);
             }
         });
+
+        return mergedConfig
     }
 
-    static suggestionRequest = null
+    static getUniqueIdentifier() {
+        return lodash.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
+    }
 
-    static cancelSuggestionsRequest() {
-        if (this.suggestionRequest) {
-            this.suggestionRequest.abort();
-        }
+    static getFacetParamName(facet) {
+        return facet.ParamName ? facet.ParamName : facet.Field;
     }
 
     static requestConditionsMet(store) {
@@ -594,37 +604,94 @@ class HawksearchVue {
         callback(searchParamFacets);
     }
 
-    static getFacetParamName(facet) {
-        return facet.ParamName ? facet.ParamName : facet.Field;
-    }
+    static fetchRecommendations(store, widgetParams, callback) {
+        if (!callback) {
+            callback = function () { };
+        }
 
-    // Overrides the template prioritization
-    // If the 'templateOverride' configuration is available, it overrides all other templates
-    static addTemplateOverride() {
-        if (!Vue) {
+        if (!this.requestConditionsMet(store)) {
+            callback(false)
             return false;
         }
 
-        const mount = Vue.prototype.$mount;
+        var config = store.state.config;
+        var params = {
+            ClientGuid: config.clientGuid,
+            IndexName: this.getIndexName(config),
+            DisplayFullResponse: true,
+            visitId: getVisitId(),
+            visitorId: getVisitorId(),
+            enablePreview: true,
+            widgetUids: [
+                {
+                    widgetGuid: widgetParams.widgetGuid || config.widgetGuid,
+                    uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
+                }
+            ],
+            contextProperties: {
+                uniqueid: widgetParams.widgetUniqueid || config.widgetUniqueid
+            },
+            renderHTML: false
+        }
 
-        Vue.prototype.$mount = function (el, hydrating) {
-            const options = this.$options;
-            var templateOverride = (options.propsData && options.propsData.templateOverride) || options.templateOverride;
-
-            if (!templateOverride && options.name && this.$root.config.generateTemplateOverrides) {
-                templateOverride = '#vue-hawksearch-' + options.name;
+        axios.post(config.recommendationUrl, params).then(response => {
+            if (response.status == '200' && response.data) {
+                callback(response.data);
             }
-
-            if (templateOverride &&
-                typeof templateOverride === 'string' &&
-                templateOverride.charAt(0) === '#' &&
-                document.querySelector(templateOverride)) {
-
-                let renderFunctions = Vue.compile(document.querySelector(templateOverride).innerHTML);
-                Object.assign(options, renderFunctions);
+        }).catch(err => {
+            if (!axios.isCancel(err)) {
+                callback(false, true);
             }
+        });
+    }
 
-            return mount.call(this, el, hydrating);
+    static fetchSuggestions(searchParams, store, callback) {
+        if (!this.requestConditionsMet(store)) {
+            return false;
+        }
+
+        if (store.state.autocompleteCancelation) {
+            store.state.autocompleteCancelation();
+            store.commit('updateAutocompleteCancelation', null);
+        }
+
+        if (!callback) {
+            callback = function () { };
+        }
+
+        if (!searchParams) {
+            searchParams = {};
+        }
+
+        var config = store.state.config;
+        var clientData = this.getClientData(store);
+        var params = lodash.merge({}, searchParams,
+            {
+                ClientGuid: config.clientGuid,
+                IndexName: this.getIndexName(config),
+                ClientData: clientData,
+                DisplayFullResponse: true
+            },
+            config.additionalParameters);
+
+        axios.post(this.getFullAutocompleteUrl(store), params, {
+            cancelToken: new CancelToken(function executor(c) {
+                store.commit('updateAutocompleteCancelation', c);
+            }),
+        }).then(response => {
+            if (response && response.status == '200' && response.data) {
+                callback(response.data);
+            }
+        }).catch(err => {
+            if (!axios.isCancel(err)) {
+                callback(false);
+            }
+        });
+    }
+
+    static cancelSuggestionsRequest() {
+        if (this.suggestionRequest) {
+            this.suggestionRequest.abort();
         }
     }
 
@@ -663,97 +730,6 @@ class HawksearchVue {
         }
     }
 
-    static handleRedirectRules(searchOutput, config) {
-        return new Promise((resolve, reject) => {
-            if (searchOutput && searchOutput.Redirect && searchOutput.Redirect.Location && config.searchConfig.redirectRules) {
-                setTimeout(function () {
-                    location.assign(searchOutput.Redirect.Location);
-                }, 1)
-            }
-            else {
-                resolve();
-            }
-        })
-    }
-
-    static paramWhitelist = ['CustomUrl', 'Query']
-
-    static isWhitelistedParam(key) {
-        return this.paramWhitelist.includes(key);
-    }
-
-    static addWhitelistParams(params) {
-        if (params) {
-            if (typeof params == 'string') {
-                params = [params];
-            }
-
-            if (lodash.isArray(params)) {
-                this.paramWhitelist = lodash.union(this.paramWhitelist, params);
-            }
-        }
-    }
-
-    static getFullSearchUrl(store) {
-        var config = store.state.config;
-        let url = new URL(config.searchUrl, config.apiUrl);
-        return url.href;
-    }
-
-    static getFullAutocompleteUrl(store) {
-        var config = store.state.config;
-        let url = new URL(config.autocompleteUrl, config.apiUrl);
-        return url.href;
-    }
-
-    static getUniqueIdentifier() {
-        return lodash.times(16, () => (Math.random() * 0xF << 0).toString(16)).join('');
-    }
-
-    static getAbsoluteUrl(path, store) {
-        if (path) {
-            var config = store.state.config;
-            var url = new URL(path, config.websiteUrl);
-            return url.href;
-        }
-    }
-
-    static createTrackEvent(config) {
-        var trackEvent;
-
-        if (config.trackEventUrl) {
-            trackEvent = new TrackingEvent(config);
-        }
-
-        return trackEvent;
-    }
-
-    static isIE() {
-        var ua = window.navigator.userAgent;
-        var old_ie = ua.indexOf('MSIE ');
-        var new_ie = ua.indexOf('Trident/');
-
-        return ((old_ie > -1) || (new_ie > -1))
-    }
-
-    static handleAdditionalParameters(widget) {
-        var store = this.getWidgetStore(widget);
-        var urlParams = new URLSearchParams(location.search);
-        var additionalParameters = {};
-
-        this.paramWhitelist.forEach(key => {
-            if (urlParams.get(getParamName(key, widget))) {
-                additionalParameters[key] = urlParams.get(getParamName(key, widget));
-            }
-        });
-
-        if (Object.keys(additionalParameters).length) {
-            var config = lodash.cloneDeep(widget.config);
-            config.additionalParameters = lodash.merge({}, config.additionalParameters, additionalParameters);
-            store.commit('updateConfig', config);
-        }
-    }
-
     static handleLanguageParameters(widget) {
         var store = this.getWidgetStore(widget);
         var language = store.state.language || widget.config.language;
@@ -786,54 +762,10 @@ class HawksearchVue {
         return clientData;
     }
 
-    static applyTabSelection(widget) {
-        var store = this.getWidgetStore(widget);
-        var data = store.state.searchOutput;
-        
-        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
-            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
-
-            if (!tabs.Values.find(value => value.Selected == true) && widget.config.tabConfig.alwaysOn) {
-                var facetData = Object.assign({}, tabs);
-
-                facetData.Values[0].Selected = true;
-
-                widget.dispatchToStore('applyFacets', facetData);
-            }
-        }
-    }
-
-    static mergeConfig(configA, configB) {
-        var a = lodash.cloneDeep(configA);
-        var b = lodash.cloneDeep(configB);
-
-        var mergedConfig = lodash.merge({}, a, b);
-
-        Object.keys(mergedConfig).forEach((key) => {
-            if (lodash.isArray(mergedConfig[key]) && a[key] && lodash.isArray(a[key]) && b[key] && lodash.isArray(b[key])) {
-                mergedConfig[key] = lodash.union(a[key], b[key]);
-            }
-        });
-
-        return mergedConfig
-    }
-
-    static scrollToBeginning(widget) {
-        if (widget.config.searchConfig.scrollUpOnRefresh) {
-            if (!window.location.hash && widget.config.searchConfig.scrollUpOnRefresh) {
-                window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
-            }
-        }
-    }
-
-    static collapseAllFacets() {
-        Object.values(HawksearchVue.widgetInstances).forEach(w => {
-            w.$children.forEach(c => {
-                if (c.$options.name == 'facet-list') {
-                    c.collapseAll();
-                }
-            })
-        })
+    static getFullAutocompleteUrl(store) {
+        var config = store.state.config;
+        let url = new URL(config.autocompleteUrl, config.apiUrl);
+        return url.href;
     }
 
     static getIndexName(config) {
@@ -866,6 +798,23 @@ class HawksearchVue {
         return field;
     }
 
+    static applyTabSelection(widget) {
+        var store = this.getWidgetStore(widget);
+        var data = store.state.searchOutput;
+        
+        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
+            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
+
+            if (!tabs.Values.find(value => value.Selected == true) && widget.config.tabConfig.alwaysOn) {
+                var facetData = Object.assign({}, tabs);
+
+                facetData.Values[0].Selected = true;
+
+                widget.dispatchToStore('applyFacets', facetData);
+            }
+        }
+    }
+
     static truncateFacetSelections(store) {
         var pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
         pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => { return lodash.includes(this.getFacetFieldNames(store), field) });
@@ -895,8 +844,26 @@ class HawksearchVue {
     static emitToAll(eventType) {
         let args = Array.prototype.slice.call(arguments,1);
         for (let [id, widget] of Object.entries(HawksearchVue.widgetInstances)) {
-            widget.$emit(eventType, ...args);
+            widget.emit(eventType, ...args);
         }
+    }
+
+    static scrollToBeginning(widget) {
+        if (widget.config.searchConfig.scrollUpOnRefresh) {
+            if (!window.location.hash && widget.config.searchConfig.scrollUpOnRefresh) {
+                window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
+            }
+        }
+    }
+
+    static collapseAllFacets() {
+        Object.values(HawksearchVue.widgetInstances).forEach(w => {
+            if (!w || !w.$ || !w.$store) {
+                console.warn('Skipping widget without store:', w);
+                return;
+            }
+            w.$store.dispatch('triggerFacetCollapse');
+        })
     }
 }
 

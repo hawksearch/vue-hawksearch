@@ -25,11 +25,10 @@
 }
 
 .hawk-pagination__item {
-	@include HoverCircleAccent;
-	@include ButtonLink;
-
 	cursor: pointer;
 	margin: 0 18px;
+	@include HoverCircleAccent;
+	@include ButtonLink;
 
 	.hawk & {
 		box-shadow: none;
