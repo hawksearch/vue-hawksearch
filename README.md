@@ -1,60 +1,185 @@
 # Hawksearch Vue SDK
 
-This package provides components and integration processes to Hawksearch using Vue.js.
+This project provides Vue.js components for integrating Hawksearch.
 
-Please contact Hawksearch personnel for additional information on service settup https://www.hawksearch.com/
+---
+
+## Build
+
+The project already contains precompiled files in the `dist` folder.
+
+To create a new production build:
+
+```bash
+npm run build
+```
+
+This generates optimized output in the `dist` folder.
 
 ## Installation
 
-Install the latest package version usnig npm
+The main installation command:
 
 ```sh
-$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#master
+npm install
 ```
 
-In some cases you may need a specific version
+To install the latest package version from the repository:
 
 ```sh
-$ npm install git+https://github.com/hawksearch/vue-hawksearch.git#v0.9.94
+npm install git+https://github.com/hawksearch/vue-hawksearch.git#master
 ```
 
-## Getting started
-Add the widget layout to the markup file - in this case, an SPA widget with all components
+In some cases, you may need a specific version:
+
+```sh
+npm install git+https://github.com/hawksearch/vue-hawksearch.git#v0.9.94
+```
+
+Recommended Node.js versions: 16, 18, 20, or 22 (LTS).
+
+## Environment Files (.env)
+
+Create `.env.development`, `.env.production`, and `.env.staging` in the root directory.
+If `.env.development` is missing, the project defaults to a demo configuration.
+
+Example `.env.development`:
+
+```ini
+VITE_CLIENT_GUID=3953cf87e0aa4a4eb9496a24d5a0fa84
+VITE_API_URL=https://searchapi-dev.hawksearch.net/api/v2/search/
+```
+
+## Main Commands
+
+```bash
+npm run dev
+```
+
+Generates `index.html` in the project root and starts the development server at `localhost:3333`. This file serves as the main entry point for the application.
+
+```bash
+npm run preview
+```
+
+Creates a build and serves it on a separate port, with files placed in the `preview` folder.
+
+---
+
+## Virtualization and Server
+
+This project uses **Docker** for containerization and **Vite** as the development server.
+
+- **Docker** allows running the application in an isolated containerized environment.
+- **Vite** provides fast development and preview builds, generating `index.html` and serving it dynamically.
+
+---
+
+## Example Usage
 
 ```html
-<div id="hawk-vue-app">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Vue Hawksearch Example</title>
+  <link rel="stylesheet" href="./dist/vue-hawksearch.css">
+</head>
+<body>
+  <div id="hawk-vue-app">
     <div class="hawk">
-        <div class="hawk__header">
-            <search-box></search-box>
-        </div>
-
-        <div class="hawk__body">
-            <facet-list></facet-list>
-
-            <results></results>
-        </div>
+      <div class="hawk__header">
+        <search-box-smart></search-box-smart>
+      </div>
+      <div class="hawk__body">
+        <facet-list></facet-list>
+        <results></results>
+      </div>
     </div>
-</div>
+  </div>
+  <script type="importmap">
+  {
+    "imports": {
+      "vue": "https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js",
+      "vuex": "https://cdn.jsdelivr.net/npm/vuex@3.1.3/dist/vuex.esm.browser.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import HawksearchVue from './dist/vue-hawksearch.js';
+    import config from './hs.config.js';
+
+    window.addEventListener('load', () => {
+      HawksearchVue.createWidget(document.getElementById('hawk-vue-app'), { config });
+    });
+  </script>
+</body>
+</html>
 ```
 
-Create a dedicated .js file for the widget and include the library's main class and styles
+---
 
-```javascript
-import HawksearchVue from '@hawksearch/vue';
-import '@hawksearch/vue/dist/vue-hawksearch.css'
+## Docker
+
+### Using Docker Compose
+
+#### Start Containers
+```bash
+docker compose up --build -d
 ```
 
-Then set the necessary configurations. The values for these should be provided by a Hawksearch representative
-```javascript
-const config = {
-    clientGuid: '1234567890',
-    apiUrl: 'https://searchapi.hawksearch.net/api/v2/search/'
-}
+#### View Logs
+```bash
+docker logs -f <container_name>
 ```
 
-Create the widget after all resources are loaded
-```javascript
-window.addEventListener('load', () => {
-    HawksearchVue.createWidget(document.getElementById('hawk-vue-app'), { config });
-});
+#### Stop and Clean Up
+```bash
+docker compose down --rmi all --volumes --remove-orphans
 ```
+
+### Alternative Without Docker Compose
+
+#### Build and Run the Container Manually
+```bash
+docker build -t vue-hawk-tst .
+docker run -d -p 3003:3003 -p 5005:5005 --name vue-hawk-tst vue-hawk-tst
+```
+
+#### View Logs
+```bash
+docker logs -f vue-hawk-tst
+```
+
+#### Access Container Shell
+```bash
+docker exec -it vue-hawk-tst sh
+```
+
+#### Stop and Remove Container
+```bash
+docker stop vue-hawk-tst
+docker rm vue-hawk-tst
+```
+
+#### Remove Image if Not Used
+```bash
+docker rmi vue-hawk-tst
+```
+
+### Checking Correct IP Address
+
+The correct **IP address** for accessing the service may vary depending on your Docker network settings. To find the correct IP, check your **Docker configuration files** or use the following command:
+```bash
+docker network inspect bridge | grep "Gateway"
+```
+Alternatively, you can check the **Docker Compose configuration files** where network settings are defined.
+
+### Additional Resources
+
+- [Hawksearch Documentation](https://www.hawksearch.com/)
+- [Docker Guide](https://docs.docker.com/get-started/)
+- [Vue.js](https://vuejs.org/)
+- [Vite Documentation](https://vitejs.dev/)
+
