@@ -8,6 +8,7 @@ import { getParamName, parseURLparams, updateUrl } from '@/QueryString';
 import { getVisitorId, getVisitId } from '@/CookieHandler';
 import templateOverridePlugin from '@/plugins/templateOverridePlugin';
 import SearchBox from '@/components/search-box/SearchBox.vue';
+import SearchBoxSmart from '@/components/search-box/SearchBoxSmart.vue';
 import Results from '@/components/results/Results.vue';
 import FacetList from '@/components/facets/FacetList.vue';
 import PageContent from '@/components/results/PageContent.vue';
@@ -176,6 +177,7 @@ class HawksearchVue {
         // Merge passed components with defaults
         components = Object.assign({}, {
             SearchBox,
+            SearchBoxSmart,
             Results,
             FacetList,
             PageContent,
