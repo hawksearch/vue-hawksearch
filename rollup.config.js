@@ -1,12 +1,9 @@
 import pkg from './package.json';
 import resolve from '@rollup/plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import {babel} from "@rollup/plugin-babel";
 import vuePlugin from 'rollup-plugin-vue';
-import sass from "sass";
 import scss from 'rollup-plugin-scss'
-import autoprefixer from 'autoprefixer'
-import postcss from 'rollup-plugin-postcss'
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 const extensions = ['.mjs', '.web.js', '.js', '.json', '.vue'];
 
@@ -19,7 +16,7 @@ const config = {
   output: {
     file: pkg.module,
     format: "esm",
-    compact: true,
+    compact: true
   },
 
   external,
@@ -35,7 +32,7 @@ const config = {
     }),
     babel({
       extensions: [".js"],
-      runtimeHelpers: true,
+      babelHelpers: "inline",
       exclude: "node_modules/**",
       presets: [
         [
@@ -64,9 +61,7 @@ const config = {
       css: false,
     }),
     scss({
-      output: "dist/vue-hawksearch.css",
-      processor: () => postcss([autoprefixer()]),
-      sass
+      fileName: "vue-hawksearch.css",
     }),
     terser(),
   ],
