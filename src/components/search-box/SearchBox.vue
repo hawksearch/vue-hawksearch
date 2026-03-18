@@ -1,7 +1,7 @@
 <template>
     <div class="hawk__searchBox" @click="onClick">
         <div class="hawk__searchBox__searchInput">
-            <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
+            <input type="text" :placeholder="$t(placeholder)" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
         <search-suggestions :field-focused="fieldFocused" :keyword="keyword" @view-all-matches="search" @mousedown.native="onSuggestionClick"></search-suggestions>
     </div>
@@ -32,7 +32,7 @@ export default {
         return {
             keyword: null,
             keywordEnter: null,
-            placeholder: 'Enter search term',
+            placeholder: 'Enter a search term',
             suggestionDelay: null,
             fieldFocused: false,
             suggestionClick: false,

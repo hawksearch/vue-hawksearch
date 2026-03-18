@@ -1,7 +1,7 @@
 <template>
     <div v-if="visible" class="image-search-field">
-        <h3>Image Search</h3>
-        <button class="close-image-search-btn" @click="closeImageSearch">
+        <h3>{{ $t('Image Search') }}</h3>
+        <button type="button" class="close-image-search-btn" @click="closeImageSearch" :aria-label="$t('Close image search')">
             <CloseIconSvg/>
         </button>
 
@@ -11,24 +11,24 @@
              @click="triggerFileInput">
             <UploadIconSvg/>
             <input type="file" @change="onImageSelect" ref="fileInput" style="display: none;">
-            <p>Drop an Image here</p>
+            <p>{{ $t('Drop an Image here') }}</p>
 
             <label class="custom-file-upload">
                 <UploadImageIconSvg />
-                Upload Image
-                <input class="hawk__searchInput" type="file" @change="onImageSelect" ref="fileInputLabel" @click.stop="onFileInputClick"/>
+                <span>{{ $t('Upload Image') }}</span>
+                <input class="hawk__searchInput" type="file" @change="onImageSelect" ref="fileInputLabel" @click.prevent.stop/>
             </label>
         </div>
 
         <div class="search-input">
             <SearchIconSvg/>
-            <input type="text" :placeholder="$t(placeholder)" v-model="imageKeyword" @keydown="onImageKeywordKeyDown" />
+            <input type="text" v-model="imageKeyword" @keydown="onImageKeywordKeyDown" />
         </div>
 
         <div v-if="images.length" class="images-preview">
             <div v-for="(image, index) in images" :key="index" class="image-details">
                 <button @click="removeImage(index)" class="remove-button" aria-label="Remove image" role="button">
-                    <span class="visually-hidden">Remove image</span>
+                    <span class="visually-hidden">{{ $t('Remove image') }}</span>
                 </button>
                 <img :src="image.dataUrl" :alt="image.name" class="image-thumbnail"/>
                 <div class="image-info">
@@ -44,13 +44,10 @@
 </template>
 
 <script>
-import CloseIconSvg from "../svg/CloseIconSvg";
-import UploadIconSvg from "../svg/UploadIconSvg";
-import UploadImageIconSvg from "../svg/UploadImageIconSvg";
-import SearchIconSvg from "../svg/SearchIconSvg";
-import SearchSuggestions from "./SearchSuggestions";
-import CustomResultsLabel from "../results/tools/CustomResultsLabel";
-import ImageSearchIconSvg from "../svg/ImageSearchIconSvg";
+import CloseIconSvg from "../svg/CloseIconSvg.vue";
+import UploadIconSvg from "../svg/UploadIconSvg.vue";
+import UploadImageIconSvg from "../svg/UploadImageIconSvg.vue";
+import SearchIconSvg from "../svg/SearchIconSvg.vue";
 
 export default {
     name: 'SearchBoxImage',
@@ -60,14 +57,12 @@ export default {
             default: false
         }
     },
+    emits: ['update:visible', 'searchImage'],
     components: {
         CloseIconSvg,
         UploadIconSvg,
         UploadImageIconSvg,
-        SearchSuggestions,
-        CustomResultsLabel,
-        SearchIconSvg,
-        ImageSearchIconSvg
+        SearchIconSvg
     },
     data() {
         return {
@@ -76,9 +71,16 @@ export default {
             images: [],
             notification: "",
             requestType: 'ImageSearch',
-            allowedFileTypes: ["image/jpeg", "image/png", "image/gif", "image/webp"],
-            unsupportedFileTypeMessage: "Unsupported file type. Please upload JPG, PNG, GIF, or WEBP images."
+            allowedFileTypes: ["image/jpeg", "image/png", "image/gif", "image/webp"]
         };
+    },
+    computed: {
+        unsupportedFileTypeMessage() {
+            return this.$t("Unsupported file type. Please upload JPG, PNG, GIF, or WEBP images.");
+        },
+        readFileFailureMessage() {
+            return this.$t("Failed to read the image file. Please try again.");
+        }
     },
     methods: {
         handleDragOver(event) {
@@ -94,9 +96,6 @@ export default {
         onImageSelect(event) {
             const files = Array.from(event.target.files);
             this.addImage(files[0]);
-        },
-        onFileInputClick(event) {
-            event.preventDefault();
         },
         addImage(file) {
             if (file && this.allowedFileTypes.includes(file.type)) {
@@ -119,6 +118,12 @@ export default {
                         });
                     });
                 };
+                reader.onerror = () => {
+                    this.notification = this.readFileFailureMessage;
+                    setTimeout(() => {
+                        this.notification = "";
+                        }, 5000);
+                    };
                 reader.readAsDataURL(file);
             } else {
                 this.notification = this.unsupportedFileTypeMessage;
@@ -150,10 +155,6 @@ export default {
                         keyword: this.imageKeyword,
                         requestType: 'ImageSearch'
                     });
-                });
-                this.$emit('searchImage', {
-                    keyword: this.imageKeyword,
-                    requestType: 'ImageSearch'
                 });
             }
         }
