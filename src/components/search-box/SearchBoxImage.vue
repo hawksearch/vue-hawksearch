@@ -77,7 +77,8 @@ export default {
             notification: "",
             requestType: 'ImageSearch',
             allowedFileTypes: ["image/jpeg", "image/png", "image/gif", "image/webp"],
-            unsupportedFileTypeMessage: "Unsupported file type. Please upload JPG, PNG, GIF, or WEBP images."
+            unsupportedFileTypeMessage: $t("Unsupported file type. Please upload JPG, PNG, GIF, or WEBP images."),
+            readFileFailureMessage: $t("Failed to read the image file. Please try again.")
         };
     },
     methods: {
@@ -119,6 +120,12 @@ export default {
                         });
                     });
                 };
+                reader.onerror = () => {
+                    this.notification = this.readFileFailureMessage;
+                    setTimeout(() => {
+                        this.notification = "";
+                        }, 5000);
+                    };
                 reader.readAsDataURL(file);
             } else {
                 this.notification = this.unsupportedFileTypeMessage;
@@ -150,10 +157,6 @@ export default {
                         keyword: this.imageKeyword,
                         requestType: 'ImageSearch'
                     });
-                });
-                this.$emit('searchImage', {
-                    keyword: this.imageKeyword,
-                    requestType: 'ImageSearch'
                 });
             }
         }

@@ -1,6 +1,7 @@
 <template>
     <div class="hawk__searchBox" @click.stop="">
         <SearchBoxImage
+            ref="searchBoxImage"
             :visible="imageSearchVisible"
             @update:visible="imageSearchVisible = $event"
         />
@@ -10,9 +11,15 @@
                 <search-icon-svg/>
                 <input type="text" :placeholder="$t(placeholder)" v-model="keyword" @input="onFullSearchInput"
                        @keydown="onFullSearchKeyDown" @blur="onFullSearchBlur"/>
-                <button @click="toggleRequestType">{{ toggleButtonText }}</button>
+                <button type="button" @click="toggleRequestType">{{ toggleButtonText }}</button>
             </span>
-            <button class="image-search-btn" @click="toggleImageSearch">
+            <button
+                type="button"
+                class="image-search-btn"
+                aria-label="Image search"
+                :aria-expanded="imageSearchVisible ? 'true' : 'false'"
+                @click="toggleImageSearch"
+            >
                 <image-search-icon-svg/>
             </button>
         </div>
