@@ -21,7 +21,7 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 import {
     deleteCookie,
-} from "../../../CookieHandler";
+} from "@/CookieHandler";
 
 export default {
     name: "recent-searches",

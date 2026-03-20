@@ -10,6 +10,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
     import NestedLinkItem from './NestedLinkItem.vue';
 
     export default {
@@ -52,8 +53,9 @@
         computed: {
             items: function () {
                 return this.facetData.Values;
-            }
-        }
+        },
+        ...mapGetters(['config']),
+        },
     }
 </script>
 

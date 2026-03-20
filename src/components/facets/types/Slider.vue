@@ -19,15 +19,21 @@
 
 <script>
     import { mapState } from 'vuex';
-    import { addToRangeFacets } from '../../../QueryString';
+    import { addToRangeFacets } from '@/QueryString';
+    import useEventBus from '@/composables/useEventBus';
 
     export default {
         name: 'slider',
         props: ['facetData'],
+        setup () {
+            const { on } = useEventBus();
+
+            return { on }
+        },
         mounted() {
             this.wrapper =  (this.$refs && this.$refs.wrapper.getBoundingClientRect) ? this.$refs.wrapper.getBoundingClientRect() : null;
 
-            this.$root.$on('toggleFacetMenu', (isActive) => {
+            this.on('toggleFacetMenu', (isActive) => {
                     this.wrapper = this.$refs.wrapper.getBoundingClientRect();
             });
 

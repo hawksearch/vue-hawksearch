@@ -21,10 +21,11 @@ const generateTemplateOverride = function (name, config, instance) {
     templateOverride = '#vue-hawksearch-' + name;
   }
 
-  if (templateOverride &&
-    typeof templateOverride === 'string' &&
-    templateOverride.charAt(0) === '#' &&
-    document.querySelector(templateOverride)) {
+  if (templateOverride
+      && typeof templateOverride === 'string'
+      && templateOverride.charAt(0) === '#'
+      && document.querySelector(templateOverride)
+  ) {
     const templateContent = document.querySelector(templateOverride).innerHTML;
     if (templateContent) {
       const { code } = compile(templateContent, { mode: 'function' });
