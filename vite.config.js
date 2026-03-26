@@ -32,7 +32,7 @@ export default defineConfig({
         reportCompressedSize: true,
         rollupOptions: {
             input: 'src/index.js',
-            external: ['vue', 'moment-mini'], // Исключаем зависимости
+            external: ['vue', 'moment-mini'],
             output: {
                 entryFileNames: 'vue-hawksearch.js',
                 chunkFileNames: 'chunks/vue-hawksearch.[hash].js',
@@ -56,6 +56,9 @@ export default defineConfig({
             name: 'VueHawksearch',
             fileName: 'vue-hawksearch',
             formats: ['es'],
+        },
+        watch: {
+            include: 'src/**',
         }
     },
     css: {

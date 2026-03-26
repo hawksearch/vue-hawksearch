@@ -25,8 +25,8 @@ const indexHtmlContent = `<!DOCTYPE html>
 <script type="importmap">
     {
         "imports": {
-            "vue": "https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js",
-            "vuex": "https://cdn.jsdelivr.net/npm/vuex@3.1.3/dist/vuex.esm.browser.js"
+            "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.prod.js",
+            "vuex": "https://cdn.jsdelivr.net/npm/vuex@4/dist/vuex.esm-browser.prod.js"
         }
     }
 </script>
