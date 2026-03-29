@@ -14,6 +14,7 @@
 <script>
 export default {
     name: 'custom-select',
+    emits: ['change'],
     props:{
         options:{
             type: Array,

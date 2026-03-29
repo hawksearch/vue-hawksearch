@@ -10,8 +10,9 @@
 export default {
     name: 'banner-image',
     props: ['banner'],
+    emits: ['bannerMounted'],
     mounted() {
-        this.$parent.loadHandler(this.banner);
+        this.$emit('bannerMounted', this.banner);
     },
     methods: {
         absoluteUrl: function (url) {

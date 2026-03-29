@@ -22,7 +22,7 @@
           ref="children"
           @expand="expandFacet"
           @collapse="collapseFacet"
-          @collapseAllExceptCurrent="collapseAllExceptCurrent($event)"
+          @collapse-all-except-current="collapseAllExceptCurrent($event)"
         ></facet>
       </template>
       <template v-else-if="loadingResults">

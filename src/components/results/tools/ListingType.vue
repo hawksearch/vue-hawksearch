@@ -10,6 +10,7 @@
     export default {
         name: 'listing-type',
         props: ['listingTypes'],
+        emits: ['typeChanged'],
         methods: {
             changeToType: function (type) {
                 this.$emit('typeChanged', type);

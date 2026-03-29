@@ -2,10 +2,15 @@
     <div class="hawk-facet-rail__facet-values">
         <div class="hawk-facet-rail__facet-values-linklist">
             <ul class="hawk-facet-rail__facet-list">
-                <nested-link-item v-for="item in items" :key="item.Value" :item-data="item" :facet-data="facetData"></nested-link-item>
+                <nested-link-item
+                    v-for="item in items"
+                    :key="item.Value"
+                    :item-data="item"
+                    @select-facet-value="onSelectFacetValue"
+                />
             </ul>
         </div>
-        <slot></slot>
+        <slot/>
     </div>
 </template>
 
@@ -21,23 +26,20 @@
         },
         methods: {
             clearSelections: function (exception) {
-                var clearValues = function (items) {
-                    items = items.map(item => {
+                if (this.getCheckboxType() !== 'single') {
+                    return;
+                }
+                var clearValues = function(items) {
+                    items.forEach(item => {
                         if (item.Children) {
                             clearValues(item.Children);
                         }
-
                         if (!lodash.isEqual(item, exception)) {
-                            item.Negated = false;
                             item.Selected = false;
                         }
-
-                        return item;
                     });
                 }
-                if (this.getCheckboxType() == 'single') {
-                    clearValues(this.items);
-                }
+                clearValues(this.facetData.Values);
             },
             getCheckboxType: function () {
                 var field = HawksearchVue.getFacetParamName(this.facetData);
@@ -48,17 +50,21 @@
                 else {
                     return 'multiple';
                 }
+            },
+            onSelectFacetValue: function (facetValue) {
+                this.clearSelections(facetValue);
+                facetValue.Selected = !facetValue.Selected;
+                this.applyFacets();
+            },
+            applyFacets: function () {
+                this.$root.dispatchToStore('applyFacets', this.facetData);
             }
         },
         computed: {
             items: function () {
                 return this.facetData.Values;
-        },
-        ...mapGetters(['config']),
+            },
+            ...mapGetters(['config']),
         },
     }
 </script>
-
-<style scoped lang="scss">
-
-</style>

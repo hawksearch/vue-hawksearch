@@ -21,35 +21,27 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'swatch-item',
-    props: ['facetData', 'item'],
+    props: ['item'],
+    emits: ['selectFacetValue', 'negateFacetValue'],
     methods: {
         selectFacet: function () {
-            this.$parent.clearSelections(this.item);
-
-            if (this.item.Negated) {
-                this.item.Selected = true;
-                this.item.Negated = false;
-            }
-            else {
-                this.item.Selected = !this.item.Selected;
-            }
-
-            this.applyFacets();
+            this.$emit('selectFacetValue', this.item);
         },
         negateFacet: function () {
-            this.$parent.clearSelections(this.item);
-
-            this.item.Negated = !this.item.Negated;
-            this.item.Selected = this.item.Negated;
-            this.applyFacets();
-        },
-        applyFacets: function () {
-            this.$root.dispatchToStore('applyFacets', this.facetData);
+            this.$emit('negateFacetValue', this.item);
         }
     },
     computed: {
         listItemClass: function () {
-            return 'hawk-facet-rail__facet-list-item' + (this.item.Selected ? ' hawkFacet-active' : '') + (this.item.Negated ? ' hawkFacet-negative' : '');
+            let classList = ['hawk-facet-rail__facet-list-item'];
+            if (this.item.Selected) {
+                classList.push('hawkFacet-active');
+            }
+            if (this.item.Negated) {
+                classList.push('hawkFacet-negative');
+            }
+
+            return classList.join(' ');
         },
         colorStyle: function () {
             return 'background: ' + this.item.Color;

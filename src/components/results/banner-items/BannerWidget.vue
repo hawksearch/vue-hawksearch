@@ -8,8 +8,9 @@
     export default {
         name: 'banner-widget',
         props: ['banner'],
+        emits: ['bannerMounted'],
         mounted() {
-            this.$parent.loadHandler(this.banner);
+            this.$emit('bannerMounted', this.banner);
         }
     }
 </script>

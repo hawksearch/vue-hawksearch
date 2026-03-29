@@ -3,7 +3,11 @@
         <div class="hawk-preview__banner-container">
             <template v-for="banner in bannerList">
                 <div @click="clickHandler(banner)">
-                    <component :is="getBannerType(banner)" :banner="banner"></component>
+                    <component
+                        :is="getBannerType(banner)"
+                        :banner="banner"
+                        @banner-mounted="loadHandler"
+                    />
                 </div>
             </template>
         </div>

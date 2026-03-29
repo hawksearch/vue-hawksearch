@@ -77,17 +77,16 @@ export default {
             });
         },
         clearSelections: function (exception) {
-            if (this.getCheckboxType() == 'single') {
-                this.items = this.items.map(item => {
-                    if (lodash.isEqual(item, exception)) {
-                        return item;
-                    }
-                    else {
-                        item.Negated = false;
-                        item.Selected = false;
-                    }
-                });
+            if (this.getCheckboxType() !== 'single') {
+                return;
             }
+
+            this.facetData.Values.forEach(item => {
+                if (!lodash.isEqual(item, exception)) {
+                    item.Negated = false;
+                    item.Selected = false;
+                }
+            });
         },
         getCheckboxType: function () {
             var field = HawksearchVue.getFacetParamName(this.facetData);

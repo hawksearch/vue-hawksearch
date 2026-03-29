@@ -11,6 +11,7 @@
 import { mapGetters, mapState } from 'vuex';
 export default {
     name: 'suggestion-item',
+    emits: ['itemSelected'],
     props: {
         item: {
             default: null
@@ -85,7 +86,7 @@ export default {
             }
         },
         onClick: function () {
-            this.$emit('itemselected', this);
+            this.$emit('itemSelected', this);
         },
         htmlEntityDecode: function(value) {
             var decoded = new DOMParser().parseFromString(value, "text/html");

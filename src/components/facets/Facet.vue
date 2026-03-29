@@ -77,6 +77,7 @@ import RecentSearches from "./types/RecentSearches.vue";
 export default {
   name: "facet",
   props: ["facetData", "facetSettings"],
+  emits: ["expand", "collapse", "collapseAllExceptCurrent"],
   components: {
     QuestionmarkSvg,
     PlusSvg,
