@@ -88,8 +88,6 @@ class HawksearchVue {
 
     static paramWhitelist = ['CustomUrl', 'Query']
 
-    static suggestionRequest = null
-
     static generateStoreInstance(appliedConfig, storeOverrides) {
         if (!storeOverrides) {
             storeOverrides = {}
@@ -353,8 +351,6 @@ class HawksearchVue {
                 ClientData: clientData
             },
             config.additionalParameters);
-
-        this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
         axios.post(this.getFullSearchUrl(store), params, {
@@ -687,12 +683,6 @@ class HawksearchVue {
                 callback(false);
             }
         });
-    }
-
-    static cancelSuggestionsRequest() {
-        if (this.suggestionRequest) {
-            this.suggestionRequest.abort();
-        }
     }
 
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
