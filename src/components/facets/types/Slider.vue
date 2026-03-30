@@ -25,17 +25,18 @@
     export default {
         name: 'slider',
         props: ['facetData'],
-        setup () {
-            const { on } = useEventBus();
+        setup() {
+            const {on, off} = useEventBus();
 
-            return { on }
+            return {on, off};
         },
         mounted() {
             this.wrapper =  (this.$refs && this.$refs.wrapper.getBoundingClientRect) ? this.$refs.wrapper.getBoundingClientRect() : null;
 
-            this.on('toggleFacetMenu', (isActive) => {
-                    this.wrapper = this.$refs.wrapper.getBoundingClientRect();
-            });
+            this.toggleFacetMenuHandler = (isActive) => {
+                this.wrapper = this.$refs.wrapper.getBoundingClientRect();
+            };
+            this.on('toggleFacetMenu', this.toggleFacetMenuHandler);
 
             addToRangeFacets(HawksearchVue.getFacetParamName(this.facetData));
         },
@@ -66,6 +67,8 @@
             }
         },
         beforeUnmount: function () {
+            this.off('toggleFacetMenu', this.toggleFacetMenuHandler);
+
             window.removeEventListener('mouseup', this.onMouseUp)
             window.removeEventListener('mousemove', this.onMouseMove)
             window.removeEventListener('resize', this.onResize);

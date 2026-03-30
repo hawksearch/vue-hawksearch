@@ -3,7 +3,7 @@
         <div class="hawk__searchBox__searchInput">
             <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
-        <search-suggestions :field-focused="fieldFocused" :keyword="keyword" @view-all-matches="search"></search-suggestions>
+        <search-suggestions :field-focused="fieldFocused" :keyword="keyword" @view-all-matches="search" @mousedown.native="onSuggestionClick"></search-suggestions>
     </div>
 </template>
 
@@ -35,7 +35,8 @@ export default {
             keywordEnter: null,
             placeholder: 'Enter search term',
             suggestionDelay: null,
-            fieldFocused: false
+            fieldFocused: false,
+            suggestionClick: false,
         }
     },
     methods: {
@@ -51,7 +52,7 @@ export default {
             this.updateRecentSearch(this.keyword);
 
             if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage != location.pathname)) {
-                HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options.ignoreRedirectRules);
+                HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options?.ignoreRedirectRules);
             }
             else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                 this.keywordEnter = this.keyword;
@@ -93,6 +94,7 @@ export default {
                     this.keyword = this.keywordEnter;
                     this.cancelSuggestions();
                 }
+                this.suggestionClick = false;
             }, 250);
         },
         onClick: function (e) {
@@ -104,6 +106,9 @@ export default {
             HawksearchVue.cancelSuggestionsRequest();
             this.$store.commit('updateLoadingSuggestions', false);
             this.$store.commit('updateSuggestions', null);
+        },
+        onSuggestionClick: function () {
+            this.suggestionClick = true;
         },
     },
     watch: {

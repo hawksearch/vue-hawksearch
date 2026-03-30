@@ -88,8 +88,6 @@ class HawksearchVue {
 
     static paramWhitelist = ['CustomUrl', 'Query']
 
-    static suggestionRequest = null
-
     static generateStoreInstance(appliedConfig, storeOverrides) {
         if (!storeOverrides) {
             storeOverrides = {}
@@ -353,8 +351,6 @@ class HawksearchVue {
                 ClientData: clientData
             },
             config.additionalParameters);
-
-        this.cancelSuggestionsRequest();
 
         store.commit('updateWaitingForInitialSearch', false);
         axios.post(this.getFullSearchUrl(store), params, {
@@ -689,12 +685,6 @@ class HawksearchVue {
         });
     }
 
-    static cancelSuggestionsRequest() {
-        if (this.suggestionRequest) {
-            this.suggestionRequest.abort();
-        }
-    }
-
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
         var redirect = new URL(searchPageUrl, location.href);
         var config = widget.config;
@@ -851,7 +841,7 @@ class HawksearchVue {
     static scrollToBeginning(widget) {
         if (widget.config.searchConfig.scrollUpOnRefresh) {
             if (!window.location.hash && widget.config.searchConfig.scrollUpOnRefresh) {
-                window.scrollTo(widget.$el.getBoundingClientRect().top, 0);
+                window.scrollTo( { top: widget.$el.getBoundingClientRect().top, behavior: 'smooth' });
             }
         }
     }
