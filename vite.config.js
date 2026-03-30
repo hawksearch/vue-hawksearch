@@ -1,53 +1,26 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import terser from '@rollup/plugin-terser'
-
-function getNodeMajorVersion() {
-  const version = process.version.slice(1);
-  return parseInt(version.split('.')[0], 10);
-}
-
-const nodeMajorVersion = getNodeMajorVersion();
-const isNode16OrHigher = nodeMajorVersion >= 16;
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue()],
+    publicDir: 'public',
     build: {
         outDir: 'dist',
         assetsDir: '',
-        publicDir: 'public',
         cssCodeSplit: false,
         sourcemap: false,
-        minify: isNode16OrHigher ? false : 'esbuild',
+        minify: 'oxc',
         cssMinify: true,
-        terserOptions: {
-            compress: true,
-            mangle: true,
-            format: {
-                comments: false,
-            },
-        },
         reportCompressedSize: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: 'src/index.js',
             external: ['vue', 'moment-mini'],
             output: {
                 entryFileNames: 'vue-hawksearch.js',
                 chunkFileNames: 'chunks/vue-hawksearch.[hash].js',
                 assetFileNames: 'vue-hawksearch.[ext]',
-                // globals: {
-                //     vue: 'Vue',
-                //     'moment-mini': 'moment',
-                // },
-                plugins: isNode16OrHigher ? [
-                    terser({
-                        compress: true,
-                        mangle: true,
-                    })
-                ] : [],
-                compact: true,
             },
         },
         copyPublicDir: false,
