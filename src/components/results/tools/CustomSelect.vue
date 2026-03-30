@@ -35,6 +35,7 @@ export default {
         return {
             open: false,
             timeout: null,
+            currentOption: null,
         };
     },
     beforeUnmount() {
@@ -47,8 +48,8 @@ export default {
         },
         clickSelectOption: function (option) {
             this.$emit('change', { target: { value: option.value } });
-            
-            this.selected = option;
+
+            this.currentOption = option;
             this.open = false;
         },
         doBlurSelect: function() {                
@@ -59,7 +60,13 @@ export default {
     },
     computed: {
         selected: function () {
-            return this.options.length > 0 && this.default ? this.default : this.options.length[0]
+            if (this.currentOption) {
+                return this.currentOption.label;
+            }
+            if (this.default) {
+                return this.default;
+            }
+            return this.options.length > 0 ? this.options[0].label : '';
         }
     }
 }
