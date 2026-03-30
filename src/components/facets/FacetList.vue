@@ -59,57 +59,67 @@ export default {
             isNavSticky: false,
             stickyNavStyles: {},
             facetSettingsConfig: null
-        }
+        };
     },
     setup() {
         const {emit} = useEventBus();
 
-        return { emit }
+        return {emit};
     },
     methods: {
         onExpand: function(facet) {
             if (this.config.facetConfig.hasOwnProperty('_expand') && this.config.facetConfig['_expand'] == 'single') {
-                if (this.$refs.children) {
-                    this.$refs.children.forEach(f => {
-                        if (f != facet && f.hasOwnProperty('isCollapsed')) {
-                            f.isCollapsed = true;
-                        }
-            })
+                if (!this.$refs.children) {
+                    return;
                 }
+                this.$refs.children.forEach(f => {
+                    if (f != facet && f.hasOwnProperty('isCollapsed')) {
+                        f.isCollapsed = true;
+                    }
+                });
             }
         },
         collapseAll: function() {
-            if (this.$refs.children) {
-                this.$refs.children.forEach(f => {
-                    if (!f.isCollapsed) {
-                        this.collapseFacet(f);
-                    }
-                        sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
-          })
+            if (!this.$refs.children) {
+                return;
             }
+            this.$refs.children.forEach(f => {
+                if (!f.isCollapsed) {
+                    this.collapseFacet(f);
+                }
+                if (f.isPersistent()) {
+                    sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
+                }
+            });
         },
         collapseAllExceptCurrent: function(facet) {
+            if (!this.$refs.children) {
+                return;
+            }
             this.$refs.children.forEach(f => {
                 if (!f.isCollapsed && f != facet) {
                     this.collapseFacet(f);
                 }
+                if (f.isPersistent()) {
                     sessionStorage.setItem(f.getStorageName(), f.isCollapsed);
-          })
+                }
+            });
         },
         expandAll: function() {
-            if (this.$refs.children) {
-                this.$refs.children.forEach(f => {
-                    if (f.isCollapsed) {
-                        f.isCollapsed = false;
-                    }
-          })
+            if (!this.$refs.children) {
+                return;
             }
+            this.$refs.children.forEach(f => {
+                if (f.isCollapsed) {
+                    f.isCollapsed = false;
+                }
+            });
         },
         toggleFacetMobileMenu: function(e) {
             this.isMobileMenuActive = !this.isMobileMenuActive;
             this.$nextTick(() => {
                 this.emit('toggleFacetMenu', this.isMobileMenuActive);
-          })
+            });
         },
         isResponsiveMode: function(e) {
             let displaySize = window.innerWidth;
@@ -118,7 +128,7 @@ export default {
                 this.updateNavigationWidth(e);
             } else {
                 this.isInResponsiveMode = false;
-              this.stickyNavStyles = {}
+                this.stickyNavStyles = {};
             }
         },
         onScroll: function(e) {
@@ -136,30 +146,32 @@ export default {
 
                 } else {
                     this.isNavSticky = false;
-                  this.stickyNavStyles = {}
+                    this.stickyNavStyles = {};
                 }
             }
         },
         facetRailWrapperClass: function() {
-          let wrapperClasses = ["hawk-facet-rail"];
+            let wrapperClasses = ['hawk-facet-rail'];
 
             if (this.isNavSticky && this.isInResponsiveMode) {
-              wrapperClasses.push("hawk-facet-rail__sticky");
+                wrapperClasses.push('hawk-facet-rail__sticky');
             }
 
             return wrapperClasses.join(' ');
         },
         facetListWrapperClass: function() {
-          let wrapperClasses = ["hawk-facet-rail__facet-list", "hawk-facet-rail__facet-list-wpr"];
+            let wrapperClasses = ['hawk-facet-rail__facet-list', 'hawk-facet-rail__facet-list-wpr'];
 
             if (this.isMobileMenuActive && this.isInResponsiveMode) {
-              wrapperClasses.push("hawk-facet-rail__facet-list-mobile");
+                wrapperClasses.push('hawk-facet-rail__facet-list-mobile');
             }
 
             return wrapperClasses.join(' ');
         },
         updateNavigationWidth: function(e) {
-          let facetsNavDOMRect = (this.$el && this.$el.getBoundingClientRect) ? this.$el.getBoundingClientRect() : null;
+            let facetsNavDOMRect = (this.$el && this.$el.getBoundingClientRect)
+                ? this.$el.getBoundingClientRect()
+                : null;
 
             if (facetsNavDOMRect) {
                 let facetNavOffset = facetsNavDOMRect.x || facetsNavDOMRect.left;
@@ -179,11 +191,15 @@ export default {
         },
         collapseFacet: function(element) {
             element.isCollapsed = true;
-          sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
+            if (f.isPersistent()) {
+                sessionStorage.setItem(element.getStorageName(), element.isCollapsed);
+            }
         },
         expandFacet: function(element) {
             element.isCollapsed = false;
-          sessionStorage.setItem(element.getStorageName(), element.isCollapsed)
+            if (f.isPersistent()) {
+                sessionStorage.setItem(element.getStorageName(), element.isCollapsed);
+            }
         }
     },
     computed: {
