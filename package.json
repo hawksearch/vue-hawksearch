@@ -57,13 +57,9 @@
     "@babel/plugin-transform-destructuring": "^7.28",
     "@babel/plugin-transform-object-rest-spread": "^7.28",
     "@babel/preset-env": "^7.29",
-    "@rollup/plugin-commonjs": "^29.0.2",
-    "@rollup/plugin-terser": "^1.0.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "concurrently": "^9.2.1",
     "sass": "^1.98",
-    "terser": "^5.46",
-    "vite": "^8.0.3",
-    "concurrently": "^9.2.1"
+    "vite": "^8.0.3"
   }
 }
