@@ -7,10 +7,10 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
     export default {
         name: 'listing-type',
         props: ['listingTypes'],
+        emits: ['typeChanged'],
         methods: {
             changeToType: function (type) {
                 this.$emit('typeChanged', type);

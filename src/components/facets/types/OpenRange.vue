@@ -11,7 +11,7 @@
 
 <script>
     import { mapState } from 'vuex';
-    import { addToRangeFacets } from '../../../QueryString';
+    import { addToRangeFacets } from '@/QueryString';
 
     export default {
         name: 'open-range',

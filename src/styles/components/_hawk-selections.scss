@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .hawk-selections {
 	display: flex;
 	align-items: center;
@@ -9,10 +11,9 @@
 }
 
 .hawk-selections__item-remove {
-	@include ButtonLink;
-
 	display: inline-flex;
 	margin-right: 5px;
+	@include ButtonLink;
 }
 
 .hawk-selections__category {
@@ -31,14 +32,16 @@
 }
 
 .hawk-selections__category-remove {
-	@include ButtonLink;
+	& {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-top-right-radius: 0.25rem !important;
+		border-bottom-right-radius: 0.25rem !important;
+		background-color: rgb(217, 83, 79);
+		@include ButtonLink;
+	}
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-top-right-radius: 0.25rem !important;
-	border-bottom-right-radius: 0.25rem !important;
-	background-color: rgb(217, 83, 79);
 
 	&:not(:disabled):not(.disabled):active {
 		background-color: rgb(217, 83, 79);

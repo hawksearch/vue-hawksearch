@@ -3,7 +3,11 @@
         <div class="hawk-preview__banner-container">
             <template v-for="banner in bannerList">
                 <div @click="clickHandler(banner)">
-                    <component :is="getBannerType(banner)" :banner="banner"></component>
+                    <component
+                        :is="getBannerType(banner)"
+                        :banner="banner"
+                        @banner-mounted="loadHandler"
+                    />
                 </div>
             </template>
         </div>
@@ -12,10 +16,10 @@
 
 <script>
     import { mapState } from 'vuex';
-    import BannerImage from './banner-items/BannerImage';
-    import BannerCustom from './banner-items/BannerCustom';
+    import BannerImage from './banner-items/BannerImage.vue';
+    import BannerCustom from './banner-items/BannerCustom.vue';
     //import BannerFeatured from './banner-items/BannerFeatured';
-    import BannerWidget from './banner-items/BannerWidget';
+    import BannerWidget from './banner-items/BannerWidget.vue';
 
     export default {
         name: 'banner',

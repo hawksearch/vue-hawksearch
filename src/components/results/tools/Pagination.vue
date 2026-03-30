@@ -6,14 +6,20 @@
 </template>
 
 <script>
-    import Pager from './Pager';
-    import ItemsPerPage from './ItemsPerPage';
+    import Pager from './Pager.vue';
+    import ItemsPerPage from './ItemsPerPage.vue';
 
     export default {
         name: 'pagination',
         components: {
             Pager,
             ItemsPerPage
+        },
+        props: {
+            templateOverride: {
+                type: String,
+                default: null
+            }
         }
     }
 </script>

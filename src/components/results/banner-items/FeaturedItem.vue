@@ -1,5 +1,5 @@
 <script>
-    import ResultItem from '../ResultItem';
+    import ResultItem from '../ResultItem.vue';
 
     export default {
         name: 'featured-item',

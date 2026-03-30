@@ -49,5 +49,8 @@ export default {
     },
     updateRecentSearch(state, value) {
         state.recentSearch = value;
-    }
+    },
+    setFacetCollapseAllTrigger(state, value) {
+        state.facetsCollapseAllTrigger = value;
+    },
 };

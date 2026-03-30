@@ -1,3 +1,5 @@
+import { setRecentSearch, getRecentSearch } from '@/CookieHandler';
+
 export default {
     fetchResults({ commit, state }, searchParams) {
         return new Promise((resolve, reject) => {
@@ -143,5 +145,18 @@ export default {
                 });
             }
         });
+    },
+    updateRecentSearch({ commit }, keyword = null) {
+        if (keyword) {
+            setRecentSearch(keyword);
+        }
+        commit("updateRecentSearch", getRecentSearch());
+    },
+    triggerFacetCollapse({ commit }) {
+        commit('setFacetCollapseAllTrigger', true);
+
+        setTimeout(() => {
+            commit('setFacetCollapseAllTrigger', null);
+        }, 0);
     }
 };

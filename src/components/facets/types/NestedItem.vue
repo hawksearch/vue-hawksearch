@@ -1,17 +1,17 @@
 <template>
     <li class="hawk-facet-rail__facet-list-item hawkFacet-group">
         <div class="hawkFacet-group__inline">
-            <button @click="selectFacet(itemData)" class="hawk-facet-rail__facet-btn" >
-                <span :class="itemData.Selected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'" >
+            <button @click="selectFacet" class="hawk-facet-rail__facet-btn" >
+                <span :class="checkboxClass" >
                     <template v-if="itemData.Selected">
                         <checkmark-svg class="hawk-facet-rail__facet-checkbox-icon" />
                     </template>
                 </span>
-                <span :class="itemData.Negated ? 'hawk-selections__item-name--negated' : 'hawk-facet-rail__facet-name' ">
+                <span :class="facetLabelClass">
                     {{ htmlEntityDecode(itemData.Label) }} ({{ itemData.Count }})
                 </span>
             </button>
-            <button @click="negateFacet(itemData)" class="hawk-facet-rail__facet-btn-exclude">
+            <button @click="negateFacet" class="hawk-facet-rail__facet-btn-exclude">
                 <template v-if="itemData.Negated">
                     <plus-circle-svg class="hawk-facet-rail__facet-btn-include" />
                 </template>
@@ -19,25 +19,36 @@
                     <dash-circle-svg />
                 </template>
             </button>
-            <button v-if="itemData.Children && itemData.Children.length" :class="isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'" aria-expanded="false" @click="toggleExpanded">
-            </button>
+            <button
+                v-if="itemData.Children && itemData.Children.length"
+                :class="nestedCollpaseStateClass"
+                aria-expanded="false"
+                @click="toggleExpanded"
+            />
         </div>
         <div v-if="isExpanded && itemData.Children" class="hawk-facet-rail__w-100">
             <ul class="hawkFacet-group-inside">
-                <nested-item v-for="item in itemData.Children" :key="item.Value" :item-data="item" :facet-data="facetData" />
+                <nested-item
+                    v-for="item in itemData.Children"
+                    :key="item.Value"
+                    :item-data="item"
+                    @select-facet-value="selectNestedFacet"
+                    @negate-facet-value="negateNestedFacet"
+                />
             </ul>
         </div>
     </li>
 </template>
 
 <script>
-    import CheckmarkSvg from '../../svg/CheckmarkSvg';
-    import PlusCircleSvg from '../../svg/PlusCircleSvg';
-    import DashCircleSvg from '../../svg/DashCircleSvg';
+    import CheckmarkSvg from '../../svg/CheckmarkSvg.vue';
+    import PlusCircleSvg from '../../svg/PlusCircleSvg.vue';
+    import DashCircleSvg from '../../svg/DashCircleSvg.vue';
 
     export default {
         name: 'nested-item',
-        props: ['facetData', 'itemData'],
+        props: ['itemData'],
+        emits: ['selectFacetValue', 'negateFacetValue'],
         components: {
             CheckmarkSvg,
             PlusCircleSvg,
@@ -55,35 +66,18 @@
             toggleExpanded: function () {
                 this.isExpanded = !this.isExpanded;
             },
-            selectFacet: function (value) {
-                this.$parent.clearInlineSelections(value);
-
-                if (value.Negated) {
-                    value.Selected = true;
-                    value.Negated = false;
-                }
-                else {
-                    value.Selected = !value.Selected;
-                }
-
-                this.applyFacets();
+            selectFacet: function () {
+                this.$emit('selectFacetValue', this.itemData);
                 this.isExpanded = true;
             },
-            negateFacet: function (value) {
-                this.$parent.clearSelections(value);
-
-                value.Negated = !value.Negated;
-                value.Selected = value.Negated;
-                this.applyFacets();
+            negateFacet: function () {
+                this.$emit('negateFacetValue', this.itemData);
             },
-            clearSelections: function (value) {
-                this.$parent.clearSelections(value);
+            selectNestedFacet: function (facetValue) {
+                this.$emit('selectFacetValue', facetValue);
             },
-            clearInlineSelections: function (value) {
-                this.$parent.clearInlineSelections(value);
-            },
-            applyFacets: function () {
-                this.$root.dispatchToStore('applyFacets', this.facetData);
+            negateNestedFacet: function (facetValue) {
+                this.$emit('negateFacetValue', facetValue);
             },
             isExpandable: function (itemData) {
                 if (itemData.Selected) {
@@ -96,6 +90,23 @@
             htmlEntityDecode: function(value) {
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
+            }
+        },
+        computed: {
+            checkboxClass: function () {
+                return this.itemData.Selected
+                    ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked'
+                    : 'hawk-facet-rail__facet-checkbox';
+            },
+            facetLabelClass: function () {
+                return this.itemData.Negated
+                    ? 'hawk-selections__item-name--negated'
+                    : 'hawk-facet-rail__facet-name';
+            },
+            nestedCollpaseStateClass: function () {
+                return this.isExpanded
+                    ? 'hawk-collapseState'
+                    : 'hawk-collapseState collapsed';
             }
         }
     }

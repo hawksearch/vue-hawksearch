@@ -12,15 +12,33 @@
                     <div v-if="suggestions.Products.length" class="hawk-autosuggest-inner-list">
                         <h3>{{ suggestions.ProductHeading }}</h3>
                         <ul>
-                            <suggestion-item v-for="item in suggestions.Products" :item="item" :key="item.Results.DocId" @itemselected="onItemSeleted"></suggestion-item>
+                            <suggestion-item
+                                v-for="item in suggestions.Products"
+                                :item="item"
+                                :key="item.Results.DocId"
+                                @item-selected="onItemSeleted"
+                            />
                         </ul>
                         <div @click="viewAllMatches" class="view-matches">View all matches</div>
                     </div>
                     <div v-if="suggestions.Categories.length || suggestions.Popular.length || suggestions.Content.length" 
-                        class="hawk-autosuggest-inner-container">
-                        <categories-container v-if="suggestions.Categories.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></categories-container>
-                        <popular-container v-if="suggestions.Popular.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></popular-container>
-                        <content-container v-if="suggestions.Content.length" :suggestions="suggestions" :keyword="this.$parent.keyword"></content-container>
+                        class="hawk-autosuggest-inner-container"
+                    >
+                        <categories-container
+                            v-if="suggestions.Categories.length"
+                            :suggestions="suggestions"
+                            :keyword="keyword"
+                        />
+                        <popular-container
+                            v-if="suggestions.Popular.length"
+                            :suggestions="suggestions"
+                            :keyword="keyword"
+                        />
+                        <content-container
+                            v-if="suggestions.Content.length"
+                            :suggestions="suggestions"
+                            :keyword="keyword"
+                        />
                     </div>
                 </template>
                 <template v-else>
@@ -32,53 +50,52 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-    import SuggestionItem from './SuggestionItem';
-    import CategoriesContainer from './CategoriesContainer';
-    import PopularContainer from './PopularContainer';
-    import ContentContainer from './ContentContainer';
+import { mapState } from 'vuex';
+import SuggestionItem from './SuggestionItem.vue';
+import CategoriesContainer from './CategoriesContainer.vue';
+import PopularContainer from './PopularContainer.vue';
+import ContentContainer from './ContentContainer.vue';
+import useTrackingEvent from '@/composables/useTrackingEvent';
 
-    export default {
-        name: 'search-suggestions',
-        props: ['fieldFocused', 'keyword'],
-        components: {
-            SuggestionItem,
-            CategoriesContainer,
-            PopularContainer,
-            ContentContainer
-        },
-        methods: {
-            onItemSeleted: function (item) {
-                console.log(this.trackEvent, item.Value, item.Url, this.$parent.keyword);
-                if (this.trackEvent && item.getTitle() && item.getLink() && this.$parent.keyword) {
-                    this.trackEvent.track('autocompleteclick', {
-                        keyword: this.$parent.keyword,
-                        suggestType: this.trackEvent.SuggestType.TopProductMatches,
-                        name: item.getTitle(),
-                        url: item.getLink()
-                    });
-                }
-
-                if (item.getLink()) {
-                    location.assign(item.getLink());
-                }
-            },
-            viewAllMatches: function () {
-                if (this.$parent.search) {
-                    this.$parent.search({ ignoreRedirectRules: true });
-                }
+export default {
+    name: 'search-suggestions',
+    props: ['fieldFocused', 'keyword'],
+    emits: ['viewAllMatches'],
+    components: {
+        SuggestionItem,
+        CategoriesContainer,
+        PopularContainer,
+        ContentContainer
+    },
+    methods: {
+        onItemSeleted: function (item) {
+            if (this.trackEvent && item.getTitle() && item.getLink() && this.keyword) {
+                this.trackEvent.track('autocompleteclick', {
+                    keyword: this.keyword,
+                    suggestType: this.trackEvent.SuggestType.TopProductMatches,
+                    name: item.getTitle(),
+                    url: item.getLink()
+                });
+            }
+            if (item.getLink()) {
+                location.assign(item.getLink());
             }
         },
-        computed: {
-            ...mapState([
-                'suggestions',
-                'loadingSuggestions'
-            ]),
-            trackEvent: function () {
-                return this.$root.trackEvent;
-            }
+        viewAllMatches: function () {
+            this.$emit('viewAllMatches');
         }
+    },
+    computed: {
+        ...mapState([
+            'suggestions',
+            'loadingSuggestions'
+        ]),
+    },
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
+}
 </script>
 
 <style scoped lang="scss">

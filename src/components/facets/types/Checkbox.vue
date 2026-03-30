@@ -35,113 +35,114 @@
 </template>
 
 <script>
-    import CheckmarkSvg from '../../svg/CheckmarkSvg';
-    import PlusCircleSvg from '../../svg/PlusCircleSvg';
-    import DashCircleSvg from '../../svg/DashCircleSvg';
+import { mapGetters } from 'vuex';
+import CheckmarkSvg from '../../svg/CheckmarkSvg.vue';
+import PlusCircleSvg from '../../svg/PlusCircleSvg.vue';
+import DashCircleSvg from '../../svg/DashCircleSvg.vue';
 
-    export default {
-        name: 'checkbox',
-        props: ['facetData'],
-        components: {
-            CheckmarkSvg,
-            PlusCircleSvg,
-            DashCircleSvg
+export default {
+    name: 'checkbox',
+    props: ['facetData'],
+    components: {
+        CheckmarkSvg,
+        PlusCircleSvg,
+        DashCircleSvg
+    },
+    methods: {
+        selectFacet: function (value) {
+            this.clearSelections(value);
+
+            if (value.Negated) {
+                value.Selected = true;
+                value.Negated = false;
+            }
+            else {
+                value.Selected = !value.Selected;
+            }
+
+            this.applyFacets();
         },
-        methods: {
-            selectFacet: function (value) {
-                this.clearSelections(value);
+        negateFacet: function (value) {
+            this.clearSelections(value);
 
-                if (value.Negated) {
-                    value.Selected = true;
-                    value.Negated = false;
+            value.Negated = !value.Negated;
+            value.Selected = value.Negated;
+            this.applyFacets();
+        },
+        applyFacets: function () {
+            this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
+                var widget = this.$root;
+
+                HawksearchVue.applyTabSelection(widget);
+            });
+        },
+        clearSelections: function (exception) {
+            if (this.getCheckboxType() !== 'single') {
+                return;
+            }
+
+            this.facetData.Values.forEach(item => {
+                if (!lodash.isEqual(item, exception)) {
+                    item.Negated = false;
+                    item.Selected = false;
                 }
-                else {
-                    value.Selected = !value.Selected;
-                }
+            });
+        },
+        getCheckboxType: function () {
+            var field = HawksearchVue.getFacetParamName(this.facetData);
 
-                this.applyFacets();
-            },
-            negateFacet: function (value) {
-                this.clearSelections(value);
-
-                value.Negated = !value.Negated;
-                value.Selected = value.Negated;
-                this.applyFacets();
-            },
-            applyFacets: function () {
-                this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
-                    var widget = this.$root;
-
-                    HawksearchVue.applyTabSelection(widget);
-                });
-            },
-            clearSelections: function (exception) {
-                if (this.getCheckboxType() == 'single') {
-                    this.items = this.items.map(item => {
-                        if (lodash.isEqual(item, exception)) {
-                            return item;
-                        }
-                        else {
-                            item.Negated = false;
-                            item.Selected = false;
-                        }
-                    });
-                }
-            },
-            getCheckboxType: function () {
-                var field = HawksearchVue.getFacetParamName(this.facetData);
-
-                if (this.$root.config.facetConfig.hasOwnProperty(field)) {
-                    return this.$root.config.facetConfig[field];
-                }
-                else {
-                    return 'multiple';
-                }
-            },
-            getAssetUrl: function (value) {
-                if (value && value.AssetFullUrl) {
-                    return this.$root.config.dashboardUrl + value.AssetFullUrl;
-                }
-            },
-            facetValuesWrapperClass: function () {
-                let wrapperClasses = ["hawk-facet-rail__facet-values-checkbox"];
-
-                if (this.shouldScroll) {
-                    wrapperClasses.push("hawk-facet-rail__facet-values-checkbox__scrollable");
-                }
-
-                return wrapperClasses.join(' ');
-            },
-            facetValuesWrapperStyle: function () {
-                let styles = {};
-
-                if (this.shouldScroll) {
-                    let scrollHeight = this.facetData.ScrollHeight;
-
-                    if (!scrollHeight || scrollHeight < 20) {
-                        scrollHeight = 300;
-                    }
-
-                    styles = { height: scrollHeight + 'px' };
-                }
-
-                return styles;
-            },
-            htmlEntityDecode: function(value) {
-                var decoded = new DOMParser().parseFromString(value, "text/html");
-                return decoded.documentElement.textContent;
+            if (this.config.facetConfig.hasOwnProperty(field)) {
+                return this.config.facetConfig[field];
+            }
+            else {
+                return 'multiple';
             }
         },
-        computed: {
-            items: function () {
-                return this.facetData.Values;
-            },
-            shouldScroll: function () {
-                // the facet does truncated listing of values if configured for truncating and we have too many facets
-                return this.facetData.DisplayType === 'scrolling' && this.facetData.Values.length > this.facetData.ScrollThreshold;
+        getAssetUrl: function (value) {
+            if (value && value.AssetFullUrl) {
+                return this.config.dashboardUrl + value.AssetFullUrl;
             }
+        },
+        facetValuesWrapperClass: function () {
+            let wrapperClasses = ["hawk-facet-rail__facet-values-checkbox"];
+
+            if (this.shouldScroll) {
+                wrapperClasses.push("hawk-facet-rail__facet-values-checkbox__scrollable");
+            }
+
+            return wrapperClasses.join(' ');
+        },
+        facetValuesWrapperStyle: function () {
+            let styles = {};
+
+            if (this.shouldScroll) {
+                let scrollHeight = this.facetData.ScrollHeight;
+
+                if (!scrollHeight || scrollHeight < 20) {
+                    scrollHeight = 300;
+                }
+
+                styles = { height: scrollHeight + 'px' };
+            }
+
+            return styles;
+        },
+        htmlEntityDecode: function(value) {
+            var decoded = new DOMParser().parseFromString(value, "text/html");
+            return decoded.documentElement.textContent;
         }
+    },
+    computed: {
+        items: function () {
+            return this.facetData.Values;
+        },
+        shouldScroll: function () {
+            // the facet does truncated listing of values if configured for truncating and we have too many facets
+            return this.facetData.DisplayType === 'scrolling' && this.facetData.Values.length > this.facetData.ScrollThreshold;
+        },
+        ...mapGetters(['config']),
     }
+}
 </script>
 
 <style scoped lang="scss">

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import PlaceholderImage from './PlaceholderImage'
+    import PlaceholderImage from './PlaceholderImage.vue'
 
     export default {
         name: 'placeholder-item',

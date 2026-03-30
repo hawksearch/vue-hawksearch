@@ -18,12 +18,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import {
     deleteCookie,
-    getRecentSearch,
-    setRecentSearch,
-} from "../../../CookieHandler";
+} from "@/CookieHandler";
 
 export default {
     name: "recent-searches",
@@ -32,16 +30,13 @@ export default {
         this.updateRecentSearch();
     },
     methods: {
-        updateRecentSearch: function () {
-            this.$root.$store.commit("updateRecentSearch", getRecentSearch());
-        },
+        ...mapActions(['updateRecentSearch']),
         search: function (keyword) {
             const options = {};
 
-            let searchBoxConfig = this.$root.config.searchBoxConfig;
+            let searchBoxConfig = this.config.searchBoxConfig;
             let searchPage = this.searchPage || location.pathname;
-            setRecentSearch(keyword);
-            this.updateRecentSearch();
+            this.updateRecentSearch(keyword);
 
             if (
                 searchBoxConfig.redirectToCurrentPage ||
@@ -76,6 +71,7 @@ export default {
     },
     computed: {
         ...mapState(["recentSearch"]),
+        ...mapGetters(['config']),
     }
 }
 </script>

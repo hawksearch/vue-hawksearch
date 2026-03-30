@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import FeaturedItem from './FeaturedItem';
+    import FeaturedItem from './FeaturedItem.vue';
 
     export default {
         name: 'featured-items',

@@ -1,23 +1,13 @@
-import Vue from 'vue';
-window.Vue = Vue;
-
-Vue.config.devtools = true;
+import { createApp } from 'vue';
+import moment from 'moment-mini';
+window.Vue = { createApp, config: {} };
 
 import HawksearchVue from "./HawksearchVue";
-import { version } from "./version";
 
-HawksearchVue.version = version;
+import '@/styles/app.scss'
+
 window.HawksearchVue = HawksearchVue;
-window.moment = require('moment-mini');
-
-HawksearchVue.init();
-
-import 'styles/app.scss';
-
-export * from './components';
-
-export { default as tConfig } from './i18n';
-export { default as TrackingEvent } from './TrackingEvent';
+window.moment = moment;
 
 Array.prototype.max = function max() {
   return Math.max.apply(null, this);

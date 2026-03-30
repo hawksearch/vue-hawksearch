@@ -4,7 +4,11 @@
             <div class="hawk-preview__banner-container">
                 <template v-for="item in items">
                     <div @click="clickHandler(item)">
-                        <component :is="getItemType(item)" :banner="item"></component>
+                        <component
+                            :is="getItemType(item)"
+                            :banner="item"
+                            @banner-mounted="loadHandler"
+                        />
                     </div>
                 </template>
             </div>
@@ -13,11 +17,11 @@
 </template>
 
 <script>
-    import { mapState, mapGetters } from 'vuex';
-    import BannerImage from './banner-items/BannerImage';
-    import BannerCustom from './banner-items/BannerCustom';
-    import FeaturedItems from './banner-items/FeaturedItems';
-    import BannerWidget from './banner-items/BannerWidget';
+    import { mapState } from 'vuex';
+    import BannerImage from './banner-items/BannerImage.vue';
+    import BannerCustom from './banner-items/BannerCustom.vue';
+    import FeaturedItems from './banner-items/FeaturedItems.vue';
+    import BannerWidget from './banner-items/BannerWidget.vue';
 
     export default {
         name: 'page-content',

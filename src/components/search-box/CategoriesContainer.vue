@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import useTrackingEvent from '@/composables/useTrackingEvent';
+
 export default {
     name: 'categories-container',
     props: ['suggestions', 'keyword'],
@@ -18,25 +20,22 @@ export default {
         },
         onClick: function (item) {
             item = { ...item };
-            console.log(this.trackEvent && item.Value && item.Url && this.$parent.keyword);
-            if (this.trackEvent && item.Value && item.Url && this.$parent.keyword) {
+            if (this.trackEvent && item.Value && item.Url && this.keyword) {
                 this.trackEvent.track('autocompleteclick', {
-                    keyword: this.$parent.keyword,
+                    keyword: this.keyword,
                     suggestType: this.trackEvent.SuggestType.TopCategories,
                     name: item.Value,
                     url: item.Url
                 });
             }
-
             if (item.Url) {
                 location.assign(item.Url);
             }
         }
     },
-    computed: {
-        trackEvent: function () {
-            return this.$root.trackEvent;
-        }
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
 }
 </script>

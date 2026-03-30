@@ -56,25 +56,28 @@
 </template>
 
 <script>
-import QuestionmarkSvg from "../svg/QuestionmarkSvg";
-import PlusSvg from "../svg/PlusSvg";
-import MinusSvg from "../svg/MinusSvg";
+import { mapGetters } from "vuex";
+
+import QuestionmarkSvg from "../svg/QuestionmarkSvg.vue";
+import PlusSvg from "../svg/PlusSvg.vue";
+import MinusSvg from "../svg/MinusSvg.vue";
 
 // facet types
-import Checkbox from "./types/Checkbox";
-import FacetLink from "./types/FacetLink";
-import NestedCheckbox from "./types/NestedCheckbox";
-import NestedLinkList from "./types/NestedLinkList";
-import Size from "./types/Size";
-import Search from "./types/Search";
-import OpenRange from "./types/OpenRange";
-import Swatch from "./types/Swatch";
-import Slider from "./types/Slider";
-import RecentSearches from "./types/RecentSearches";
+import Checkbox from "./types/Checkbox.vue";
+import FacetLink from "./types/FacetLink.vue";
+import NestedCheckbox from "./types/NestedCheckbox.vue";
+import NestedLinkList from "./types/NestedLinkList.vue";
+import Size from "./types/Size.vue";
+import Search from "./types/Search.vue";
+import OpenRange from "./types/OpenRange.vue";
+import Swatch from "./types/Swatch.vue";
+import Slider from "./types/Slider.vue";
+import RecentSearches from "./types/RecentSearches.vue";
 
 export default {
   name: "facet",
-  props: ["facetData", "facetSettings", "facets"],
+  props: ["facetData", "facetSettings"],
+  emits: ["expand", "collapse", "collapseAllExceptCurrent"],
   components: {
     QuestionmarkSvg,
     PlusSvg,
@@ -187,9 +190,9 @@ export default {
     },
     isPersistent: function () {
       if (
-        this.$root.config.facetConfig.hasOwnProperty("_persist") &&
-        this.$root.config.facetConfig["_persist"] == false &&
-        this.$root.config.facetConfig["_persist"]
+        this.config.facetConfig.hasOwnProperty("_persist") &&
+        this.config.facetConfig["_persist"] == false &&
+        this.config.facetConfig["_persist"]
       ) {
         return false;
       } else {
@@ -271,7 +274,8 @@ export default {
     },
     truncateVisible: function () {
       return this.shouldTruncate && !this.filter;
-    }
+    },
+    ...mapGetters(['config']),
   }
 }
 </script>
