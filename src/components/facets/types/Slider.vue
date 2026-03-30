@@ -65,7 +65,7 @@
                 window.addEventListener('touchend', this.onMouseUp)
             }
         },
-        beforeDestroy: function () {
+        beforeUnmount: function () {
             window.removeEventListener('mouseup', this.onMouseUp)
             window.removeEventListener('mousemove', this.onMouseMove)
             window.removeEventListener('resize', this.onResize);
