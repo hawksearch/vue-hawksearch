@@ -52,7 +52,7 @@ export default {
             this.updateRecentSearch(this.keyword);
 
             if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage != location.pathname)) {
-                HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options.ignoreRedirectRules);
+                HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options?.ignoreRedirectRules);
             }
             else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                 this.keywordEnter = this.keyword;
