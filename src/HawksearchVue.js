@@ -18,8 +18,6 @@ import useTrackingEvent from '@/composables/useTrackingEvent';
 var _ = lodash;
 window.lodash = lodash.noConflict();
 
-const CancelToken = axios.CancelToken;
-
 class HawksearchVue {
     static defaultConfig = {
         clientGuid: '',
@@ -333,7 +331,7 @@ class HawksearchVue {
         }
 
         if (store.state.searchCancelation) {
-            store.state.searchCancelation();
+            store.state.searchCancelation.abort();
             store.commit('updateSearchCancelation', null);
         }
 
@@ -353,10 +351,11 @@ class HawksearchVue {
             config.additionalParameters);
 
         store.commit('updateWaitingForInitialSearch', false);
+        const controller = new AbortController();
+        store.commit('updateSearchCancelation', controller);
+        
         axios.post(this.getFullSearchUrl(store), params, {
-            cancelToken: new CancelToken(function executor(c) {
-                store.commit('updateSearchCancelation', c);
-            })
+            signal: controller.signal
         }).then(response => {
             if (response.status == '200' && response.data) {
                 HawksearchVue.handleRedirectRules(response.data, config).then(() => {
@@ -647,7 +646,7 @@ class HawksearchVue {
         }
 
         if (store.state.autocompleteCancelation) {
-            store.state.autocompleteCancelation();
+            store.state.autocompleteCancelation.abort();
             store.commit('updateAutocompleteCancelation', null);
         }
 
@@ -670,10 +669,11 @@ class HawksearchVue {
             },
             config.additionalParameters);
 
+        const controller = new AbortController();
+        store.commit('updateAutocompleteCancelation', controller);
+        
         axios.post(this.getFullAutocompleteUrl(store), params, {
-            cancelToken: new CancelToken(function executor(c) {
-                store.commit('updateAutocompleteCancelation', c);
-            }),
+            signal: controller.signal
         }).then(response => {
             if (response && response.status == '200' && response.data) {
                 callback(response.data);
