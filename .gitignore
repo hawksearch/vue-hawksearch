@@ -2,6 +2,7 @@
 /.vs
 /.vscode
 /preview
+/dist
 .idea
 .DS_Store
 

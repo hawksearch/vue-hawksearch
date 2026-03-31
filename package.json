@@ -19,7 +19,8 @@
     "clean:c": "npm cache clean --force",
     "clean:index": "rm -rf index.html",
     "clean:node": "rm -rf node_modules package-lock.json preview",
-    "clean:all": "npm run clean:node && npm run clean:c && npm run clean:index"
+    "clean:all": "npm run clean:node && npm run clean:c && npm run clean:index",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
