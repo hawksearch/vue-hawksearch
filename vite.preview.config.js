@@ -4,23 +4,16 @@ import path from 'path'
 
 export default defineConfig({
     plugins: [vue()],
+    publicDir: 'preview',
     build: {
         outDir: 'preview',
-        publicDir: 'preview',
         assetsDir: '',
         cssCodeSplit: false,
         sourcemap: true,
         cssMinify: false,
         minify: false,
-        terserOptions: {
-            compress: true,
-            mangle: true,
-            format: {
-                comments: false,
-            },
-        },
         reportCompressedSize: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: 'index.html',
             output: {
                 entryFileNames: 'vue-hawksearch.js',
