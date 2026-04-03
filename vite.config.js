@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => {
             reportCompressedSize: true,
             rolldownOptions: {
                 input: 'src/index.js',
-                external: ['vue', 'moment-mini'],
+                external: ['vue'],
                 output: {
                     entryFileNames: 'vue-hawksearch.js',
                     chunkFileNames: 'chunks/vue-hawksearch.[hash].js',
