@@ -3,7 +3,7 @@
         <SearchBoxImage
             ref="searchBoxImage"
             :visible="imageSearchVisible"
-            @update:visible="imageSearchVisible = $event"
+            @update:visible="onImageSearchVisibilityChange"
         />
 
         <div class="hawk__searchFull smart-search">
@@ -65,6 +65,7 @@ export default {
             keywordEnter: null,
             suggestionDelay: null,
             fieldFocused: false,
+            suggestionClick: false,
             imageSearchVisible: false,
             requestType: 'DefaultSearch'
         }
@@ -189,6 +190,12 @@ export default {
         toggleImageSearch() {
             this.imageSearchVisible = !this.imageSearchVisible;
             if (!this.imageSearchVisible) {
+                this.$refs.searchBoxImage?.clearImageData();
+            }
+        },
+        onImageSearchVisibilityChange(visible) {
+            this.imageSearchVisible = visible;
+            if (!visible) {
                 this.$refs.searchBoxImage?.clearImageData();
             }
         },

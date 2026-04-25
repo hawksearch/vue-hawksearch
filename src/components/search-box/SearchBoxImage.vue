@@ -135,6 +135,11 @@ export default {
         removeImage(index) {
             this.images.splice(index, 1);
         },
+        clearImageData() {
+            this.images = [];
+            this.imageKeyword = null;
+            this.notification = "";
+        },
         closeImageSearch() {
             this.$emit('update:visible', false);
         },
