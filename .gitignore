@@ -7,3 +7,5 @@
 .DS_Store
 
 index.html
+# Local env files
+.env*.local

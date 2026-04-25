@@ -1,8 +1,8 @@
 import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import fs from 'fs'
 import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
     // Check if the watch flag is present in the command line arguments
     // @see https://github.com/vitejs/vite/discussions/7565
@@ -10,7 +10,18 @@ export default defineConfig(({ command }) => {
     const isWatchMode = process.argv.includes('--watch') || process.argv.includes('-w');
 
     return {
-        plugins: [vue()],
+        plugins: [
+            vue(),
+            // hook to keep backward compatibility with legacy file name vue-hawksearch.js
+            {
+                name: 'copy-es-to-default',
+                buildEnd() {
+                    const src = path.resolve(__dirname, 'dist/vue-hawksearch.es.js');
+                    const dest = path.resolve(__dirname, 'dist/vue-hawksearch.js');
+                    fs.copyFileSync(src, dest);
+                }
+            }
+        ],
         publicDir: 'public',
         build: {
             outDir: 'dist',
@@ -21,10 +32,12 @@ export default defineConfig(({ command }) => {
             cssMinify: true,
             reportCompressedSize: true,
             rolldownOptions: {
-                input: 'src/index.js',
-                external: ['vue', 'moment-mini'],
+                external: ['vue', 'vuex'],
                 output: {
-                    entryFileNames: 'vue-hawksearch.js',
+                    globals: {
+                        vue: 'Vue',
+                        vuex: 'Vuex',
+                    },
                     chunkFileNames: 'chunks/vue-hawksearch.[hash].js',
                     assetFileNames: 'vue-hawksearch.[ext]',
                 },
@@ -33,12 +46,13 @@ export default defineConfig(({ command }) => {
             lib: {
                 entry: 'src/index.js',
                 name: 'VueHawksearch',
-                fileName: 'vue-hawksearch',
-                formats: ['es'],
+                fileName: (format) => `vue-hawksearch.${format}.js`,
+                formats: ['es', 'umd'],
             },
             watch: isWatchMode ? {
                 include: 'src/**',
-            } : null
+            } : null,
+            target: ['esnext'],
         },
         css: {
             preprocessorOptions: {
