@@ -15,10 +15,14 @@ export default defineConfig(({ command }) => {
             // hook to keep backward compatibility with legacy file name vue-hawksearch.js
             {
                 name: 'copy-es-to-default',
-                buildEnd() {
+                closeBundle() {
                     const src = path.resolve(__dirname, 'dist/vue-hawksearch.es.js');
                     const dest = path.resolve(__dirname, 'dist/vue-hawksearch.js');
-                    fs.copyFileSync(src, dest);
+                    if (fs.existsSync(src)) {
+                        fs.copyFileSync(src, dest);
+                    } else {
+                        console.warn(`[copy-es-to-default] Source file not found: ${src}`);
+                    }
                 }
             }
         ],
