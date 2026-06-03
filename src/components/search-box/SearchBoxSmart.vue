@@ -33,7 +33,6 @@ import {mapActions, mapGetters, mapState} from 'vuex';
 import SearchIconSvg from "../svg/SearchIconSvg.vue";
 import ImageSearchIconSvg from "../svg/ImageSearchIconSvg.vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
-import CustomResultsLabel from "../results/tools/CustomResultsLabel.vue";
 import SearchBoxImage from "./SearchBoxImage.vue";
 import useEventBus from '@/composables/useEventBus';
 
@@ -42,7 +41,6 @@ export default {
     props: ['indexName', 'searchPage', 'templateOverride'],
     components: {
         SearchSuggestions,
-        CustomResultsLabel,
         SearchBoxImage,
         SearchIconSvg,
         ImageSearchIconSvg
@@ -72,28 +70,6 @@ export default {
     },
     methods: {
         ...mapActions(['updateRecentSearch']),
-        searchKeyword(options = {}) {
-            this.cancelSuggestions();
-
-            let searchBoxConfig = this.config.searchBoxConfig;
-            let searchPage = this.searchPage || location.pathname;
-
-            this.updateRecentSearch(this.keyword);
-
-            if (searchBoxConfig.redirectToCurrentPage || (this.searchPage && this.searchPage !== location.pathname)) {
-                HawksearchVue.redirectSearch(this.keyword, this.$root, searchPage, options.ignoreRedirectRules);
-            } else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
-                this.keywordEnter = this.keyword;
-                this.$root.dispatchToStore('fetchResults', {
-                    Keyword: this.keyword || "",
-                    FacetSelections: {},
-                    PageNo: 1,
-                    RequestType: this.requestType
-                }).then(() => {
-                    HawksearchVue.applyTabSelection(this.$root);
-                });
-            }
-        },
         searchFull(options = {}) {
             this.cancelSuggestions();
 
@@ -116,33 +92,11 @@ export default {
                 });
             }
         },
-        onKeywordKeyDown(e) {
-            if (e.key === 'Enter') {
-                this.searchKeyword();
-                e.stopPropagation();
-                e.preventDefault();
-            }
-        },
         onFullSearchKeyDown(e) {
             if (e.key === 'Enter') {
                 this.searchFull();
                 e.stopPropagation();
                 e.preventDefault();
-            }
-        },
-        onKeywordInput(e) {
-            const keyword = e.target.value;
-
-            if (keyword) {
-                this.fieldFocused = true;
-                this.$store.commit('updateLoadingSuggestions', true);
-
-                clearTimeout(this.suggestionDelay);
-                this.suggestionDelay = setTimeout(() => {
-                    this.$root.dispatchToStore('fetchSuggestions', {Keyword: keyword});
-                }, 250);
-            } else {
-                this.cancelSuggestions();
             }
         },
         onFullSearchInput(e) {
@@ -160,15 +114,6 @@ export default {
                 this.cancelSuggestions();
             }
         },
-        onKeywordBlur() {
-            setTimeout(() => {
-                if (!this.suggestionClick) {
-                    this.fieldFocused = false;
-                    this.keyword = this.keywordEnter;
-                    this.cancelSuggestions();
-                }
-            }, 250);
-        },
         onFullSearchBlur() {
             setTimeout(() => {
                 if (!this.suggestionClick) {
@@ -183,7 +128,6 @@ export default {
         },
         cancelSuggestions() {
             clearTimeout(this.suggestionDelay);
-            HawksearchVue.cancelSuggestionsRequest();
             this.$store.commit('updateLoadingSuggestions', false);
             this.$store.commit('updateSuggestions', null);
         },
@@ -205,7 +149,6 @@ export default {
     },
     computed: {
         ...mapState([
-            'loadingResults',
             'searchOutput'
         ]),
         ...mapGetters([

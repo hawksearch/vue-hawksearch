@@ -7,10 +7,3 @@ export default {
 name: 'CloseIconSvg'
 }
 </script>
-
-<style scoped>
-.icon.close-icon {
-width: 14px;
-height: 14px;
-}
-</style>

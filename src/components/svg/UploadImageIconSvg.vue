@@ -7,10 +7,3 @@ export default {
     name: 'UploadImageIconSvg'
 }
 </script>
-
-<style scoped>
-.icon.upload-image-icon {
-    width: 19px;
-    height: 16px;
-}
-</style>

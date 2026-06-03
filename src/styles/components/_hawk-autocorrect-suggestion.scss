@@ -1,15 +1,26 @@
-// Color Variables
+// Semantic colors
+$base-100-color: #fff;
+$base-200-color: #F5F7FA;
+$base-300-color: #E6E9ED;
+$base-content-color: #656d78;
 $primary-color: #119FF7;
+$primary-content-color: #F2FAFF;
 $secondary-color: #F37624;
-$background-color: #F5F7FA;
-$border-color: #E6E9ED;
-$text-color: #656D78;
-$hover-background-color: #f5f5f5;
-$image-background-color: #F2FAFF;
-$button-text-color: #fff;
-$button-background-color: #000;
+$secondary-content-color: #F37624;
+$neutral-color: #000;
+$neutral-content-color: $base-100-color;
+$error-color: red;
+
+// Utility colors
+$background-color: $base-200-color;
+$border-color: $base-300-color;
+$text-color: $base-content-color;
+$hover-background-color: $base-200-color;
+$image-background-color: $primary-content-color;
+$button-background-color: $neutral-color;
 $hover-button-background-color: #333;
 $remove-icon-hover-color: $primary-color;
+$button-text-color: $base-100-color;
 
 .hawk-autocorrect-suggestion {
 	h3 {
@@ -72,7 +83,6 @@ $remove-icon-hover-color: $primary-color;
 	}
 
 	.image-search-btn {
-		/*display: flex;*/
 		width: 60px;
 		height: 50px;
 		border-radius: 100px;
@@ -92,7 +102,6 @@ $remove-icon-hover-color: $primary-color;
 }
 
 .hawk__uploadImage {
-    /*min-height: 400px;*/
 	border: 2px dashed $primary-color;
 	background: $image-background-color;
 	padding: 30px 20px;
@@ -150,7 +159,6 @@ $remove-icon-hover-color: $primary-color;
 
 .image-name {
 	font-size: 12px;
-	color: #333;
 	margin: 0;
 	white-space: nowrap;
 	overflow: hidden;
@@ -178,7 +186,7 @@ $remove-icon-hover-color: $primary-color;
 		position: absolute;
 		width: 14px;
 		height: 1px;
-		background-color: #000;
+		background-color: $button-background-color;
 		transition: background-color 0.3s;
 	}
 
@@ -290,6 +298,6 @@ $remove-icon-hover-color: $primary-color;
 }
 
 .notification {
-	color: red;
+	color: $error-color;
 	margin-top: 10px;
 }

@@ -10,18 +10,15 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import SearchSuggestions from "./SearchSuggestions.vue";
-import CustomResultsLabel from "../results/tools/CustomResultsLabel.vue";
 
 export default {
     name: 'search-box',
     props: ['indexName', 'searchPage', 'templateOverride'],
     components: {
-        SearchSuggestions,
-        CustomResultsLabel
+        SearchSuggestions
     },
     computed: {
         ...mapState([
-            'loadingResults',
             'searchOutput'
         ]),
         ...mapGetters([
@@ -102,7 +99,6 @@ export default {
         },
         cancelSuggestions: function () {
             clearTimeout(this.suggestionDelay);
-            HawksearchVue.cancelSuggestionsRequest();
             this.$store.commit('updateLoadingSuggestions', false);
             this.$store.commit('updateSuggestions', null);
         },

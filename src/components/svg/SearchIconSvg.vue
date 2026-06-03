@@ -7,10 +7,3 @@ export default {
     name: 'SearchIconSvg'
 }
 </script>
-
-<style scoped>
-.icon.search-icon {
-    width: 20px;
-    height: 20px;
-}
-</style>
