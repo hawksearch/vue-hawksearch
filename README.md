@@ -48,7 +48,7 @@ Then set the necessary configurations. The values for these should be provided b
 ```javascript
 const config = {
     clientGuid: '1234567890',
-    apiUrl: 'https://searchapi.hawksearch.net/api/v2/search/'
+    apiUrl: 'https://searchapi.hawksearch.net'
 }
 ```
 

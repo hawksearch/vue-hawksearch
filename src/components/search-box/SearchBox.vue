@@ -1,7 +1,7 @@
 <template>
     <div class="hawk__searchBox" @click="onClick">
         <div class="hawk__searchBox__searchInput">
-            <input type="text" :placeholder="$t('Enter a search term')" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
+            <input type="text" :placeholder="$t(placeholder)" v-model="keyword" @input="onInput" @keydown="onKeyDown" @blur="onBlur" />
         </div>
         <search-suggestions :field-focused="fieldFocused" :keyword="keyword" @view-all-matches="search" @mousedown.native="onSuggestionClick"></search-suggestions>
     </div>
@@ -9,20 +9,16 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-
 import SearchSuggestions from "./SearchSuggestions.vue";
-import CustomResultsLabel from "../results/tools/CustomResultsLabel.vue";
 
 export default {
     name: 'search-box',
     props: ['indexName', 'searchPage', 'templateOverride'],
     components: {
-        SearchSuggestions,
-        CustomResultsLabel
+        SearchSuggestions
     },
     computed: {
         ...mapState([
-            'loadingResults',
             'searchOutput'
         ]),
         ...mapGetters([
@@ -33,7 +29,7 @@ export default {
         return {
             keyword: null,
             keywordEnter: null,
-            placeholder: 'Enter search term',
+            placeholder: 'Enter a search term',
             suggestionDelay: null,
             fieldFocused: false,
             suggestionClick: false,
@@ -103,7 +99,6 @@ export default {
         },
         cancelSuggestions: function () {
             clearTimeout(this.suggestionDelay);
-            HawksearchVue.cancelSuggestionsRequest();
             this.$store.commit('updateLoadingSuggestions', false);
             this.$store.commit('updateSuggestions', null);
         },

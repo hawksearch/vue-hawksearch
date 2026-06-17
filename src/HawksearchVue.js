@@ -8,6 +8,7 @@ import { getParamName, parseURLparams, updateUrl } from '@/QueryString';
 import { getVisitorId, getVisitId } from '@/CookieHandler';
 import templateOverridePlugin from '@/plugins/templateOverridePlugin';
 import SearchBox from '@/components/search-box/SearchBox.vue';
+import SearchBoxSmart from '@/components/search-box/SearchBoxSmart.vue';
 import Results from '@/components/results/Results.vue';
 import FacetList from '@/components/facets/FacetList.vue';
 import PageContent from '@/components/results/PageContent.vue';
@@ -172,6 +173,7 @@ class HawksearchVue {
         // Merge passed components with defaults
         components = Object.assign({}, {
             SearchBox,
+            SearchBoxSmart,
             Results,
             FacetList,
             PageContent,
@@ -353,7 +355,7 @@ class HawksearchVue {
         store.commit('updateWaitingForInitialSearch', false);
         const controller = new AbortController();
         store.commit('updateSearchCancelation', controller);
-        
+
         axios.post(this.getFullSearchUrl(store), params, {
             signal: controller.signal
         }).then(response => {
@@ -430,7 +432,7 @@ class HawksearchVue {
             this.truncateFacetSelections(store);
             this.applyTabSelection(widget);
         });
-        
+
         if(store.state.isFirstInitialSearch){
             store.commit('updateInitialSearchUrl', location.search);
             store.commit('updateIsFirstInitialSearch', false);
@@ -671,7 +673,7 @@ class HawksearchVue {
 
         const controller = new AbortController();
         store.commit('updateAutocompleteCancelation', controller);
-        
+
         axios.post(this.getFullAutocompleteUrl(store), params, {
             signal: controller.signal
         }).then(response => {
@@ -791,7 +793,7 @@ class HawksearchVue {
     static applyTabSelection(widget) {
         var store = this.getWidgetStore(widget);
         var data = store.state.searchOutput;
-        
+
         if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
             var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
 
