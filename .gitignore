@@ -1,11 +1,9 @@
 /node_modules
 /.vs
 /.vscode
-/preview
 /dist
 .idea
 .DS_Store
 
-index.html
 # Local env files
 .env*.local

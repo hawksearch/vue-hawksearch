@@ -24,6 +24,19 @@ export default defineConfig(({ command }) => {
                         console.warn(`[copy-es-to-default] Source file not found: ${src}`);
                     }
                 }
+            },
+            {
+                name: 'root-redirect',
+                configureServer(server) {
+                    server.middlewares.use((req, res, next) => {
+                        if (req.url === '/' || req.url === '/index.html') {
+                            res.writeHead(302, { Location: '/examples/index.html' })
+                            res.end()
+                        } else {
+                            next()
+                        }
+                    })
+                }
             }
         ],
         publicDir: 'public',
