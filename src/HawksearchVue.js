@@ -35,6 +35,7 @@ class HawksearchVue {
         indexNameRequired: false,
         language: null,
         additionalParameters: {},
+        clientRemoteAddress: null, // Used for X-Forwarded-For header if defined
         searchBoxConfig: {
             reloadOnEmpty: false,
             redirectOnEmpty: false,
@@ -357,7 +358,8 @@ class HawksearchVue {
         store.commit('updateSearchCancelation', controller);
 
         axios.post(this.getFullSearchUrl(store), params, {
-            signal: controller.signal
+            signal: controller.signal,
+            headers: this.getHawksearchHeaders(config)
         }).then(response => {
             if (response.status == '200' && response.data) {
                 HawksearchVue.handleRedirectRules(response.data, config).then(() => {
@@ -631,7 +633,9 @@ class HawksearchVue {
             renderHTML: false
         }
 
-        axios.post(config.recommendationUrl, params).then(response => {
+        axios.post(config.recommendationUrl, params, {
+            headers: this.getHawksearchHeaders(config)
+        }).then(response => {
             if (response.status == '200' && response.data) {
                 callback(response.data);
             }
@@ -675,7 +679,8 @@ class HawksearchVue {
         store.commit('updateAutocompleteCancelation', controller);
 
         axios.post(this.getFullAutocompleteUrl(store), params, {
-            signal: controller.signal
+            signal: controller.signal,
+            headers: this.getHawksearchHeaders(config)
         }).then(response => {
             if (response && response.status == '200' && response.data) {
                 callback(response.data);
@@ -856,6 +861,19 @@ class HawksearchVue {
             }
             w.$store.dispatch('triggerFacetCollapse');
         })
+    }
+
+    // Utility function to construct Hawksearch API headers
+    static getHawksearchHeaders(config) {
+        const headers = {
+            'X-HawkSearch-ClientGuid': config.clientGuid || '',
+            'User-Agent': (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : 'Unknown'
+        };
+        // Only set X-Forwarded-For if clientRemoteAddress is defined
+        if (config.clientRemoteAddress) {
+            headers['X-Forwarded-For'] = config.clientRemoteAddress;
+        }
+        return headers;
     }
 }
 
