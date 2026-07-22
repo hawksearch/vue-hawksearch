@@ -99,7 +99,7 @@ class HawksearchVue {
         );
 
         return this.createStore(storeOverrides);
-        }
+    }
 
     /**
      *
@@ -492,7 +492,7 @@ class HawksearchVue {
                 }));
 
                 value.Negated = Boolean(paramPool[this.getFacetParamName(param)].find(param => {
-                    return param == ('-' + value.Value)
+                    return param == ('@' + value.Value)
                 }));
 
                 if (value.Negated) {
@@ -560,7 +560,7 @@ class HawksearchVue {
         var handleCheckboxes = function (options) {
             options.forEach(value => {
                 if (value.Negated) {
-                    searchParamFacets[field].push('-' + value.Value);
+                    searchParamFacets[field].push('@' + value.Value);
                 }
                 else if (value.Selected) {
                     searchParamFacets[field].push(value.Value);
