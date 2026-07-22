@@ -10,7 +10,7 @@
                             <button @click="clearSelectionItem(field, item)" class="hawk-selections__item-remove">
                                 <x-circle-svg></x-circle-svg>
                             </button>
-                            <span :class="itemClass(item)">
+                            <span :class="[itemNameClass, isNegatedItem(item) ? itemNameNegatedClass : '']">
                                 <template v-if="getFacetType(field) == 'range'">
                                     {{ htmlEntityDecode(rangeLabel(item.Label)) }}
                                 </template>
@@ -44,7 +44,9 @@
             return {
                 selections: [],
                 facetType: {},
-                searchWithinLabel: null
+                searchWithinLabel: null,
+                itemNameClass: 'hawk-selections__item-name',
+                itemNameNegatedClass: 'hawk-selections__item-name--negated'
             }
         },
         components: {
@@ -54,14 +56,6 @@
             onClick: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-            },
-            itemClass: function (item) {
-                if (item.Value.startsWith('-')) {
-                    return 'hawk-selections__item-name hawk-selections__item-name--negated';
-                }
-                else {
-                    return 'hawk-selections__item-name';
-                }
             },
             clearSearchWithin: function () {
                 if (this.pendingSearch) {
@@ -165,6 +159,9 @@
             htmlEntityDecode: function(value) {
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
+            },
+            isNegatedItem: function (item) {
+                return item.Value.startsWith('@')
             }
         },
         computed: {
@@ -180,10 +177,10 @@
             }
         },
         watch: {
-            searchOutput: function (n, o) {
-                if (n) {
+            searchOutput: function (newValue, oldValue) {
+                if (newValue) {
                     var selections = {};
-                    var facets = n.Selections;
+                    var facets = newValue.Selections;
                     var search = this.pendingSearch.SearchWithin;
 
                     this.setSearchWithinLabel();
