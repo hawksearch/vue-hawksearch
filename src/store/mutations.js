@@ -17,6 +17,9 @@ export default {
     updatePendingSearch(state, value) {
         state.pendingSearch = value;
     },
+    updateSelections(state, value) {
+        state.selections = value || {};
+    },
     updateExtendedSearchParams(state, value) {
         state.extendedSearchParams = value;
     },

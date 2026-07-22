@@ -1,11 +1,131 @@
 import { setRecentSearch, getRecentSearch } from '@/CookieHandler';
 
+function getFacetFieldName(facet) {
+    if (!facet) {
+        return null;
+    }
+
+    if (typeof HawksearchVue?.getFacetParamName === 'function') {
+        return HawksearchVue.getFacetParamName(facet);
+    }
+
+    return facet.ParamName || facet.Field;
+}
+
+function findMatchingFacetValue(selectionValue, facetValues, negationPrefix) {
+    if (!facetValues || !facetValues.length) {
+        return null;
+    }
+
+    for (const facetValue of facetValues) {
+        const isDirectMatch = facetValue.Value === selectionValue;
+        const isNegatedMatch = negationPrefix && `${negationPrefix}${facetValue.Value}` === selectionValue;
+
+        if (isDirectMatch || isNegatedMatch) {
+            return facetValue;
+        }
+
+        const nestedMatch = findMatchingFacetValue(selectionValue, facetValue.Children, negationPrefix);
+
+        if (nestedMatch) {
+            return nestedMatch;
+        }
+    }
+
+    return null;
+}
+
+function buildSelectionsSnapshot(pendingSearch, searchOutput) {
+    const snapshot = {};
+    const facets = searchOutput?.Facets || [];
+    const facetSelections = pendingSearch?.FacetSelections || {};
+    const searchWithin = pendingSearch?.SearchWithin;
+
+    if (!facets.length) {
+        if (searchWithin) {
+            snapshot.searchWithin = {
+                Items: [{ Value: searchWithin, Label: searchWithin }],
+                Label: 'Search Within'
+            };
+        }
+
+        return snapshot;
+    }
+
+    const negationPrefix = searchOutput?.NegativeFacetValuePrefix || pendingSearch?.NegativeFacetValuePrefix || '@';
+
+    Object.keys(facetSelections).forEach(field => {
+        const selectionValues = facetSelections[field];
+
+        if (!selectionValues || !selectionValues.length) {
+            return;
+        }
+
+        const facet = facets.find(f => getFacetFieldName(f) === field);
+
+        if (!facet || facet.FieldType === 'tab') {
+            return;
+        }
+
+        const items = [];
+
+        if (facet.FieldType === 'range') {
+            selectionValues.forEach(selectionValue => {
+                items.push({
+                    Value: selectionValue,
+                    Label: selectionValue
+                });
+            });
+        }
+        else {
+            selectionValues.forEach(selectionValue => {
+                const matchedValue = findMatchingFacetValue(selectionValue, facet.Values, negationPrefix);
+
+                if (!matchedValue || !matchedValue.Label) {
+                    return;
+                }
+
+                items.push({
+                    Value: selectionValue,
+                    Label: matchedValue.Label,
+                    Path: matchedValue.Path
+                });
+            });
+        }
+
+        if (!items.length) {
+            return;
+        }
+
+        snapshot[field] = {
+            Items: items,
+            Label: facet.Name
+        };
+    });
+
+    if (searchWithin) {
+        const searchWithinFacet = facets.find(f => getFacetFieldName(f) === 'searchWithin' || f.Field === 'searchWithin');
+
+        snapshot.searchWithin = {
+            Items: [{ Value: searchWithin, Label: searchWithin }],
+            Label: searchWithinFacet?.Name || 'Search Within'
+        };
+    }
+
+    return snapshot;
+}
+
 export default {
+    syncSelectionsFromStateSnapshot({ commit, state }) {
+        const selections = buildSelectionsSnapshot(state.pendingSearch, state.searchOutput);
+        commit('updateSelections', selections);
+    },
     fetchResults({ commit, state }, searchParams) {
         return new Promise((resolve, reject) => {
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
             pendingSearch.Keyword = decodeURIComponent(pendingSearch.Keyword);
             commit('updatePendingSearch', pendingSearch);
+            commit('updateSelections', buildSelectionsSnapshot(pendingSearch, state.searchOutput));
             commit('updateSuggestions', null);
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
@@ -17,6 +137,7 @@ export default {
                     commit('setSearchError', false);
                     commit('updatePrevResults', lodash.clone(state.searchOutput));
                     commit('updateResults', searchOutput);
+                    commit('updateSelections', buildSelectionsSnapshot(state.pendingSearch, searchOutput));
 
                     HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
@@ -127,6 +248,7 @@ export default {
                         commit('setSearchError', false);
                         commit('updatePrevResults', currentSearchOutput);
                         commit('updateResults', newSearchOutput);
+                        commit('updateSelections', buildSelectionsSnapshot(state.pendingSearch, newSearchOutput));
 
                         HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);
