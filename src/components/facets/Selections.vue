@@ -56,68 +56,24 @@
                 e.stopPropagation();
                 e.preventDefault();
             },
-            toFacetSelectionsPayload: function (selections) {
-                var facetSelections = {};
-
-                Object.keys(selections || {}).forEach(field => {
-                    if (field === 'searchWithin') {
-                        return;
-                    }
-
-                    var values = (selections[field].Items || []).map(item => item.Value);
-
-                    if (values.length) {
-                        facetSelections[field] = values;
-                    }
-                });
-
-                return facetSelections;
-            },
-            getSearchWithinValue: function (selections) {
-                return selections?.searchWithin?.Items?.[0]?.Value;
-            },
             clearSelectionField: function (field) {
-                if (field === 'searchWithin') {
-                    this.$root.dispatchToStore('clearFacet', 'SearchWithin');
-                    return;
-                }
-
-                var selections = lodash.cloneDeep(this.selectionsForDisplay || {});
-
-                if (selections.hasOwnProperty(field)) {
-                    delete selections[field];
-                    this.refreshResults(selections);
-                }
+                this.$root.dispatchToStore('clearSelectionField', field).then(() => {
+                    var widget = this.$root;
+                    var store = HawksearchVue.getWidgetStore(widget);
+                    HawksearchVue.truncateFacetSelections(store);
+                    HawksearchVue.applyTabSelection(widget);
+                });
             },
             clearSelectionItem: function (field, item) {
-                if (field === 'searchWithin') {
-                    this.$root.dispatchToStore('clearFacet', 'SearchWithin');
-                    return;
-                }
-
-                var selections = lodash.cloneDeep(this.selectionsForDisplay || {});
-
-                if (selections.hasOwnProperty(field)) {
-                    selections[field].Items = (selections[field].Items || []).filter(v => v.Value != item.Value);
-
-                    if (!selections[field].Items.length) {
-                        delete selections[field];
-                    }
-
-                    this.refreshResults(selections);
-                }
+                this.$root.dispatchToStore('clearSelectionItem', { field: field, itemValue: item.Value }).then(() => {
+                    var widget = this.$root;
+                    var store = HawksearchVue.getWidgetStore(widget);
+                    HawksearchVue.truncateFacetSelections(store);
+                    HawksearchVue.applyTabSelection(widget);
+                });
             },
             clearAll: function () {
-                this.refreshResults({});
-            },
-            refreshResults: function (selections = this.selectionsForDisplay) {
-                var headers = {
-                    PageNo: 1,
-                    FacetSelections: this.toFacetSelectionsPayload(selections),
-                    SearchWithin: this.getSearchWithinValue(selections)
-                };
-
-                this.$root.dispatchToStore('fetchResults', headers).then(() => {
+                this.$root.dispatchToStore('clearAllSelectionsAndSearchWithin').then(() => {
                     var widget = this.$root;
                     var store = HawksearchVue.getWidgetStore(widget);
                     HawksearchVue.truncateFacetSelections(store);

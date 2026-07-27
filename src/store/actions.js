@@ -115,6 +115,33 @@ function buildSelectionsSnapshot(pendingSearch, searchOutput) {
     return snapshot;
 }
 
+function buildSelectionHeadersFromSnapshot(selectionsSnapshot) {
+    const headers = {
+        PageNo: 1,
+        FacetSelections: {}
+    };
+
+    Object.keys(selectionsSnapshot || {}).forEach(field => {
+        if (field === 'searchWithin') {
+            const value = selectionsSnapshot?.searchWithin?.Items?.[0]?.Value;
+
+            if (value !== undefined && value !== null && value !== '') {
+                headers.SearchWithin = value;
+            }
+
+            return;
+        }
+
+        const values = (selectionsSnapshot[field]?.Items || []).map(item => item.Value);
+
+        if (values.length) {
+            headers.FacetSelections[field] = values;
+        }
+    });
+
+    return headers;
+}
+
 export default {
     syncSelectionsFromStateSnapshot({ commit, state }) {
         const selections = buildSelectionsSnapshot(state.pendingSearch, state.searchOutput);
@@ -207,6 +234,53 @@ export default {
     applySearchWithin({ dispatch, commit, state }, value) {
         return new Promise((resolve, reject) => {
             dispatch('fetchResults', { SearchWithin: value, PageNo: 1 }).then(() => { resolve() })
+        });
+    },
+    applySelectionsSnapshot({ dispatch }, selectionsSnapshot) {
+        const headers = buildSelectionHeadersFromSnapshot(selectionsSnapshot);
+        return dispatch('fetchResults', headers);
+    },
+    clearSelectionItem({ dispatch, state }, { field, itemValue }) {
+        const selections = lodash.cloneDeep(state.selections || {});
+
+        if (field === 'searchWithin') {
+            delete selections.searchWithin;
+            return dispatch('applySelectionsSnapshot', selections);
+        }
+
+        if (!selections[field]) {
+            return Promise.resolve();
+        }
+
+        selections[field].Items = (selections[field].Items || []).filter(item => item.Value !== itemValue);
+
+        if (!selections[field].Items.length) {
+            delete selections[field];
+        }
+
+        return dispatch('applySelectionsSnapshot', selections);
+    },
+    clearSelectionField({ dispatch, state }, field) {
+        const selections = lodash.cloneDeep(state.selections || {});
+
+        if (field === 'searchWithin') {
+            delete selections.searchWithin;
+            return dispatch('applySelectionsSnapshot', selections);
+        }
+
+        if (!selections[field]) {
+            return Promise.resolve();
+        }
+
+        delete selections[field];
+
+        return dispatch('applySelectionsSnapshot', selections);
+    },
+    clearAllSelectionsAndSearchWithin({ dispatch }) {
+        return dispatch('fetchResults', {
+            PageNo: 1,
+            FacetSelections: {},
+            SearchWithin: undefined
         });
     },
     clearFacet({ dispatch, commit, state }, facet) {
