@@ -47,9 +47,6 @@ class HawksearchVue {
             collapseAllExceptCurrentTarget: false,
             collapseOnDefocus: false
         },
-        tabConfig: {
-            alwaysOn: true
-        },
         urlUpdate: {
             enabled: true,
             parameters: null
