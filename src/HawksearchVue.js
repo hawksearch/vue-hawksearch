@@ -273,8 +273,6 @@ class HawksearchVue {
         app.use(templateOverridePlugin, storeConfig);
 
         const widget = app.mount(el);
-        const { emit } = useEventBus();
-        widget.emit = emit;
 
         this.widgetInstances[widgetId] = widget;
 
