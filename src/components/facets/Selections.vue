@@ -57,28 +57,13 @@
                 e.preventDefault();
             },
             clearSelectionField: function (field) {
-                this.$root.dispatchToStore('clearSelectionField', field).then(() => {
-                    var widget = this.$root;
-                    var store = HawksearchVue.getWidgetStore(widget);
-                    HawksearchVue.truncateFacetSelections(store);
-                    HawksearchVue.applyTabSelection(widget);
-                });
+                this.$root.dispatchToStore('clearSelectionField', field);
             },
             clearSelectionItem: function (field, item) {
-                this.$root.dispatchToStore('clearSelectionItem', { field: field, itemValue: item.Value }).then(() => {
-                    var widget = this.$root;
-                    var store = HawksearchVue.getWidgetStore(widget);
-                    HawksearchVue.truncateFacetSelections(store);
-                    HawksearchVue.applyTabSelection(widget);
-                });
+                this.$root.dispatchToStore('clearSelectionItem', { field: field, itemValue: item.Value });
             },
             clearAll: function () {
-                this.$root.dispatchToStore('clearAllSelectionsAndSearchWithin').then(() => {
-                    var widget = this.$root;
-                    var store = HawksearchVue.getWidgetStore(widget);
-                    HawksearchVue.truncateFacetSelections(store);
-                    HawksearchVue.applyTabSelection(widget);
-                });
+                this.$root.dispatchToStore('clearAllSelectionsAndSearchWithin');
             },
             getFacetType: function (field) {
                 if (this.searchOutput?.Facets?.length) {

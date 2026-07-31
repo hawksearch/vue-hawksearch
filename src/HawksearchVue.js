@@ -783,23 +783,6 @@ class HawksearchVue {
         return field;
     }
 
-    static applyTabSelection(widget) {
-        var store = this.getWidgetStore(widget);
-        var data = store.state.searchOutput;
-
-        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
-            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
-
-            if (!tabs.Values.find(value => value.Selected == true) && widget.config.tabConfig.alwaysOn) {
-                var facetData = Object.assign({}, tabs);
-
-                facetData.Values[0].Selected = true;
-
-                widget.dispatchToStore('applyFacets', facetData);
-            }
-        }
-    }
-
     static truncateFacetSelections(store) {
         var pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
         pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => { return lodash.includes(this.getFacetFieldNames(store), field) });

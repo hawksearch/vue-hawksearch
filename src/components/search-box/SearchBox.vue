@@ -52,11 +52,7 @@ export default {
             }
             else if (this.keyword || searchBoxConfig.reloadOnEmpty) {
                 this.keywordEnter = this.keyword;
-                this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 })
-                    .then(() => {
-                        var widget = this.$root;
-                        HawksearchVue.applyTabSelection(widget);
-                    });
+                this.$root.dispatchToStore('fetchResults', { Keyword: this.keyword || "", FacetSelections: {}, PageNo: 1 });
             }
         },
         onKeyDown: function (e) {

@@ -70,11 +70,7 @@ export default {
             this.applyFacets();
         },
         applyFacets: function () {
-            this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
-                var widget = this.$root;
-
-                HawksearchVue.applyTabSelection(widget);
-            });
+            this.$root.dispatchToStore('applyFacets', this.facetData);
         },
         clearSelections: function (exception) {
             if (this.getCheckboxType() !== 'single') {
