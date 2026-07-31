@@ -771,25 +771,6 @@ class HawksearchVue {
         return fields;
     }
 
-    static getTabField(store) {
-        var field;
-
-        store.state.searchOutput.Facets.forEach(facet => {
-            if (facet.FieldType == "tab") {
-                field = facet.Field;
-            }
-        })
-
-        return field;
-    }
-
-    static truncateFacetSelections(store) {
-        var pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
-        pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => { return lodash.includes(this.getFacetFieldNames(store), field) });
-
-        store.commit('updatePendingSearch', pendingSearch);
-    }
-
     static isMobile() {
         return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
