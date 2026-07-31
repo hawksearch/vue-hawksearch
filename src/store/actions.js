@@ -142,6 +142,20 @@ function buildSelectionHeadersFromSnapshot(selectionsSnapshot) {
     return headers;
 }
 
+function finalizeSearchResults(store, searchOutput) {
+    if (!store || !searchOutput) {
+        return;
+    }
+
+    const pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
+    pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => {
+        return lodash.includes(HawksearchVue.getFacetFieldNames(store), field);
+    });
+
+    store.commit('updatePendingSearch', pendingSearch);
+    store.commit('updateSelections', buildSelectionsSnapshot(pendingSearch, searchOutput));
+}
+
 export default {
     syncSelectionsFromStateSnapshot({ commit, state }) {
         const selections = buildSelectionsSnapshot(state.pendingSearch, state.searchOutput);
@@ -168,6 +182,7 @@ export default {
 
                     HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
+                        finalizeSearchResults(this, searchOutput);
                         resolve()
                     });
                 }
@@ -326,6 +341,7 @@ export default {
 
                         HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);
+                            finalizeSearchResults(this, newSearchOutput);
                             resolve()
                         });
                     }

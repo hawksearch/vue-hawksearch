@@ -421,10 +421,7 @@ class HawksearchVue {
 
         var searchParams = parseURLparams(widget);
 
-        widget.dispatchToStore('fetchResults', searchParams).then(() => {
-            this.truncateFacetSelections(store);
-            this.applyTabSelection(widget);
-        });
+        widget.dispatchToStore('fetchResults', searchParams);
 
         if(store.state.isFirstInitialSearch){
             store.commit('updateInitialSearchUrl', location.search);
