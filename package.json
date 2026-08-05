@@ -10,7 +10,7 @@
     "build": "vite build",
     "build:watch": "vite build --watch",
     "dev": "vite",
-    "dev:all": "concurrently \"npm run dev\" \"npm run build:watch\"",
+    "dev:all": "concurrently \"npm run clean:d\" \"npm run build:watch\" \"npm run dev\"",
     "dev:prod": "vite --mode production",
     "dev:stg": "vite --mode staging",
     "clean:d": "rm -rf dist",

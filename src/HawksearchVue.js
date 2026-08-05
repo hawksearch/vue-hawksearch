@@ -88,17 +88,27 @@ class HawksearchVue {
 
     static paramWhitelist = ['CustomUrl', 'Query']
 
+    /**
+     *
+     * @deprecated Use createStore(storeOverrides) instead.
+     * @see createStore()
+     */
     static generateStoreInstance(appliedConfig, storeOverrides) {
-        if (!storeOverrides) {
-            storeOverrides = {}
+        console.warn(
+            "[Deprecation Warning]: generateStoreInstance(appliedConfig, storeOverrides) is deprecated. Use createStore(storeOverrides) instead."
+        );
+
+        return this.createStore(storeOverrides);
         }
 
-        var store = getVueStore(storeOverrides);
+    /**
+     *
+     * @param {{state: Object, mutations: Object, actions: Object, getters: Object}} storeOverrides
+     * @return {Store}
+     */
+    static createStore(storeOverrides) {
+        var store = getVueStore(storeOverrides || {});
         var storeId = this.getUniqueIdentifier();
-
-        var config = this.mergeConfig(this.defaultConfig, appliedConfig);
-
-        store.commit('updateConfig', config);
         store.commit('setStoreId', storeId);
 
         this.storeInstances[storeId] = store;
@@ -109,8 +119,8 @@ class HawksearchVue {
     /**
      * Creates the widget instance
      * This widget is the wrapping entity that holds all the structural logic
-     * @param {HTMLElement} / @param {String} el The target element on which the widget is rendered
-     * @param {Object} param1 Object containing the config object or/and Vuex store instance
+     * @param {HTMLElement|String} el The target element on which the widget is rendered
+     * @param {Object} Object containing the config object or/and Vuex store instance
      *
      *      Examples:
      *          1. HawksearchVue.createWidget(el, { config }): The most basic instance initialization.
@@ -141,35 +151,17 @@ class HawksearchVue {
             }
         }
 
-        // Generate a store instance to attach to widget
-        // This is the base create sequence
+        var storeConfig = this.mergeConfig(this.defaultConfig, config || {});
         if (!store) {
-            // console.info("Create widget, id: " + widgetId + ", single initialization");
-
-            // Fill in the default values for the config
-            config = this.mergeConfig(this.defaultConfig, config);
-
-            store = this.generateStoreInstance(config);
-
+            // Generate a store instance to attach to widget
+            store = this.createStore();
             if (dataLayer) {
                 this.dataLayers[dataLayer] = store.state.storeId;
             }
+        } else {
+            storeConfig = this.mergeConfig(store.state.config, config || {});
         }
-        // If store instance is avalable, update it with the new config, if provided
-        else if (config) {
-            // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), specific configuration");
-
-            // Extend the existing store config
-            config = this.mergeConfig(store.state.config, config);
-
-            store.commit('updateConfig', config);
-        }
-        // If the store instance is available, but the config is not, create a default config to keep things consistent
-        else {
-            // console.info("Create widget, id: " + widgetId + ", attached to existing data layer (" + store.state.storeId + "), using existing configuration");
-            config = this.mergeConfig(this.defaultConfig, store.state.config);
-            store.commit('updateConfig', config);
-        }
+        store.commit('updateConfig', storeConfig);
 
         // Merge passed components with defaults
         components = Object.assign({}, {
@@ -216,7 +208,7 @@ class HawksearchVue {
                 const { createTrackEvent } = useTrackingEvent();
                 const { emit } = useEventBus();
 
-                return { trackEvent: createTrackEvent(config), emit }
+                return { trackEvent: createTrackEvent(storeConfig), emit }
             },
             watch: {
                 searchOutput: function (newValue, oldValue) {
@@ -277,7 +269,7 @@ class HawksearchVue {
 
         app.use(store);
         app.use(getI18n());
-        app.use(templateOverridePlugin, config);
+        app.use(templateOverridePlugin, storeConfig);
 
         const widget = app.mount(el);
         const { emit } = useEventBus();
@@ -694,8 +686,8 @@ class HawksearchVue {
 
     static redirectSearch(keyword, widget, searchPageUrl, ignoreRedirectRules) {
         var redirect = new URL(searchPageUrl, location.href);
-        var config = widget.config;
         var store = this.getWidgetStore(widget);
+        var config = store.state.config;
 
         if (keyword) {
             redirect.searchParams.set(getParamName('keyword', widget), encodeURIComponent(keyword));
