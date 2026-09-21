@@ -118,7 +118,8 @@ function buildSelectionsSnapshot(pendingSearch, searchOutput) {
 function buildSelectionHeadersFromSnapshot(selectionsSnapshot) {
     const headers = {
         PageNo: 1,
-        FacetSelections: {}
+        FacetSelections: {},
+        SearchWithin: undefined
     };
 
     Object.keys(selectionsSnapshot || {}).forEach(field => {
@@ -251,8 +252,15 @@ export default {
             dispatch('fetchResults', { SearchWithin: value, PageNo: 1 }).then(() => { resolve() })
         });
     },
-    applySelectionsSnapshot({ dispatch }, selectionsSnapshot) {
+    applySelectionsSnapshot({ dispatch, state }, selectionsSnapshot) {
         const headers = buildSelectionHeadersFromSnapshot(selectionsSnapshot);
+        const displayedSelectionFields = Object.keys(state.selections || {}).filter(field => field !== 'searchWithin');
+        const hiddenFacetSelections = lodash.pickBy(state.pendingSearch?.FacetSelections || {}, (value, field) => {
+            return !displayedSelectionFields.includes(field);
+        });
+
+        headers.FacetSelections = Object.assign({}, hiddenFacetSelections, headers.FacetSelections);
+
         return dispatch('fetchResults', headers);
     },
     clearSelectionItem({ dispatch, state }, { field, itemValue }) {
