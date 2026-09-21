@@ -237,6 +237,9 @@ class HawksearchVue {
                                 'applySort',
                                 'applySearchWithin',
                                 'clearFacet',
+                                'clearSelectionItem',
+                                'clearSelectionField',
+                                'clearAllSelectionsAndSearchWithin',
                             ];
 
                             if (trackingActions.includes(action) && this.trackEvent) {
@@ -254,6 +257,9 @@ class HawksearchVue {
                                 'applySort',
                                 'applySearchWithin',
                                 'clearFacet',
+                                'clearSelectionItem',
+                                'clearSelectionField',
+                                'clearAllSelectionsAndSearchWithin',
                             ];
 
                             if (pageLoadingActions.includes(action)) {
