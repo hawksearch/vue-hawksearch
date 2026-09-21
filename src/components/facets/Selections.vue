@@ -10,12 +10,12 @@
                             <button @click="clearSelectionItem(field, item)" class="hawk-selections__item-remove">
                                 <x-circle-svg></x-circle-svg>
                             </button>
-                            <span :class="itemClass(item)">
+                            <span :class="[itemNameClass, isNegatedItem(item) ? itemNameNegatedClass : '']">
                                 <template v-if="getFacetType(field) == 'range'">
-                                    {{ htmlEntityDecode(rangeLabel(item.Label)) }}
+                                    {{ htmlEntityDecode(rangeLabel(itemLabel(item))) }}
                                 </template>
                                 <template v-else>
-                                    {{ htmlEntityDecode(item.Label) }}
+                                    {{ htmlEntityDecode(itemLabel(item)) }}
                                 </template>
                             </span>
                         </li>
@@ -37,6 +37,7 @@
 <script>
     import { mapState, mapGetters } from 'vuex';
     import XCircleSvg from '../svg/XCircleSvg.vue';
+    import { FacetNegationService } from '@/core/services/FacetNegationService';
 
     export default {
         name: 'selections',
@@ -44,7 +45,9 @@
             return {
                 selections: [],
                 facetType: {},
-                searchWithinLabel: null
+                searchWithinLabel: null,
+                itemNameClass: 'hawk-selections__item-name',
+                itemNameNegatedClass: 'hawk-selections__item-name--negated'
             }
         },
         components: {
@@ -54,14 +57,6 @@
             onClick: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-            },
-            itemClass: function (item) {
-                if (item.Value.startsWith('-')) {
-                    return 'hawk-selections__item-name hawk-selections__item-name--negated';
-                }
-                else {
-                    return 'hawk-selections__item-name';
-                }
             },
             clearSearchWithin: function () {
                 if (this.pendingSearch) {
@@ -153,6 +148,9 @@
             rangeLabel: function (item) {
                 return item.split(',').join(' - ');
             },
+            itemLabel: function (item) {
+                return FacetNegationService.extractBase(item.Label);
+            },
             setSearchWithinLabel: function () {
                 if (this.searchOutput?.Facets?.length && !this.searchWithinLabel) {
                     var searchWithin = this.searchOutput.Facets.find(facet => facet.Field == 'searchWithin');
@@ -165,6 +163,9 @@
             htmlEntityDecode: function(value) {
                 var decoded = new DOMParser().parseFromString(value, "text/html");
                 return decoded.documentElement.textContent;
+            },
+            isNegatedItem: function (item) {
+                return FacetNegationService.isNegated(item.Value)
             }
         },
         computed: {
@@ -180,10 +181,10 @@
             }
         },
         watch: {
-            searchOutput: function (n, o) {
-                if (n) {
+            searchOutput: function (newValue, oldValue) {
+                if (newValue) {
                     var selections = {};
-                    var facets = n.Selections;
+                    var facets = newValue.Selections;
                     var search = this.pendingSearch.SearchWithin;
 
                     this.setSearchWithinLabel();
