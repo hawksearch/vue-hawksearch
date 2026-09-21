@@ -12,10 +12,10 @@
                             </button>
                             <span :class="[itemNameClass, isNegatedItem(item) ? itemNameNegatedClass : '']">
                                 <template v-if="getFacetType(field) == 'range'">
-                                    {{ htmlEntityDecode(rangeLabel(item.Label)) }}
+                                    {{ htmlEntityDecode(rangeLabel(itemLabel(item))) }}
                                 </template>
                                 <template v-else>
-                                    {{ htmlEntityDecode(item.Label) }}
+                                    {{ htmlEntityDecode(itemLabel(item)) }}
                                 </template>
                             </span>
                         </li>
@@ -37,6 +37,7 @@
 <script>
     import { mapState, mapGetters } from 'vuex';
     import XCircleSvg from '../svg/XCircleSvg.vue';
+    import { FacetNegationService } from '@/core/services/FacetNegationService';
 
     export default {
         name: 'selections',
@@ -147,6 +148,9 @@
             rangeLabel: function (item) {
                 return item.split(',').join(' - ');
             },
+            itemLabel: function (item) {
+                return FacetNegationService.extractBase(item.Label);
+            },
             setSearchWithinLabel: function () {
                 if (this.searchOutput?.Facets?.length && !this.searchWithinLabel) {
                     var searchWithin = this.searchOutput.Facets.find(facet => facet.Field == 'searchWithin');
@@ -161,7 +165,7 @@
                 return decoded.documentElement.textContent;
             },
             isNegatedItem: function (item) {
-                return item.Value.startsWith('@')
+                return FacetNegationService.isNegated(item.Value)
             }
         },
         computed: {
