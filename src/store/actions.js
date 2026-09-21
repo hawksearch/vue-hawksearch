@@ -1,147 +1,5 @@
 import { setRecentSearch, getRecentSearch } from '@/CookieHandler';
-
-function getFacetFieldName(facet) {
-    if (!facet) {
-        return null;
-    }
-
-    if (typeof HawksearchVue?.getFacetParamName === 'function') {
-        return HawksearchVue.getFacetParamName(facet);
-    }
-
-    return facet.ParamName || facet.Field;
-}
-
-function findMatchingFacetValue(selectionValue, facetValues, negationPrefix) {
-    if (!facetValues || !facetValues.length) {
-        return null;
-    }
-
-    for (const facetValue of facetValues) {
-        const isDirectMatch = facetValue.Value === selectionValue;
-        const isNegatedMatch = negationPrefix && `${negationPrefix}${facetValue.Value}` === selectionValue;
-
-        if (isDirectMatch || isNegatedMatch) {
-            return facetValue;
-        }
-
-        const nestedMatch = findMatchingFacetValue(selectionValue, facetValue.Children, negationPrefix);
-
-        if (nestedMatch) {
-            return nestedMatch;
-        }
-    }
-
-    return null;
-}
-
-function buildSelectionsSnapshot(pendingSearch, searchOutput) {
-    const snapshot = {};
-    const facets = searchOutput?.Facets || [];
-    const facetSelections = pendingSearch?.FacetSelections || {};
-    const searchWithin = pendingSearch?.SearchWithin;
-
-    if (!facets.length) {
-        if (searchWithin) {
-            snapshot.searchWithin = {
-                Items: [{ Value: searchWithin, Label: searchWithin }],
-                Label: 'Search Within'
-            };
-        }
-
-        return snapshot;
-    }
-
-    const negationPrefix = searchOutput?.NegativeFacetValuePrefix || pendingSearch?.NegativeFacetValuePrefix || '@';
-
-    Object.keys(facetSelections).forEach(field => {
-        const selectionValues = facetSelections[field];
-
-        if (!selectionValues || !selectionValues.length) {
-            return;
-        }
-
-        const facet = facets.find(f => getFacetFieldName(f) === field);
-
-        if (!facet || facet.FieldType === 'tab') {
-            return;
-        }
-
-        const items = [];
-
-        if (facet.FieldType === 'range') {
-            selectionValues.forEach(selectionValue => {
-                items.push({
-                    Value: selectionValue,
-                    Label: selectionValue
-                });
-            });
-        }
-        else {
-            selectionValues.forEach(selectionValue => {
-                const matchedValue = findMatchingFacetValue(selectionValue, facet.Values, negationPrefix);
-
-                if (!matchedValue || !matchedValue.Label) {
-                    return;
-                }
-
-                items.push({
-                    Value: selectionValue,
-                    Label: matchedValue.Label,
-                    Path: matchedValue.Path
-                });
-            });
-        }
-
-        if (!items.length) {
-            return;
-        }
-
-        snapshot[field] = {
-            Items: items,
-            Label: facet.Name
-        };
-    });
-
-    if (searchWithin) {
-        const searchWithinFacet = facets.find(f => getFacetFieldName(f) === 'searchWithin' || f.Field === 'searchWithin');
-
-        snapshot.searchWithin = {
-            Items: [{ Value: searchWithin, Label: searchWithin }],
-            Label: searchWithinFacet?.Name || 'Search Within'
-        };
-    }
-
-    return snapshot;
-}
-
-function buildSelectionHeadersFromSnapshot(selectionsSnapshot) {
-    const headers = {
-        PageNo: 1,
-        FacetSelections: {},
-        SearchWithin: undefined
-    };
-
-    Object.keys(selectionsSnapshot || {}).forEach(field => {
-        if (field === 'searchWithin') {
-            const value = selectionsSnapshot?.searchWithin?.Items?.[0]?.Value;
-
-            if (value !== undefined && value !== null && value !== '') {
-                headers.SearchWithin = value;
-            }
-
-            return;
-        }
-
-        const values = (selectionsSnapshot[field]?.Items || []).map(item => item.Value);
-
-        if (values.length) {
-            headers.FacetSelections[field] = values;
-        }
-    });
-
-    return headers;
-}
+import { buildSelectionsSnapshot } from '@/composables/useSelectionsSnapshot';
 
 function finalizeSearchResults(store, searchOutput) {
     if (!store || !searchOutput) {
@@ -154,20 +12,16 @@ function finalizeSearchResults(store, searchOutput) {
     });
 
     store.commit('updatePendingSearch', pendingSearch);
-    store.commit('updateSelections', buildSelectionsSnapshot(pendingSearch, searchOutput));
+    store.commit('selections/updateSelections', buildSelectionsSnapshot(pendingSearch, searchOutput));
 }
 
 export default {
-    syncSelectionsFromStateSnapshot({ commit, state }) {
-        const selections = buildSelectionsSnapshot(state.pendingSearch, state.searchOutput);
-        commit('updateSelections', selections);
-    },
     fetchResults({ commit, state }, searchParams) {
         return new Promise((resolve, reject) => {
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
             pendingSearch.Keyword = decodeURIComponent(pendingSearch.Keyword);
             commit('updatePendingSearch', pendingSearch);
-            commit('updateSelections', buildSelectionsSnapshot(pendingSearch, state.searchOutput));
+            commit('selections/updateSelections', buildSelectionsSnapshot(pendingSearch, state.searchOutput));
             commit('updateSuggestions', null);
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
@@ -179,7 +33,7 @@ export default {
                     commit('setSearchError', false);
                     commit('updatePrevResults', lodash.clone(state.searchOutput));
                     commit('updateResults', searchOutput);
-                    commit('updateSelections', buildSelectionsSnapshot(state.pendingSearch, searchOutput));
+                    commit('selections/updateSelections', buildSelectionsSnapshot(state.pendingSearch, searchOutput));
 
                     HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
@@ -252,59 +106,14 @@ export default {
             dispatch('fetchResults', { SearchWithin: value, PageNo: 1 }).then(() => { resolve() })
         });
     },
-    applySelectionsSnapshot({ dispatch, state }, selectionsSnapshot) {
-        const headers = buildSelectionHeadersFromSnapshot(selectionsSnapshot);
-        const displayedSelectionFields = Object.keys(state.selections || {}).filter(field => field !== 'searchWithin');
-        const hiddenFacetSelections = lodash.pickBy(state.pendingSearch?.FacetSelections || {}, (value, field) => {
-            return !displayedSelectionFields.includes(field);
-        });
-
-        headers.FacetSelections = Object.assign({}, hiddenFacetSelections, headers.FacetSelections);
-
-        return dispatch('fetchResults', headers);
+    clearSelectionItem({ dispatch }, payload) {
+        return dispatch('selections/clearSelectionItem', payload);
     },
-    clearSelectionItem({ dispatch, state }, { field, itemValue }) {
-        const selections = lodash.cloneDeep(state.selections || {});
-
-        if (field === 'searchWithin') {
-            delete selections.searchWithin;
-            return dispatch('applySelectionsSnapshot', selections);
-        }
-
-        if (!selections[field]) {
-            return Promise.resolve();
-        }
-
-        selections[field].Items = (selections[field].Items || []).filter(item => item.Value !== itemValue);
-
-        if (!selections[field].Items.length) {
-            delete selections[field];
-        }
-
-        return dispatch('applySelectionsSnapshot', selections);
-    },
-    clearSelectionField({ dispatch, state }, field) {
-        const selections = lodash.cloneDeep(state.selections || {});
-
-        if (field === 'searchWithin') {
-            delete selections.searchWithin;
-            return dispatch('applySelectionsSnapshot', selections);
-        }
-
-        if (!selections[field]) {
-            return Promise.resolve();
-        }
-
-        delete selections[field];
-
-        return dispatch('applySelectionsSnapshot', selections);
+    clearSelectionField({ dispatch }, field) {
+        return dispatch('selections/clearSelectionField', field);
     },
     clearAllSelectionsAndSearchWithin({ dispatch }) {
-        return dispatch('fetchResults', {
-            PageNo: 1,
-            FacetSelections: {},
-            SearchWithin: undefined
-        });
+        return dispatch('selections/clearAllSelectionsAndSearchWithin', null);
     },
     clearFacet({ dispatch, commit, state }, facet) {
         return new Promise((resolve, reject) => {
@@ -345,7 +154,7 @@ export default {
                         commit('setSearchError', false);
                         commit('updatePrevResults', currentSearchOutput);
                         commit('updateResults', newSearchOutput);
-                        commit('updateSelections', buildSelectionsSnapshot(state.pendingSearch, newSearchOutput));
+                        commit('selections/updateSelections', buildSelectionsSnapshot(state.pendingSearch, newSearchOutput));
 
                         HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);

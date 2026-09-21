@@ -28,9 +28,6 @@ export default {
     config: state => {
         return state.config;
     },
-    selectionsForDisplay: state => {
-        return state.selections || {};
-    },
     facetsCollapseAllTrigger: state => {
         return state.facetsCollapseAllTrigger;
     },

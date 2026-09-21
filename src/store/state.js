@@ -8,7 +8,6 @@ export default {
     Keyword: "",
     FacetSelections: {}
   },
-  selections: {},
   extendedSearchParams: {},
   searchError: false,
   loadingResults: false,

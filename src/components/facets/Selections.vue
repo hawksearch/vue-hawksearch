@@ -117,12 +117,11 @@
                 'searchOutput'
             ]),
             ...mapGetters([
-                'tabSelection',
-                'selectionsForDisplay'
+                'tabSelection'
             ]),
-            selections: function () {
-                return this.selectionsForDisplay || {};
-            },
+            ...mapGetters('selections', [
+                'selections'
+            ]),
             hasSelections: function () {
                 return Object.keys(this.selections).length != 0;
             }
