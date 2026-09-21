@@ -191,13 +191,13 @@ export default {
         },
         collapseFacet: function(element) {
             element.isCollapsed = true;
-            if (f.isPersistent()) {
+            if (element.isPersistent()) {
                 sessionStorage.setItem(element.getStorageName(), element.isCollapsed);
             }
         },
         expandFacet: function(element) {
             element.isCollapsed = false;
-            if (f.isPersistent()) {
+            if (element.isPersistent()) {
                 sessionStorage.setItem(element.getStorageName(), element.isCollapsed);
             }
         }
