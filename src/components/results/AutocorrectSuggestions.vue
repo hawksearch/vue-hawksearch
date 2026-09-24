@@ -31,11 +31,7 @@
                 }
                 else if (keyword || searchBoxConfig.reloadOnEmpty) {
                     this.keywordEnter = keyword;
-                    this.$root.dispatchToStore('fetchResults', { Keyword: keyword || "", FacetSelections: {}, PageNo: 1 })
-                        .then(() => {
-                            var widget = this.$root;
-                            HawksearchVue.applyTabSelection(widget);
-                        });
+                    this.$root.dispatchToStore('fetchResults', { Keyword: keyword || "", FacetSelections: {}, PageNo: 1 });
                 }
             },
         },

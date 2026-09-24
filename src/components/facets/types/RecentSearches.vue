@@ -54,10 +54,6 @@ export default {
                         Keyword: keyword || "",
                         FacetSelections: {},
                         PageNo: 1,
-                    })
-                    .then(() => {
-                        var widget = this.$root;
-                        HawksearchVue.applyTabSelection(widget);
                     });
             }
         },

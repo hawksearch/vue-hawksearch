@@ -43,9 +43,7 @@
         name: 'selections',
         data() {
             return {
-                selections: [],
                 facetType: {},
-                searchWithinLabel: null,
                 itemNameClass: 'hawk-selections__item-name',
                 itemNameNegatedClass: 'hawk-selections__item-name--negated'
             }
@@ -58,68 +56,14 @@
                 e.stopPropagation();
                 e.preventDefault();
             },
-            clearSearchWithin: function () {
-                if (this.pendingSearch) {
-                    var pendingSearch = Object.assign({}, this.pendingSearch);
-                    delete pendingSearch.SearchWithin;
-                    this.$store.commit('updatePendingSearch', pendingSearch);
-                }
-            },
             clearSelectionField: function (field) {
-                if (field != 'searchWithin') {
-                    if (this.selections.hasOwnProperty(field)) {
-                        this.selections[field].Items = [];
-                        this.refreshResults();
-                    }
-                }
-                else {
-                    this.clearSearchWithin();
-                    this.$root.dispatchToStore('fetchResults', { PageNo: 1 });
-                }
+                this.$root.dispatchToStore('clearSelectionField', field);
             },
             clearSelectionItem: function (field, item) {
-                if (field != 'searchWithin') {
-                    if (this.selections.hasOwnProperty(field)) {
-                        this.selections[field].Items = this.selections[field].Items.filter(v => v != item);
-                        this.refreshResults();
-                    }
-                }
-                else {
-                    this.clearSearchWithin();
-                    this.$root.dispatchToStore('fetchResults', { PageNo: 1 });
-                }
+                this.$root.dispatchToStore('clearSelectionItem', { field: field, itemValue: item.Value });
             },
             clearAll: function () {
-                if (this.selections) {
-                    Object.keys(this.selections).forEach(field => {
-                        this.selections[field].Items = [];
-                    });
-                }
-
-                this.clearSearchWithin();
-                this.refreshResults();
-            },
-            refreshResults: function () {
-                var headers = { PageNo: 1 };
-                var facetHeaders = Object.assign({}, this.selections);
-
-                if (facetHeaders.hasOwnProperty('searchWithin')) {
-                    headers.SearchWithin = facetHeaders.searchWithin[0];
-                    delete facetHeaders.searchWithin;
-                }
-
-                Object.keys(facetHeaders).forEach(key => {
-                    facetHeaders[key] = facetHeaders[key].Items.map(item => item.Value);
-                });
-
-                headers.FacetSelections = lodash.pickBy(Object.assign({}, this.pendingSearch.FacetSelections, facetHeaders), (a) => { return !lodash.isEmpty(a) });
-
-                this.$root.dispatchToStore('fetchResults', headers).then(() => {
-                    var widget = this.$root;
-                    var store = HawksearchVue.getWidgetStore(widget);
-                    HawksearchVue.truncateFacetSelections(store);
-                    HawksearchVue.applyTabSelection(widget);
-                });
+                this.$root.dispatchToStore('clearAllSelectionsAndSearchWithin');
             },
             getFacetType: function (field) {
                 if (this.searchOutput?.Facets?.length) {
@@ -170,37 +114,16 @@
         },
         computed: {
             ...mapState([
-                'pendingSearch',
                 'searchOutput'
             ]),
             ...mapGetters([
                 'tabSelection'
             ]),
+            ...mapGetters('selections', [
+                'selections'
+            ]),
             hasSelections: function () {
                 return Object.keys(this.selections).length != 0;
-            }
-        },
-        watch: {
-            searchOutput: function (newValue, oldValue) {
-                if (newValue) {
-                    var selections = {};
-                    var facets = newValue.Selections;
-                    var search = this.pendingSearch.SearchWithin;
-
-                    this.setSearchWithinLabel();
-
-                    if (Object.keys(facets).length) {
-                        selections = Object.assign({}, facets);
-                    }
-
-                    if (search) {
-                        selections = Object.assign({}, selections, { 'searchWithin': { Items: [{ Value: search, Label: search }], Label: this.searchWithinLabel } });
-                    }
-
-                    this.selections = selections
-                    
-                    return selections;
-                }
             }
         }
     }

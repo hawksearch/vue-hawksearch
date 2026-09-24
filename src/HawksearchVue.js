@@ -47,9 +47,6 @@ class HawksearchVue {
             collapseAllExceptCurrentTarget: false,
             collapseOnDefocus: false
         },
-        tabConfig: {
-            alwaysOn: true
-        },
         urlUpdate: {
             enabled: true,
             parameters: null
@@ -240,6 +237,9 @@ class HawksearchVue {
                                 'applySort',
                                 'applySearchWithin',
                                 'clearFacet',
+                                'clearSelectionItem',
+                                'clearSelectionField',
+                                'clearAllSelectionsAndSearchWithin',
                             ];
 
                             if (trackingActions.includes(action) && this.trackEvent) {
@@ -257,6 +257,9 @@ class HawksearchVue {
                                 'applySort',
                                 'applySearchWithin',
                                 'clearFacet',
+                                'clearSelectionItem',
+                                'clearSelectionField',
+                                'clearAllSelectionsAndSearchWithin',
                             ];
 
                             if (pageLoadingActions.includes(action)) {
@@ -273,8 +276,6 @@ class HawksearchVue {
         app.use(templateOverridePlugin, storeConfig);
 
         const widget = app.mount(el);
-        const { emit } = useEventBus();
-        widget.emit = emit;
 
         this.widgetInstances[widgetId] = widget;
 
@@ -423,10 +424,7 @@ class HawksearchVue {
 
         var searchParams = parseURLparams(widget);
 
-        widget.dispatchToStore('fetchResults', searchParams).then(() => {
-            this.truncateFacetSelections(store);
-            this.applyTabSelection(widget);
-        });
+        widget.dispatchToStore('fetchResults', searchParams);
 
         if(store.state.isFirstInitialSearch){
             store.commit('updateInitialSearchUrl', location.search);
@@ -774,42 +772,6 @@ class HawksearchVue {
         })
 
         return fields;
-    }
-
-    static getTabField(store) {
-        var field;
-
-        store.state.searchOutput.Facets.forEach(facet => {
-            if (facet.FieldType == "tab") {
-                field = facet.Field;
-            }
-        })
-
-        return field;
-    }
-
-    static applyTabSelection(widget) {
-        var store = this.getWidgetStore(widget);
-        var data = store.state.searchOutput;
-
-        if (data.Results.length && data.Facets.find(facet => facet.FieldType == 'tab')) {
-            var tabs = data.Facets.find(facet => facet.FieldType == 'tab');
-
-            if (!tabs.Values.find(value => value.Selected == true) && widget.config.tabConfig.alwaysOn) {
-                var facetData = Object.assign({}, tabs);
-
-                facetData.Values[0].Selected = true;
-
-                widget.dispatchToStore('applyFacets', facetData);
-            }
-        }
-    }
-
-    static truncateFacetSelections(store) {
-        var pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
-        pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => { return lodash.includes(this.getFacetFieldNames(store), field) });
-
-        store.commit('updatePendingSearch', pendingSearch);
     }
 
     static isMobile() {

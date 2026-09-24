@@ -87,8 +87,6 @@ export default {
                     FacetSelections: {},
                     PageNo: 1,
                     RequestType: this.requestType
-                }).then(() => {
-                    HawksearchVue.applyTabSelection(this.$root);
                 });
             }
         },

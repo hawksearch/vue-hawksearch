@@ -1,4 +1,19 @@
 import { setRecentSearch, getRecentSearch } from '@/CookieHandler';
+import { buildSelectionsSnapshot } from '@/composables/useSelectionsSnapshot';
+
+function finalizeSearchResults(store, searchOutput) {
+    if (!store || !searchOutput) {
+        return;
+    }
+
+    const pendingSearch = lodash.cloneDeep(store.state.pendingSearch);
+    pendingSearch.FacetSelections = lodash.pickBy(pendingSearch.FacetSelections, (value, field) => {
+        return lodash.includes(HawksearchVue.getFacetFieldNames(store), field);
+    });
+
+    store.commit('updatePendingSearch', pendingSearch);
+    store.commit('selections/updateSelections', buildSelectionsSnapshot(pendingSearch, searchOutput));
+}
 
 export default {
     fetchResults({ commit, state }, searchParams) {
@@ -6,6 +21,7 @@ export default {
             var pendingSearch = Object.assign({}, state.pendingSearch, searchParams);
             pendingSearch.Keyword = decodeURIComponent(pendingSearch.Keyword);
             commit('updatePendingSearch', pendingSearch);
+            commit('selections/updateSelections', buildSelectionsSnapshot(pendingSearch, state.searchOutput));
             commit('updateSuggestions', null);
             commit('updateLoadingSuggestions', false);
             commit('updateLoadingResults', true);
@@ -17,9 +33,11 @@ export default {
                     commit('setSearchError', false);
                     commit('updatePrevResults', lodash.clone(state.searchOutput));
                     commit('updateResults', searchOutput);
+                    commit('selections/updateSelections', buildSelectionsSnapshot(state.pendingSearch, searchOutput));
 
                     HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                         commit('updateExtendedSearchParams', extendedSearchParams);
+                        finalizeSearchResults(this, searchOutput);
                         resolve()
                     });
                 }
@@ -88,6 +106,15 @@ export default {
             dispatch('fetchResults', { SearchWithin: value, PageNo: 1 }).then(() => { resolve() })
         });
     },
+    clearSelectionItem({ dispatch }, payload) {
+        return dispatch('selections/clearSelectionItem', payload);
+    },
+    clearSelectionField({ dispatch }, field) {
+        return dispatch('selections/clearSelectionField', field);
+    },
+    clearAllSelectionsAndSearchWithin({ dispatch }) {
+        return dispatch('selections/clearAllSelectionsAndSearchWithin', null);
+    },
     clearFacet({ dispatch, commit, state }, facet) {
         return new Promise((resolve, reject) => {
             var pendingSearch = Object.assign({}, state.pendingSearch);
@@ -127,9 +154,11 @@ export default {
                         commit('setSearchError', false);
                         commit('updatePrevResults', currentSearchOutput);
                         commit('updateResults', newSearchOutput);
+                        commit('selections/updateSelections', buildSelectionsSnapshot(state.pendingSearch, newSearchOutput));
 
                         HawksearchVue.extendSearchData(searchOutput, state.pendingSearch, searchParams, (extendedSearchParams) => {
                             commit('updateExtendedSearchParams', extendedSearchParams);
+                            finalizeSearchResults(this, newSearchOutput);
                             resolve()
                         });
                     }

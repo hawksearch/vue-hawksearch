@@ -21,11 +21,7 @@
         methods: {
             selectFacet: function (value) {
                 value.Selected = !value.Selected;
-                this.$root.dispatchToStore('applyFacets', this.facetData).then(() => {
-                    var widget = this.$root;
-
-                    HawksearchVue.applyTabSelection(widget);
-                });
+                this.$root.dispatchToStore('applyFacets', this.facetData);
             },
             htmlEntityDecode: function(value) {
                 var decoded = new DOMParser().parseFromString(value, "text/html");
