@@ -36,6 +36,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import * as lodash from 'lodash-es';
 import CheckmarkSvg from '../../svg/CheckmarkSvg.vue';
 import PlusCircleSvg from '../../svg/PlusCircleSvg.vue';
 import DashCircleSvg from '../../svg/DashCircleSvg.vue';

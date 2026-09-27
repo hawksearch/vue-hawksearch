@@ -17,6 +17,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import * as lodash from 'lodash-es';
 import SwatchItem from './SwatchItem.vue';
 
 export default {

@@ -1,6 +1,7 @@
+import { createApp } from 'vue';
 import { mapState } from 'vuex';
 import history from 'history/browser';
-import lodash from 'lodash';
+import * as lodash from 'lodash-es';
 import axios from 'axios';
 import { default as getVueStore } from '@/store';
 import { getI18n } from '@/i18n';
@@ -16,9 +17,6 @@ import Recommendations from '@/components/results/recommendations/Recommendation
 import useEventBus from '@/composables/useEventBus';
 import useTrackingEvent from '@/composables/useTrackingEvent';
 import { FacetNegationService } from '@/core/services/FacetNegationService';
-
-var _ = lodash;
-window.lodash = lodash.noConflict();
 
 class HawksearchVue {
     static defaultConfig = {
@@ -161,6 +159,8 @@ class HawksearchVue {
         }
         store.commit('updateConfig', storeConfig);
 
+        const customComponents = components || {};
+
         // Merge passed components with defaults
         components = Object.assign({}, {
             SearchBox,
@@ -169,9 +169,9 @@ class HawksearchVue {
             FacetList,
             PageContent,
             Recommendations,
-        }, components);
+        }, customComponents);
 
-        var app = Vue.createApp({
+        var app = createApp({
             el,
             components,
             mounted() {
@@ -269,6 +269,10 @@ class HawksearchVue {
                     });
                 }
             }
+        });
+
+        Object.keys(customComponents).forEach((name) => {
+            app.component(name, customComponents[name]);
         });
 
         app.use(store);
