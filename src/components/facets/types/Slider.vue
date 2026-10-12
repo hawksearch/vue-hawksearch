@@ -19,6 +19,7 @@
 
 <script>
     import { mapState } from 'vuex';
+    import * as lodash from 'lodash-es';
     import { addToRangeFacets } from '@/QueryString';
     import useEventBus from '@/composables/useEventBus';
 

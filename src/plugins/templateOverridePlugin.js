@@ -1,15 +1,4 @@
-import {
-  createElementVNode,
-  resolveComponent,
-  createVNode,
-  openBlock,
-  createElementBlock,
-  normalizeClass,
-  normalizeProps,
-  toDisplayString,
-  Fragment,
-} from 'vue';
-import { compile } from '@vue/compiler-dom';
+import { compile } from 'vue';
 
 // Overrides the template prioritization
 // If the 'templateOverride' configuration is available, it overrides all other templates
@@ -28,24 +17,9 @@ const generateTemplateOverride = function (name, config, instance) {
   ) {
     const templateContent = document.querySelector(templateOverride).innerHTML;
     if (templateContent) {
-      const { code } = compile(templateContent, { mode: 'function' });
+      const renderFunction = compile(templateContent);
 
-      if (code) {
-        const renderFunction = new Function(
-          'Vue',
-          `${code}; return render;`
-        )({
-          createElementVNode,
-          resolveComponent,
-          createVNode,
-          openBlock,
-          createElementBlock,
-          normalizeClass,
-          normalizeProps,
-          toDisplayString,
-          Fragment,
-        });
-
+      if (renderFunction) {
         return function wrappedRender(...args) {
           const originalWarn = console.warn;
           console.warn = () => {};
@@ -61,11 +35,11 @@ const generateTemplateOverride = function (name, config, instance) {
 };
 
 const wrapComponent = function (component, config) {
-  if (component.__isWrapped) {
+  if (component.__isWrapped || !component.render) {
     return component;
   }
 
-  const originalRender = component.render || (() => null);
+  const originalRender = component.render;
 
   const wrappedComponent = {
     ...component,

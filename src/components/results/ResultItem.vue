@@ -21,6 +21,7 @@
 
 <script>
     import { mapState, mapGetters } from 'vuex';
+    import * as lodash from 'lodash-es';
     import ResultImage from './ResultImage.vue';
     import AddToCart from './AddToCart.vue';
     import useTrackingEvent from '@/composables/useTrackingEvent';

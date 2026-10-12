@@ -16,6 +16,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
+    import * as lodash from 'lodash-es';
     import NestedLinkItem from './NestedLinkItem.vue';
 
     export default {

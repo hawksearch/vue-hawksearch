@@ -66,81 +66,91 @@ function watchBuildPlugin() {
         },
     };
 }
-export default defineConfig(async () => {
+export default defineConfig(async ({ mode, command }) => {
     // Check if the watch flag is present in the command line arguments
     // @see https://github.com/vitejs/vite/discussions/7565
     // @see https://github.com/vitejs/vite/issues/20657
     const isWatchMode = process.argv.includes('--watch') || process.argv.includes('-w');
+    const isProduction = mode === 'production';
     const { default: clean } = await import('@rollup-extras/plugin-clean');
 
     return {
-        plugins: [
-            vue(),
-            legacyEsFormatSupportPlugin(),
-            rootRedirectPlugin(),
-            watchBuildPlugin(),
-            clean({
-                // Clear both the output folder and Vite's local cache on initial watch trigger
-                targets: [
-                    'dist',
-                ],
-                // Optional: setting to true provides a clean console log confirming the wipe
-                verbose: true,
-            })
-        ],
-        publicDir: 'public',
-        build: {
-            outDir: 'dist',
-            assetsDir: '',
-            cssCodeSplit: false,
-            sourcemap: false,
-            minify: 'oxc',
-            cssMinify: true,
-            reportCompressedSize: true,
-            rolldownOptions: {
-                external: ['vue', 'vuex'],
-                output: {
-                    globals: {
-                        vue: 'Vue',
-                        vuex: 'Vuex',
-                    },
-                    chunkFileNames: 'chunks/vue-hawksearch.[hash].js',
-                    assetFileNames: 'vue-hawksearch.[ext]',
-                },
+      plugins: [
+        vue(),
+        legacyEsFormatSupportPlugin(),
+        rootRedirectPlugin(),
+        watchBuildPlugin(),
+        clean({
+          // Clear both the output folder and Vite's local cache on initial watch trigger
+          targets: ["dist"],
+          // Optional: setting to true provides a clean console log confirming the wipe
+          verbose: true,
+        }),
+      ],
+      define:
+        isProduction && command === "build"
+          ? {
+              "process.env.NODE_ENV": JSON.stringify("production"),
+            }
+          : {},
+      publicDir: "public",
+      build: {
+        outDir: "dist",
+        assetsDir: "",
+        cssCodeSplit: false,
+        sourcemap: false,
+        minify: "oxc",
+        cssMinify: true,
+        reportCompressedSize: true,
+        rolldownOptions: {
+          external: ["vue", "vuex"],
+          output: {
+            globals: {
+              vue: "Vue",
+              vuex: "Vuex",
             },
-            copyPublicDir: false,
-            lib: {
-                entry: 'src/index.js',
-                name: 'VueHawksearch',
-                fileName: (format) => `vue-hawksearch.${format}.js`,
-                formats: ['es', 'umd'],
-            },
-            watch: isWatchMode ? {
-                include: 'src/**',
-            } : null,
-            target: ['esnext'],
+            chunkFileNames: "chunks/vue-hawksearch.[hash].js",
+            assetFileNames: "vue-hawksearch.[ext]",
+          },
         },
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    additionalData: `@use "sass:color";`,
-                    includePaths: [path.resolve(__dirname, 'src/styles')],
-                }
-            }
+        copyPublicDir: false,
+        lib: {
+          entry: "src/index.js",
+          name: "VueHawksearch",
+          fileName: (format) => `vue-hawksearch.${format}.js`,
+          formats: ["es", "umd"],
         },
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, './src'),
-                'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm-bundler.js'),
+        watch: isWatchMode
+          ? {
+              include: "src/**",
             }
+          : null,
+        target: ["esnext"],
+      },
+      css: {
+        preprocessorOptions: {
+          scss: {
+            additionalData: `@use "sass:color";`,
+            includePaths: [path.resolve(__dirname, "src/styles")],
+          },
         },
-        server: {
-            index: 'index.html',
-            host: "0.0.0.0",
-            port: 3333,
-            watch: {
-                usePolling: true
-            }
-        }
+      },
+      resolve: {
+        alias: {
+          "@": path.resolve(__dirname, "./src"),
+          vue: path.resolve(
+            __dirname,
+            "./node_modules/vue/dist/vue.esm-bundler.js",
+          ),
+        },
+      },
+      server: {
+        index: "index.html",
+        host: "0.0.0.0",
+        port: 3333,
+        watch: {
+          usePolling: true,
+        },
+      },
     };
 })
