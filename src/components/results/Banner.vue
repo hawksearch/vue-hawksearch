@@ -20,6 +20,7 @@
     import BannerCustom from './banner-items/BannerCustom.vue';
     //import BannerFeatured from './banner-items/BannerFeatured';
     import BannerWidget from './banner-items/BannerWidget.vue';
+    import useTrackingEvent from '@/composables/useTrackingEvent';
 
     export default {
         name: 'banner',
@@ -70,9 +71,6 @@
             ...mapState([
                 'searchOutput',
             ]),
-            trackEvent: function () {
-                return this.$root.trackEvent;
-            },
             bannerList: function () {
                 var items = [];
 
@@ -82,6 +80,10 @@
 
                 return items;
             }
+        },
+        setup() {
+            const { trackEvent } = useTrackingEvent();
+            return { trackEvent }
         }
     }
 </script>

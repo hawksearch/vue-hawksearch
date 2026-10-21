@@ -41,7 +41,20 @@
                         />
                     </div>
                 </template>
-                <template v-else>
+                <template v-if="dymItems.length">
+                    <div class="hawk-autocorrect-suggestion-container" v-memo="[dymItems.length, dymItems.map(i => i.Url).join(','), JSON.stringify(dymItems.map(i => i.Value)), keyword]">
+                        <h3 v-once>{{ dymHeading }}</h3>
+                        <ul class="hawk-autocorrect-suggestion">
+                            <dym-content-item
+                                v-for="item in dymItems"
+                                :key="item.Url"
+                                :item="item"
+                                :keyword="keyword"
+                            />
+                        </ul>
+                    </div>
+                </template>
+                <template v-if="shouldShowNoResults">
                     <div class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</div>
                 </template>
             </div>
@@ -55,6 +68,7 @@ import SuggestionItem from './SuggestionItem.vue';
 import CategoriesContainer from './CategoriesContainer.vue';
 import PopularContainer from './PopularContainer.vue';
 import ContentContainer from './ContentContainer.vue';
+import DymContentItem from './DymContentItem.vue';
 import useTrackingEvent from '@/composables/useTrackingEvent';
 
 export default {
@@ -65,7 +79,8 @@ export default {
         SuggestionItem,
         CategoriesContainer,
         PopularContainer,
-        ContentContainer
+        ContentContainer,
+        DymContentItem
     },
     methods: {
         onItemSeleted: function (item) {
@@ -90,6 +105,20 @@ export default {
             'suggestions',
             'loadingSuggestions'
         ]),
+        dymItems() {
+            return this.suggestions?.DymContentSearch || [];
+        },
+        dymHeading() {
+            return this.suggestions?.DYMContentHeading || '';
+        },
+        shouldShowNoResults() {
+            return !this.loadingSuggestions
+                && !this.suggestions?.Products?.length
+                && !this.suggestions?.Categories?.length
+                && !this.suggestions?.Popular?.length
+                && !this.suggestions?.Content?.length
+                && !this.dymItems.length;
+        }
     },
     setup() {
         const { trackEvent } = useTrackingEvent();

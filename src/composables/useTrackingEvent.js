@@ -1,15 +1,17 @@
-import { ref } from 'vue';
+import { inject, provide } from 'vue';
 import TrackingEvent from "../TrackingEvent";
 
+const trackingEventKey = Symbol('trackingEvent');
+
+export function provideTrackingEvent(config) {
+  const trackEvent = config && config.trackEventUrl
+    ? new TrackingEvent(config)
+    : null;
+
+  provide(trackingEventKey, trackEvent);
+  return trackEvent;
+}
+
 export default function useTrackingEvent() {
-  const trackEvent = ref(null);
-
-  function createTrackEvent(config) {
-    if (config && config.trackEventUrl) {
-      trackEvent.value = new TrackingEvent(config);
-    }
-    return trackEvent.value;
-  }
-
-  return { createTrackEvent, trackEvent };
+  return { trackEvent: inject(trackingEventKey, null) };
 }

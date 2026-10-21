@@ -14,7 +14,7 @@ import FacetList from '@/components/facets/FacetList.vue';
 import PageContent from '@/components/results/PageContent.vue';
 import Recommendations from '@/components/results/recommendations/Recommendations.vue';
 import useEventBus from '@/composables/useEventBus';
-import useTrackingEvent from '@/composables/useTrackingEvent';
+import { provideTrackingEvent } from '@/composables/useTrackingEvent';
 import { FacetNegationService } from '@/core/services/FacetNegationService';
 
 var _ = lodash;
@@ -190,10 +190,10 @@ class HawksearchVue {
                 ]),
             },
             setup() {
-                const { createTrackEvent } = useTrackingEvent();
+                const trackEvent = provideTrackingEvent(storeConfig);
                 const { emit } = useEventBus();
 
-                return { trackEvent: createTrackEvent(storeConfig), emit }
+                return { trackEvent, emit }
             },
             watch: {
                 searchOutput: function (newValue, oldValue) {
