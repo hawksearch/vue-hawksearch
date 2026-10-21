@@ -55,7 +55,7 @@
                         </ul>
                     </div>
                 </template>
-                <template v-else>
+                <template v-if="shouldShowNoResults">
                     <div class="hawk-autosuggest-menu__item">{{ $t('No Results') }}</div>
                 </template>
             </div>
@@ -111,6 +111,14 @@ export default {
         },
         dymHeading() {
             return this.suggestions?.DYMContentHeading || '';
+        },
+        shouldShowNoResults() {
+            return !this.loadingSuggestions
+                && !this.suggestions?.Products?.length
+                && !this.suggestions?.Categories?.length
+                && !this.suggestions?.Popular?.length
+                && !this.suggestions?.Content?.length
+                && !this.dymItems.length;
         }
     },
     setup() {
