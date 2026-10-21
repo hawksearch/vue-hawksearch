@@ -88,19 +88,6 @@ class HawksearchVue {
 
     /**
      *
-     * @deprecated Use createStore(storeOverrides) instead.
-     * @see createStore()
-     */
-    static generateStoreInstance(appliedConfig, storeOverrides) {
-        console.warn(
-            "[Deprecation Warning]: generateStoreInstance(appliedConfig, storeOverrides) is deprecated. Use createStore(storeOverrides) instead."
-        );
-
-        return this.createStore(storeOverrides);
-    }
-
-    /**
-     *
      * @param {{state: Object, mutations: Object, actions: Object, getters: Object}} storeOverrides
      * @return {Store}
      */
