@@ -42,7 +42,7 @@
                     </div>
                 </template>
                 <template v-if="dymItems.length">
-                    <div class="hawk-autocorrect-suggestion-container" v-memo="[dymItems.length, dymItems.map(i => i.Url).join(',')]">
+                    <div class="hawk-autocorrect-suggestion-container" v-memo="[dymItems.length, dymItems.map(i => i.Url).join(','), JSON.stringify(dymItems.map(i => i.Value)), keyword]">
                         <h3 v-once>{{ dymHeading }}</h3>
                         <ul class="hawk-autocorrect-suggestion">
                             <dym-content-item
