@@ -15,6 +15,7 @@
 <script>
     import { mapState, mapGetters } from 'vuex';
     import ResultImage from '../ResultImage.vue';
+    import useTrackingEvent from '@/composables/useTrackingEvent';
 
     export default {
         name: "recommendations-item",
@@ -48,10 +49,11 @@
             ...mapGetters([
                 'getResponseField',
                 'config',
-            ]),
-            trackEvent: function () {
-                return this.$root.trackEvent;
-            }
+            ])
+        },
+        setup() {
+            const { trackEvent } = useTrackingEvent();
+            return { trackEvent }
         },
         methods: {
             getField: function (fieldName) {

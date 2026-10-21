@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import useTrackingEvent from '@/composables/useTrackingEvent';
+
 export default {
     name: 'dym-content-item',
     props: {
@@ -17,10 +19,6 @@ export default {
         keyword: {
             type: String,
             required: true
-        },
-        trackEvent: {
-            type: Object,
-            default: null
         }
     },
     methods: {
@@ -38,6 +36,10 @@ export default {
                 location.assign(this.item.Url);
             }
         }
+    },
+    setup() {
+        const { trackEvent } = useTrackingEvent();
+        return { trackEvent }
     }
 };
 </script>

@@ -50,7 +50,6 @@
                                 :key="item.Url"
                                 :item="item"
                                 :keyword="keyword"
-                                :track-event="$root.trackEvent"
                             />
                         </ul>
                     </div>
