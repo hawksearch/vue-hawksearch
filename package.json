@@ -1,6 +1,6 @@
 {
   "name": "@hawksearch/vue",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Vue.js SDK for Hawksearch",
   "module": "dist/vue-hawksearch.js",
   "scripts": {
@@ -57,6 +57,7 @@
     "@rollup-extras/plugin-clean": "^2.0.1",
     "@vitejs/plugin-vue": "^6.0.5",
     "concurrently": "^9.2.1",
+    "genversion": "^3.2.0",
     "sass": "^1.98",
     "vite": "^8.0.3"
   }
