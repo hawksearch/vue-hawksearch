@@ -1,5 +1,6 @@
 import { setRecentSearch, getRecentSearch } from '@/CookieHandler';
 import { buildSelectionsSnapshot } from '@/composables/useSelectionsSnapshot';
+import * as lodash from 'lodash-es';
 
 function finalizeSearchResults(store, searchOutput) {
     if (!store || !searchOutput) {

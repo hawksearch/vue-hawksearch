@@ -1,4 +1,5 @@
 import { createBrowserHistory } from 'history';
+import * as lodash from 'lodash-es';
 
 const stateToURLParam = {
     Keyword: 'keyword',

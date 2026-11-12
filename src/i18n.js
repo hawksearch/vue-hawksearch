@@ -1,6 +1,6 @@
 
 import { createI18n } from 'vue-i18n';
-import lodash from 'lodash';
+import * as lodash from 'lodash-es';
 
 const messages = {
   en: {

@@ -1,4 +1,5 @@
 import { buildSelectionsSnapshot, buildSelectionHeadersFromSnapshot } from '@/composables/useSelectionsSnapshot';
+import * as lodash from 'lodash-es';
 
 export default {
   applySelectionsSnapshot({ dispatch, state }, selectionsSnapshot) {

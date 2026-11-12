@@ -9,6 +9,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import * as lodash from 'lodash-es';
 export default {
     name: 'suggestion-item',
     emits: ['itemSelected'],

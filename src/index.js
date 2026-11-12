@@ -1,8 +1,6 @@
-import { createApp } from 'vue';
 import HawksearchVue from "./HawksearchVue";
 import '@/styles/app.scss'
 
-window.Vue = { createApp, config: {} };
 window.HawksearchVue = HawksearchVue;
 
 Array.prototype.max = function max() {
