@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 See tasks currently in development on [Unreleased] changes page.
 
+
+## [1.1.0] - 2026-11-12
+
+### FEATURES
+
+* feat: add "Did you mean" in autocomplete in ([#202](https://github.com/hawksearch/vue-hawksearch/pull/202)) 
+
+### FIXES
+
+* fix: make library bundle AMD compatible in ([#200](https://github.com/hawksearch/vue-hawksearch/pull/200))
+
 ## [1.0.0] - 2026-10-21
 
 ### FEATURES
@@ -31,7 +42,8 @@ See tasks currently in development on [Unreleased] changes page.
 * upgrade Vite and all dependencies ([#193](https://github.com/hawksearch/vue-hawksearch/pull/193))
 
 
-[Unreleased]: https://github.com/hawksearch/vue-hawksearch/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/hawksearch/vue-hawksearch/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/hawksearch/vue-hawksearch/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/hawksearch/vue-hawksearch/compare/v0.9.107...v1.0.0
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
